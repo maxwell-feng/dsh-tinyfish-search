@@ -17,7 +17,12 @@ DeepSeek Harness's built-in `web_search` tool normally runs through the DeepSeek
 - `results[]` (title / snippet / url / date) are normalized into the seam's portable source shape
 - No LLM turn consumed per search — unlike the Anthropic server-tool approach
 
-Because the seam auto-selects a provider when exactly one is usable, installing this plugin **replaces** the DeepSeek backend once a TinyFish API key is configured (or pin it explicitly with `searchProvider: tinyfish`).
+Installing the bundle **takes over the built-in `web_search` automatically**: the
+bundle patch overrides the `web` seam row (`searchProvider: tinyfish`,
+`fetchProvider: http` restated), because `dsh-base` pins the seam to
+`deepseek-official` and would otherwise keep the tool on the DeepSeek backend.
+Later layers (profile / home `cordis.patch.yml` / `--patch`) can still
+override that row, and `available()` still requires a TinyFish API key.
 
 ### Requirements
 
@@ -105,7 +110,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 - 把 `results[]`（标题 / 摘要 / 链接 / 日期）归一化为缝接口的可移植来源结构
 - **每次搜索不消耗一次模型调用**——与 Anthropic 服务器工具方案不同，更快更省
 
-由于能力缝在只有一个可用提供方时自动选中它，安装本插件并配置好 TinyFish API key 后，内置搜索即**替换**为 TinyFish 后端（也可用 `searchProvider: tinyfish` 显式固定）。
+安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖该行；并且 `available()` 仍要求配置 TinyFish API key。
 
 ### 环境要求
 

@@ -1,6 +1,6 @@
 {
   "name": "dsh-tinyfish-search",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TinyFish-backed web search provider for DeepSeek Harness (ctx.web): makes the built-in web_search tool run on the TinyFish Search API — 将内置 web_search 接入 TinyFish Search API 的 DeepSeek Harness 插件",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "build": "tsc -p tsconfig.json",
     "prepare": "pnpm run build",
     "prepublishOnly": "pnpm run build && pnpm test",
-    "test": "node --test test/provider.test.mjs"
+    "test": "node --test test/provider.test.mjs test/patch.test.mjs"
   },
   "dsh": {
     "bundle": {

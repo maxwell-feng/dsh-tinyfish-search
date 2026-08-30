@@ -1,6 +1,19 @@
-# dsh-tinyfish-search bundle layer: insert the plugin row.
-# The row references the package by name so Node resolution finds the
-# installed code (npm, tarball, or git install).
+# dsh-tinyfish-search bundle layer.
+#
+# 1. Insert the plugin row. The row references the package by name so Node
+#    resolution finds the installed code (npm, tarball, or git install).
+# 2. Route the web capability seam to this plugin's provider. The dsh-base
+#    bundle pins `searchProvider: deepseek-official` on the `web` row, so
+#    merely registering a provider would leave web_search on the DeepSeek
+#    backend even with this bundle installed. Per the layer rules a bundle
+#    patch may override an earlier row by id, restating every key the row
+#    needs (config is replaced wholesale, never deep-merged). Later layers
+#    (profile / home cordis.patch.yml / --patch overlays) can still override
+#    this row by id, as usual.
 - insert:
     - id: dsh-tinyfish-search
       name: dsh-tinyfish-search
+- id: web
+  config:
+    searchProvider: tinyfish
+    fetchProvider: http

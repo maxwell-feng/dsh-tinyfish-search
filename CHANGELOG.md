@@ -3,6 +3,17 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.1] - 2026-08-30
+
+### English
+
+**Fixed / 修复**
+
+- **The bundle now actually takes over `web_search`**: the `dsh-base` bundle pins `searchProvider: deepseek-official` on the `web` row, so merely registering the `tinyfish` provider left the built-in tool on the DeepSeek backend (failing against a non-DeepSeek key with "DeepSeek API error (HTTP 404)"). Per the harness layer rules, the bundle patch now overrides the `web` row by id (`searchProvider: tinyfish`, `fetchProvider: http` restated) — installing the plugin switches the built-in `web_search` to TinyFish automatically. Later layers (profile / home `cordis.patch.yml` / `--patch`) can still override the row.
+- **修复了插件不生效的问题**:`dsh-base` 把 `web` 行的 `searchProvider` 钉死为 `deepseek-official`,因此仅仅注册 `tinyfish` provider 时,内置 `web_search` 仍走 DeepSeek 后端(用非 DeepSeek 密钥调用即报 "DeepSeek API error (HTTP 404)")。按 harness 的层规则,bundle patch 现在按 id 覆盖 `web` 行(`searchProvider: tinyfish`,并完整重述 `fetchProvider: http`)——安装插件即自动将内置 `web_search` 切换到 TinyFish。更后层(profile / home `cordis.patch.yml` / `--patch`)仍可按 id 覆盖。
+- Added a regression test asserting the bundle patch carries the `web` row override.
+- 新增回归测试,断言 bundle patch 携带了 `web` 行覆盖。
+
 ## [0.1.0] - 2026-08-27
 
 ### English
@@ -33,4 +44,5 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.1.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.1
 [0.1.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.0
