@@ -49,8 +49,20 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 
 Set your API key (recommended — no secret in config files):
 
+**Linux / macOS:**
+
 ```sh
-export TINYFISH_API_KEY="your_api_key_here"
+export TINYFISH_API_KEY="your_api_key_here"                      # current shell
+echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.bashrc  # permanent (bash)
+echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.zshrc   # permanent (zsh)
+source ~/.bashrc                                                 # or reopen the terminal
+```
+
+**Windows (PowerShell):**
+
+```powershell
+setx TINYFISH_API_KEY "your_api_key_here"    # permanent — takes effect in new terminals
+$env:TINYFISH_API_KEY = "your_api_key_here"  # current session only
 ```
 
 Or set fields in your profile's `cordis.yml` / patch layer:
@@ -145,8 +157,20 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 
 设置 API key（推荐——配置文件中不出现密钥）：
 
+**Linux / macOS：**
+
 ```sh
-export TINYFISH_API_KEY="your_api_key_here"
+export TINYFISH_API_KEY="your_api_key_here"                      # 仅当前 shell
+echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.bashrc  # 永久生效（bash）
+echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.zshrc   # 永久生效（zsh）
+source ~/.bashrc                                                 # 或重开终端
+```
+
+**Windows（PowerShell）：**
+
+```powershell
+setx TINYFISH_API_KEY "your_api_key_here"    # 永久生效——新开的终端生效
+$env:TINYFISH_API_KEY = "your_api_key_here"  # 仅当前会话生效
 ```
 
 或在 profile 的 `cordis.yml` / patch 层设置字段：
