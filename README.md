@@ -79,6 +79,14 @@ dsh --profile web --dump-config | grep tinyfish   # layer present
 
 Inside a session, call `web_search` and check that results carry TinyFish URLs/snippets. The web search settings card in the GUI (`网页搜索`) shows the provider state.
 
+### Updating
+
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@latest
+# or from git, to pick up changes before they reach npm:
+dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
+```
+
 ### Development
 
 ```sh
@@ -166,6 +174,14 @@ dsh --profile web --dump-config | grep tinyfish   # 层已加载
 ```
 
 在会话里调用 `web_search`，检查结果是否带 TinyFish 的链接/摘要。GUI 的「网页搜索」设置卡片会显示提供方状态。
+
+### 升级
+
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@latest
+# 或走 git，在改动进入 npm 前先行取用：
+dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
+```
 
 ### 开发
 
