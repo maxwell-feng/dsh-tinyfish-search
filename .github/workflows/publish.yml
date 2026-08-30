@@ -41,5 +41,9 @@ jobs:
 
       # npm publish runs prepublishOnly (tsc build + node --test) itself;
       # the OIDC exchange is automatic when id-token: write is present.
+      # NODE_AUTH_TOKEN must be empty: actions/setup-node may otherwise inject
+      # GITHUB_TOKEN as the registry credential, which shadows the OIDC flow.
       - name: Publish to npm
         run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ""
