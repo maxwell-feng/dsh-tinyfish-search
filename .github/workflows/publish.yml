@@ -1,0 +1,45 @@
+name: Publish to npm
+
+# Publishes dsh-tinyfish-search to https://registry.npmjs.org using npm
+# Trusted Publishing (OIDC) — no long-lived tokens, no OTP.
+# Requires a Trusted Publisher configured on npmjs.com for this package:
+#   Provider: GitHub Actions
+#   Organization or user: maxwell-feng
+#   Repository: dsh-tinyfish-search
+#   Workflow filename: publish.yml   (must match this file name exactly)
+#   Allowed actions: npm publish
+# See https://docs.npmjs.com/trusted-publishers/
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for OIDC trusted publishing
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false # never use caching in release builds
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # npm publish runs prepublishOnly (tsc build + node --test) itself;
+      # the OIDC exchange is automatic when id-token: write is present.
+      - name: Publish to npm
+        run: npm publish

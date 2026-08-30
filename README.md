@@ -82,6 +82,8 @@ pnpm build     # tsc -> lib/
 pnpm test      # node --test (mocked fetch)
 ```
 
+Publishing to npm runs through GitHub Actions with npm **Trusted Publishing** (OIDC) — see [`.github/workflows/publish.yml`](./.github/workflows/publish.yml) and the [npm docs](https://docs.npmjs.com/trusted-publishers/). Tag `vX.Y.Z` (or dispatch the workflow) to release; provenance is generated automatically.
+
 ### Release notes
 
 See [CHANGELOG.md](./CHANGELOG.md) (bilingual) and the [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) page.
@@ -167,6 +169,8 @@ pnpm install
 pnpm build     # tsc -> lib/
 pnpm test      # node --test（mock fetch）
 ```
+
+发布到 npm 通过 GitHub Actions 的 npm **Trusted Publishing**（OIDC）完成——见 [`.github/workflows/publish.yml`](./.github/workflows/publish.yml) 与 [npm 文档](https://docs.npmjs.com/trusted-publishers/)。打 `vX.Y.Z` 标签（或手动触发工作流）即发布，构建溯源（provenance）自动生成。
 
 ### 更新说明
 
