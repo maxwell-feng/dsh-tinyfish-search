@@ -32,11 +32,19 @@ test('registers the stable provider id "tinyfish"', () => {
 })
 
 test('available() is a cheap local key/baseURL check, no network', () => {
-  const key = 'k'.repeat(20)
-  const provider = new TinyFishSearchProvider({ apiKey: key, baseURL: 'https://api.search.tinyfish.ai' })
-  assert.equal(provider.available(), true)
-  assert.equal(new TinyFishSearchProvider({ apiKey: key, baseURL: 'not a url' }).available(), false)
-  assert.equal(new TinyFishSearchProvider({}).available(), false)
+  // Isolate from the ambient environment: TINYFISH_API_KEY may be set in the
+  // shell that runs the tests.
+  const oldKey = process.env.TINYFISH_API_KEY
+  delete process.env.TINYFISH_API_KEY
+  try {
+    const key = 'k'.repeat(20)
+    const provider = new TinyFishSearchProvider({ apiKey: key, baseURL: 'https://api.search.tinyfish.ai' })
+    assert.equal(provider.available(), true)
+    assert.equal(new TinyFishSearchProvider({ apiKey: key, baseURL: 'not a url' }).available(), false)
+    assert.equal(new TinyFishSearchProvider({}).available(), false)
+  } finally {
+    if (oldKey !== undefined) process.env.TINYFISH_API_KEY = oldKey
+  }
 })
 
 test('search() maps items, dedupes by url, honors maxResults, sets X-API-Key', async () => {
