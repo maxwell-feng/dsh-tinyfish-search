@@ -28,4 +28,14 @@ test('bundle patch inserts the plugin row and routes the web seam to tinyfish', 
 
   // The plugin row must still be inserted.
   assert.match(patch, /- id: dsh-tinyfish-search\n\s+name: dsh-tinyfish-search/)
+
+  // The plugin row must carry the documented config scaffolding (README
+  // "Configure"): every field optional and commented out, so the shipped
+  // patch commits no literal key while showing where one goes.
+  const pluginBlock = patch.match(/- id: dsh-tinyfish-search\n((?: {2}.*(?:\n|$)|\n)*)/)
+  assert.ok(pluginBlock, 'patch must insert a dsh-tinyfish-search row block')
+  assert.match(pluginBlock[1], /\n\s+config:/, 'plugin row must carry the config scaffolding')
+  assert.match(pluginBlock[1], /# apiKey: "literal-key"/, 'documented apiKey option must be shown')
+  assert.match(pluginBlock[1], /# apiKeyEnv: TINYFISH_API_KEY/, 'documented apiKeyEnv option must be shown')
+  assert.match(pluginBlock[1], /# baseURL: https:\/\/api\.search\.tinyfish\.ai/, 'documented baseURL option must be shown')
 })

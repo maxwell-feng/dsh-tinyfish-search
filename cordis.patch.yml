@@ -1,7 +1,10 @@
 # dsh-tinyfish-search bundle layer.
 #
 # 1. Insert the plugin row. The row references the package by name so Node
-#    resolution finds the installed code (npm, tarball, or git install).
+#    resolution finds the installed code (npm, tarball, or git install). Its
+#    `config` mapping is the documented scaffolding: every field is optional
+#    and commented out, so the shipped defaults apply until a later layer
+#    (profile / home cordis.patch.yml / --patch) overrides this row by id.
 # 2. Route the web capability seam to this plugin's provider. The dsh-base
 #    bundle pins `searchProvider: deepseek-official` on the `web` row, so
 #    merely registering a provider would leave web_search on the DeepSeek
@@ -13,6 +16,10 @@
 - insert:
     - id: dsh-tinyfish-search
       name: dsh-tinyfish-search
+      config:
+        # apiKey: "literal-key"          # alternative to the env var; avoid committing it
+        # apiKeyEnv: TINYFISH_API_KEY     # default
+        # baseURL: https://api.search.tinyfish.ai   # default
 - id: web
   config:
     searchProvider: tinyfish

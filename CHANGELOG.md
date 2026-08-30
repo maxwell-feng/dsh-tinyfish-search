@@ -13,6 +13,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
 - **修复了插件不生效的问题**:`dsh-base` 把 `web` 行的 `searchProvider` 钉死为 `deepseek-official`,因此仅仅注册 `tinyfish` provider 时,内置 `web_search` 仍走 DeepSeek 后端(用非 DeepSeek 密钥调用即报 "DeepSeek API error (HTTP 404)")。按 harness 的层规则,bundle patch 现在按 id 覆盖 `web` 行(`searchProvider: tinyfish`,并完整重述 `fetchProvider: http`)——安装插件即自动将内置 `web_search` 切换到 TinyFish。更后层(profile / home `cordis.patch.yml` / `--patch`)仍可按 id 覆盖。
 - Added a regression test asserting the bundle patch carries the `web` row override.
 - 新增回归测试,断言 bundle patch 携带了 `web` 行覆盖。
+- The bundle's `cordis.patch.yml` now ships the documented `config` scaffolding on the `dsh-tinyfish-search` row (`apiKey` / `apiKeyEnv` / `baseURL`, all commented out — defaults apply until a later layer overrides the row), matching the README "Configure" example; the patch test guards it.
+- bundle 的 `cordis.patch.yml` 现在随包附带 README「配置」一节所示的 `config` 脚手架(`apiKey` / `apiKeyEnv` / `baseURL`,全部为注释示例——在更后层覆盖该行之前均使用默认值),并由 patch 回归测试守护。
 
 ## [0.1.0] - 2026-08-27
 
