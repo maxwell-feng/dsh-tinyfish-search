@@ -1,0 +1,6 @@
+# pnpm 11 workspace config for dsh-tinyfish-search.
+# Supply-chain policy on this machine rejects packages published within the
+# last day (minimumReleaseAge), so transitive versions are pinned to
+# publishes older than the cutoff.
+overrides:
+  '@deepseek-ai/cosmokit': 1.8.2

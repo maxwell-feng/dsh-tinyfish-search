@@ -1,0 +1,6 @@
+# dsh-tinyfish-search bundle layer: insert the plugin row.
+# The row references the package by name so Node resolution finds the
+# installed code (npm, tarball, or git install).
+- insert:
+    - id: dsh-tinyfish-search
+      name: dsh-tinyfish-search

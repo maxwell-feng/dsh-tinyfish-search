@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# build output
+lib/
+
+# npm/pnpm artifacts
+*.tgz
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.log
