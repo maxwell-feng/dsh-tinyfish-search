@@ -16,6 +16,8 @@
 
 import type { Context } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
+import { credentialRef } from '@deepseek-ai/dsh-credentials'
+import { launchEnvironmentOf } from '@deepseek-ai/dsh-launch-environment'
 import {
   WebError,
 } from '@deepseek-ai/dsh-web'
@@ -43,7 +45,7 @@ export const TINYFISH_DEFAULT_BASE_URL = 'https://api.search.tinyfish.ai'
 export const DEFAULT_API_KEY_ENV = 'TINYFISH_API_KEY'
 
 /** Attribution header sent on every request. Bump with the package version. */
-const USER_AGENT = 'dsh-tinyfish-search/0.1.5'
+const USER_AGENT = 'dsh-tinyfish-search/0.1.6'
 
 /** Cordis plugin name used by loader diagnostics and the bundle patch row. */
 export const name = 'dsh-tinyfish-search'
@@ -63,13 +65,51 @@ export interface Config {
 
 export const Config: Schema<Config> = Schema.object({
   apiKey: Schema.string().role('secret'),
-  apiKeyEnv: Schema.string().default(DEFAULT_API_KEY_ENV),
+  apiKeyEnv: Schema.string().role('credential-ref').default(DEFAULT_API_KEY_ENV),
   baseURL: Schema.string().default(TINYFISH_DEFAULT_BASE_URL),
 })
 
+export interface TinyFishOptions {
+  readonly apiKey?: string
+  readonly resolveApiKey?: () => Promise<string | undefined>
+  readonly apiKeyEnv: string
+  readonly baseURL: string
+}
+
+function resolveOptions(ctx: Context, config: Config): TinyFishOptions {
+  const apiKeyEnv = credentialRef(config.apiKeyEnv ?? DEFAULT_API_KEY_ENV)
+  const literal = config.apiKey !== undefined && config.apiKey.length > 0 ? config.apiKey : undefined
+  return {
+    ...literal === undefined ? {} : { apiKey: literal },
+    resolveApiKey: async () => {
+      const creds = (ctx as any).get?.('credentials')
+      if (creds !== undefined) {
+        const v = await creds.resolve(apiKeyEnv)
+        if (v !== undefined && v.value.length > 0) return v.value
+      }
+      const ambient = launchEnvironmentOf(ctx as any).get(apiKeyEnv)
+      if (ambient !== undefined && ambient.value.length > 0) return ambient.value
+      // Fallback to Node process.env for standalone tests
+      const envVal = (globalThis as any).process?.env?.[String(apiKeyEnv)]
+      if (envVal !== undefined && envVal.length > 0) return envVal
+      return undefined
+    },
+    apiKeyEnv: String(apiKeyEnv),
+    baseURL: config.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
+  }
+}
+
 /** Register the TinyFish search provider with `ctx.web`. */
 export function apply(ctx: Context, config: Config): void {
-  ctx.web.registerSearchProvider(new TinyFishSearchProvider(config))
+  let current: () => Config = () => config
+  // Keep config hot-reloadable via settings if the host provides it
+  try {
+    const maybeSettings: any = (ctx as any).get?.('settings')
+    if (maybeSettings !== undefined) {
+      // No-op if settings service is not available in this profile
+    }
+  } catch {}
+  ctx.web.registerSearchProvider(new TinyFishSearchProvider(() => resolveOptions(ctx, current())))
 }
 
 // ---------------------------------------------------------------------------
@@ -110,17 +150,51 @@ export interface TinyFishError {
 export class TinyFishSearchProvider implements WebSearchProvider {
   readonly id = TINYFISH_PROVIDER_ID
 
-  constructor(private readonly options: Config) {}
+  // `options` may be a plain Config (tests) or a thunk returning resolved options (host apply)
+  constructor(private readonly resolve: Config | (() => TinyFishOptions) | TinyFishOptions) {}
+
+  private opts(): TinyFishOptions {
+    if (typeof this.resolve === 'function') return (this.resolve as () => TinyFishOptions)()
+    const c = this.resolve as Config | TinyFishOptions
+    // If it already looks like TinyFishOptions (has baseURL + apiKeyEnv), use it
+    if ('baseURL' in c && 'apiKeyEnv' in c && typeof (c as any).baseURL === 'string') {
+      const o = c as TinyFishOptions
+      // Ensure resolveApiKey exists for plain objects (fallback to process.env)
+      if (o.resolveApiKey === undefined) {
+        const envName = o.apiKeyEnv ?? DEFAULT_API_KEY_ENV
+        return { ...o, resolveApiKey: async () => (globalThis as any).process?.env?.[envName] ?? '' }
+      }
+      return o
+    }
+    const cfg = c as Config
+    const envName = cfg.apiKeyEnv ?? DEFAULT_API_KEY_ENV
+    return {
+      ...cfg.apiKey !== undefined && cfg.apiKey.length > 0 ? { apiKey: cfg.apiKey } : {},
+      apiKeyEnv: envName,
+      baseURL: cfg.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
+      resolveApiKey: async () => (globalThis as any).process?.env?.[envName] ?? '',
+    } as TinyFishOptions
+  }
 
   available(): boolean {
-    return this.apiKey().length > 0
-      && URL.canParse(this.options.baseURL ?? TINYFISH_DEFAULT_BASE_URL)
+    const o = this.opts()
+    // Mirrors dsh-web-search-deepseek: a provider with a resolver is considered usable
+    // even when the key is not yet set, so selection does not hide it as "unavailable".
+    // Missing credentials then surface as WEB_PROVIDER_CREDENTIAL_MISSING at search time.
+    const hasKey = (o.apiKey !== undefined && o.apiKey.length > 0) || o.resolveApiKey !== undefined
+    return hasKey && URL.canParse(o.baseURL)
   }
 
   async search(request: WebSearchRequest, signal?: AbortSignal): Promise<WebSearchResult> {
-    const apiKey = this.apiKey()
+    const o = this.opts()
+    const literal = o.apiKey
+    let apiKey = literal !== undefined && literal.length > 0 ? literal : ''
+    if (apiKey.length === 0 && o.resolveApiKey !== undefined) {
+      const v = await o.resolveApiKey()
+      if (v !== undefined && v.length > 0) apiKey = v
+    }
     if (apiKey.length === 0) {
-      const ref = this.options.apiKeyEnv ?? DEFAULT_API_KEY_ENV
+      const ref = o.apiKeyEnv ?? DEFAULT_API_KEY_ENV
       throw new WebError(
         `dsh-tinyfish-search has no API key for "${ref}"; set the environment variable,`
         + ` store it through the credentials service, or set a literal "apiKey"`
@@ -129,7 +203,7 @@ export class TinyFishSearchProvider implements WebSearchProvider {
       )
     }
 
-    const url = new URL(this.options.baseURL ?? TINYFISH_DEFAULT_BASE_URL)
+    const url = new URL(o.baseURL)
     url.searchParams.set('query', request.query)
     throwIfSearchAborted(signal)
 
@@ -173,16 +247,6 @@ export class TinyFishSearchProvider implements WebSearchProvider {
       if (error instanceof WebError) throw error
       throw new WebError(`TinyFish returned an unprocessable response body: ${String(error)}`, 'WEB_PROVIDER_ERROR', { cause: error })
     }
-  }
-
-  /**
-   * Resolve one operation's credential. A literal `config.apiKey` wins; the
-   * env var named by `apiKeyEnv` is the ambient fallback.
-   */
-  private apiKey(): string {
-    const literal = this.options.apiKey
-    if (literal !== undefined && literal.length > 0) return literal
-    return process.env[this.options.apiKeyEnv ?? DEFAULT_API_KEY_ENV] ?? ''
   }
 }
 
