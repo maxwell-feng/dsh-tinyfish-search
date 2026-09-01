@@ -26,7 +26,7 @@ override that row, and `available()` still requires a TinyFish API key.
 
 ### Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified against **0.1.2-alpha.3**
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.2-alpha.4` (latest `master`; `0.1.2-alpha.3` → `0.1.2-alpha.4` no seam changes)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 
 ### Install
@@ -91,6 +91,25 @@ dsh --profile web --dump-config | grep tinyfish   # layer present
 
 Inside a session, call `web_search` and check that results carry TinyFish URLs/snippets. The web search settings card in the GUI (`网页搜索`) shows the provider state.
 
+### Usage
+
+After installation, no code changes required. In any session with the `web` profile:
+
+1. The model calls `web_search` as usual (e.g. “search for TinyFish docs”).
+2. The harness routes it through `ctx.web → tinyfish → https://api.search.tinyfish.ai`.
+3. Results appear as `WebSearchSource[]` (`url` / `title` / `snippet` / `publishedAt`) in the tool result.
+4. Check GUI: **Settings → Web Search** shows provider `tinyfish` and `available: true` when the API key is configured.
+
+Abort and error semantics follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key, `WEB_ABORTED` on cancellation, `WEB_PROVIDER_ERROR` otherwise.
+
+### Uninstall
+
+```sh
+dsh plugin --profile web remove dsh-tinyfish-search
+```
+
+Removes the bundle layer and the `tinyfish` provider registration. Restart `dsh --profile web` to confirm `web_search` falls back to the base `deepseek-official` provider (or none if no other provider is installed).
+
 ### Updating
 
 ```sh
@@ -134,7 +153,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ### 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）— 已在 **0.1.2-alpha.3** 上验证
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已验证 `0.1.2-alpha.4`（最新 `master`；`0.1.2-alpha.3` → `0.1.2-alpha.4` 缝接口无变更）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 
 ### 安装
@@ -198,6 +217,25 @@ dsh --profile web --dump-config | grep tinyfish   # 层已加载
 ```
 
 在会话里调用 `web_search`，检查结果是否带 TinyFish 的链接/摘要。GUI 的「网页搜索」设置卡片会显示提供方状态。
+
+### 使用
+
+安装后无需代码改动。在任意带 `web` 能力的会话中：
+
+1. 模型按常调用 `web_search`（如“搜索 TinyFish 文档”）。
+2. 框架经 `ctx.web → tinyfish → https://api.search.tinyfish.ai` 路由请求。
+3. 结果以 `WebSearchSource[]`（`url` / `title` / `snippet` / `publishedAt`）形式出现在工具结果中。
+4. GUI：**设置 → 网页搜索** 显示提供方 `tinyfish` 与 `available: true`（已配置 API key 时）。
+
+错误与中断语义遵循 `dsh-web` 缝接口：无密钥时 `WEB_PROVIDER_CREDENTIAL_MISSING`，取消时 `WEB_ABORTED`，其他为 `WEB_PROVIDER_ERROR`。
+
+### 卸载
+
+```sh
+dsh plugin --profile web remove dsh-tinyfish-search
+```
+
+移除 bundle 层与 `tinyfish` 提供方注册。重启 `dsh --profile web` 后 `web_search` 回退到基础 `deepseek-official` 提供方（若未安装其他提供方则为空）。
 
 ### 升级
 

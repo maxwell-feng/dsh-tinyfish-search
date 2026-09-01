@@ -3,6 +3,20 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.5] - 2026-09-02
+
+### English
+
+**Compatibility / 兼容性**
+
+- Verified against deepseek-harness `0.1.2-alpha.4` (latest `master`): `ctx.web` seam unchanged since `0.1.2-alpha.3` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`). Bumped `devDependencies` to `@deepseek-ai/dsh-web 0.1.2-alpha.4` / `@deepseek-ai/dsh-llm 0.1.2-alpha.4`, `USER_AGENT` to `dsh-tinyfish-search/0.1.5`.
+- 已针对 deepseek-harness `0.1.2-alpha.4`（最新 `master`）验证：自 `0.1.2-alpha.3` 以来 `ctx.web` 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web 0.1.2-alpha.4` / `@deepseek-ai/dsh-llm 0.1.2-alpha.4`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.5`。
+
+**Docs / 文档**
+
+- Added explicit **Usage** and **Uninstall** sections (EN+ZH), completing six-section bilingual coverage: Release / Changelog / Install / Uninstall / Usage / Config. Requirements now notes verified harness `0.1.2-alpha.4`.
+- 新增显式**使用**与**卸载**章节（中英双语），补齐六项覆盖：发行版 / 更新说明 / 安装 / 卸载 / 使用 / 配置；环境要求现标明已验证的 `0.1.2-alpha.4`。
+
 ## [0.1.4] - 2026-09-01
 
 ### English
@@ -76,6 +90,9 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.1.5]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.5
+[0.1.4]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.4
+[0.1.3]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.3
 [0.1.2]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.2
 [0.1.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.1
 [0.1.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.0
