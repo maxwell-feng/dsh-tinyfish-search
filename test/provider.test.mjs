@@ -41,7 +41,11 @@ test('available() is a cheap local key/baseURL check, no network', () => {
     const provider = new TinyFishSearchProvider({ apiKey: key, baseURL: 'https://api.search.tinyfish.ai' })
     assert.equal(provider.available(), true)
     assert.equal(new TinyFishSearchProvider({ apiKey: key, baseURL: 'not a url' }).available(), false)
-    assert.equal(new TinyFishSearchProvider({}).available(), false)
+    // With the harness credential seam (resolveApiKey), a missing env key no longer
+    // makes the provider "unavailable" — it is considered usable and search() will
+    // throw WEB_PROVIDER_CREDENTIAL_MISSING. This matches dsh-web-search-deepseek.
+    assert.equal(new TinyFishSearchProvider({}).available(), true)
+    assert.equal(new TinyFishSearchProvider({ baseURL: 'not a url' }).available(), false)
   } finally {
     if (oldKey !== undefined) process.env.TINYFISH_API_KEY = oldKey
   }

@@ -1,7 +1,7 @@
 minimumReleaseAgeExclude:
   - '@deepseek-ai/cordis@4.0.2'
   - '@deepseek-ai/dsh-brand@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
-  - '@deepseek-ai/dsh-invariants@0.1.2-alpha.2 || 0.1.2-alpha.3'
+  - '@deepseek-ai/dsh-invariants@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
   - '@deepseek-ai/dsh-llm@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
   - '@deepseek-ai/dsh-timeout@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
   - '@deepseek-ai/dsh-typert-protocol@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
@@ -9,6 +9,8 @@ minimumReleaseAgeExclude:
   - '@deepseek-ai/dsh-util-values@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
   - '@deepseek-ai/dsh-web@0.1.2-alpha.2 || 0.1.2-alpha.3 || 0.1.2-alpha.4'
   - '@deepseek-ai/schemastery@3.18.2'
+  - '@deepseek-ai/dsh-credentials@0.1.2-alpha.4'
+  - '@deepseek-ai/dsh-launch-environment@0.1.2-alpha.4'
 # pnpm 11 workspace config for dsh-tinyfish-search.
 # Supply-chain policy on this machine rejects packages published within the
 # last day (minimumReleaseAge), so transitive versions are pinned to

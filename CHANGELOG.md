@@ -3,6 +3,13 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.6] - 2026-09-02
+
+### Fixed / 修复
+
+- **Fix `Search service unavailable` (`WEB_PROVIDER_UNAVAILABLE` / `WEB_PROVIDER_CONFIGURED_UNAVAILABLE`) after harness `0.1.2-alpha.4`.** The provider now resolves the TinyFish API key through the harness credential seam (`ctx.credentials.resolve` + `launchEnvironmentOf(ctx)`) instead of only `process.env`, matching `dsh-web-search-deepseek`. `available()` now mirrors that provider: a resolver being present makes the provider usable, so a missing key surfaces as `WEB_PROVIDER_CREDENTIAL_MISSING` (“set `TINYFISH_API_KEY` / `dsh credentials set` / `apiKey`”) instead of the generic unavailable. `Config.apiKeyEnv` is now `role: 'credential-ref'`. Update `dsh-tinyfish-search` to `0.1.6` and ensure the key is set via `TINYFISH_API_KEY` env or `dsh credentials set TINYFISH_API_KEY <key>`. Verified on harness `0.1.2-alpha.4` with live TinyFish Search (mocked fetch in tests, live fetch manually verified).
+- **修复 Harness `0.1.2-alpha.4` 后 `Search service unavailable`（`WEB_PROVIDER_UNAVAILABLE` / `WEB_PROVIDER_CONFIGURED_UNAVAILABLE`）。** 提供方现通过 Harness 凭据缝（`ctx.credentials.resolve` + `launchEnvironmentOf(ctx)`）解析 TinyFish API Key，而非仅 `process.env`，与 `dsh-web-search-deepseek` 保持一致。`available()` 现与该实现一致：只要存在解析器即视为可用，缺失密钥时在 `search()` 阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确定位（“请设置 `TINYFISH_API_KEY` / `dsh credentials set` / `apiKey`”），而非通用的 `unavailable`。`Config.apiKeyEnv` 现为 `role: 'credential-ref'`。请升级至 `0.1.6` 并通过 `TINYFISH_API_KEY` 环境变量或 `dsh credentials set` 配置密钥。已在 Harness `0.1.2-alpha.4` 上通过真实 TinyFish Search 验证（测试中 mock fetch，手工真实请求验证）。
+
 ## [0.1.5] - 2026-09-02
 
 ### English
@@ -90,6 +97,7 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.1.6]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.6
 [0.1.5]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.5
 [0.1.4]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.4
 [0.1.3]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.3
