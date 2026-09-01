@@ -1,6 +1,6 @@
 {
   "name": "dsh-tinyfish-search",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "TinyFish-backed web search provider for DeepSeek Harness (ctx.web): makes the built-in web_search tool run on the TinyFish Search API — 将内置 web_search 接入 TinyFish Search API 的 DeepSeek Harness 插件",
   "type": "module",
   "main": "lib/index.js",
@@ -51,7 +51,7 @@
   },
   "homepage": "https://github.com/maxwell-feng/dsh-tinyfish-search#readme",
   "dependencies": {
-    "@deepseek-ai/schemastery": "3.18.1"
+    "@deepseek-ai/schemastery": "3.18.2"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": ">=4.0.0 <5.0.0",
@@ -59,8 +59,8 @@
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
-    "@deepseek-ai/dsh-llm": "0.1.2-alpha.2",
-    "@deepseek-ai/dsh-web": "0.1.2-alpha.2",
+    "@deepseek-ai/dsh-llm": "0.1.2-alpha.3",
+    "@deepseek-ai/dsh-web": "0.1.2-alpha.3",
     "typescript": "5.8.3"
   }
 }

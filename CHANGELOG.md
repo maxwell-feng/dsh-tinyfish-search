@@ -3,6 +3,15 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.4] - 2026-09-01
+
+### English
+
+**Changed / 变更**
+
+- Adapted to DeepSeek Harness **0.1.2-alpha.3** (master): `devDependencies` now pin `@deepseek-ai/dsh-web` and `@deepseek-ai/dsh-llm` at `0.1.2-alpha.3` and `@deepseek-ai/schemastery` moves to `3.18.2` (the schemastery revision the alpha.3 checkout builds against); `@deepseek-ai/cordis` stays at `4.0.2`. Between `0.1.2-alpha.2` and `0.1.2-alpha.3` the `ctx.web` provider contract (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`) and the seam registry are unchanged, so no provider code changes were required; the full test suite passes against the new package set. The request `user-agent` attribution header now reports `dsh-tinyfish-search/0.1.4`.
+- 适配 DeepSeek Harness **0.1.2-alpha.3**（master）：`devDependencies` 锁定 `@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-llm` 至 `0.1.2-alpha.3`，`@deepseek-ai/schemastery` 升至 `3.18.2`（alpha.3 检出所依赖的 schemastery 版本）；`@deepseek-ai/cordis` 保持 `4.0.2`。从 `0.1.2-alpha.2` 到 `0.1.2-alpha.3`，`ctx.web` 提供方契约（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）与缝注册表没有变化，因此无需改动提供方代码；全部测试在新区间依赖下通过。请求的 `user-agent` 归属头现在上报 `dsh-tinyfish-search/0.1.4`。
+
 ## [0.1.3] - 2026-08-31
 
 ### English

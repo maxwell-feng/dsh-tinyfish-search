@@ -43,7 +43,7 @@ export const TINYFISH_DEFAULT_BASE_URL = 'https://api.search.tinyfish.ai'
 export const DEFAULT_API_KEY_ENV = 'TINYFISH_API_KEY'
 
 /** Attribution header sent on every request. Bump with the package version. */
-const USER_AGENT = 'dsh-tinyfish-search/0.1.3'
+const USER_AGENT = 'dsh-tinyfish-search/0.1.4'
 
 /** Cordis plugin name used by loader diagnostics and the bundle patch row. */
 export const name = 'dsh-tinyfish-search'
