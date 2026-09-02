@@ -3,6 +3,20 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.7] - 2026-09-02
+
+### English
+
+**Compatibility / 兼容性**
+
+- Verified against deepseek-harness `0.1.2-alpha.5` (latest `master`): no seam changes since `0.1.2-alpha.4` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`, credentials seam, launch-environment seam). Bumped `devDependencies` to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` at `0.1.2-alpha.5` and `USER_AGENT` to `dsh-tinyfish-search/0.1.7`. The full test suite passes against the new package set.
+
+### 中文
+
+**兼容性 / Compatibility**
+
+- 已针对 deepseek-harness `0.1.2-alpha.5`（最新 `master`）验证：自 `0.1.2-alpha.4` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-alpha.5`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.7`。全部测试在新区间依赖下通过。
+
 ## [0.1.6] - 2026-09-02
 
 ### Fixed / 修复
