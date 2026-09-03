@@ -18,6 +18,8 @@ import type { Context } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
 import { credentialRef } from '@deepseek-ai/dsh-credentials'
 import { launchEnvironmentOf } from '@deepseek-ai/dsh-launch-environment'
+// Type-only: pulls the ctx.settings merge (SettingsProvider) into this program.
+import type {} from '@deepseek-ai/dsh-settings'
 import {
   WebError,
 } from '@deepseek-ai/dsh-web'
@@ -30,6 +32,9 @@ import type {
 
 /** Stable provider id this plugin registers under. */
 export const TINYFISH_PROVIDER_ID = 'tinyfish'
+
+/** Settings namespace for the configuration card / user document. */
+export const TINYFISH_SETTINGS_NAMESPACE = 'dsh-tinyfish-search'
 
 /**
  * Minimal module-scoped `process` reference (only `process.env` is used). The
@@ -45,7 +50,7 @@ export const TINYFISH_DEFAULT_BASE_URL = 'https://api.search.tinyfish.ai'
 export const DEFAULT_API_KEY_ENV = 'TINYFISH_API_KEY'
 
 /** Attribution header sent on every request. Bump with the package version. */
-const USER_AGENT = 'dsh-tinyfish-search/0.1.8'
+const USER_AGENT = 'dsh-tinyfish-search/0.1.9'
 
 /** Cordis plugin name used by loader diagnostics and the bundle patch row. */
 export const name = 'dsh-tinyfish-search'
@@ -102,13 +107,20 @@ function resolveOptions(ctx: Context, config: Config): TinyFishOptions {
 /** Register the TinyFish search provider with `ctx.web`. */
 export function apply(ctx: Context, config: Config): void {
   let current: () => Config = () => config
-  // Keep config hot-reloadable via settings if the host provides it
-  try {
-    const maybeSettings: any = (ctx as any).get?.('settings')
-    if (maybeSettings !== undefined) {
-      // No-op if settings service is not available in this profile
-    }
-  } catch {}
+  // Settings hot-reload, mirroring dsh-web-search-deepseek: the section layers
+  // the composition entry under the user document when a settings provider is
+  // mounted, and re-resolves per search (resolveOptions reads `current()`), so
+  // a committed settings edit reaches the next search without a restart.
+  ctx.inject(['settings'], (settingsCtx) => {
+    settingsCtx.settings.installSection(ctx, TINYFISH_SETTINGS_NAMESPACE, Config, config, {
+      setSource: (source) => {
+        current = source
+      },
+      // The registration carries no resolved value: the provider resolves the
+      // credential per search, so a committed change needs no re-registration.
+      onChange: () => {},
+    })
+  })
   ctx.web.registerSearchProvider(new TinyFishSearchProvider(() => resolveOptions(ctx, current())))
 }
 

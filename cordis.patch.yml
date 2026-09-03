@@ -1,18 +1,28 @@
 # dsh-tinyfish-search bundle layer.
 #
-# 1. Insert the plugin row. The row references the package by name so Node
-#    resolution finds the installed code (npm, tarball, or git install). Its
-#    `config` mapping is the documented scaffolding: every field is optional
-#    and commented out, so the shipped defaults apply until a later layer
-#    (profile / home cordis.patch.yml / --patch) overrides this row by id.
-# 2. Route the web capability seam to this plugin's provider. The dsh-base
-#    bundle pins `searchProvider: deepseek-official` on the `web` row, so
-#    merely registering a provider would leave web_search on the DeepSeek
-#    backend even with this bundle installed. Per the layer rules a bundle
-#    patch may override an earlier row by id, restating every key the row
-#    needs (config is replaced wholesale, never deep-merged). Later layers
-#    (profile / home cordis.patch.yml / --patch overlays) can still override
-#    this row by id, as usual.
+# Three rows:
+#  1. `dsh-tinyfish-search` — this plugin: registers the `tinyfish` search
+#     provider on the ctx.web seam. The row references the package by name so
+#     Node resolution finds the installed code (npm, tarball, or git install).
+#     Its `config` mapping is the documented scaffolding: every field is
+#     optional and commented out, so the shipped defaults apply until a later
+#     layer (profile / home cordis.patch.yml / --patch) overrides this row by id.
+#  2. `web` — points ctx.web at this provider. The dsh-base bundle pins
+#     `searchProvider: deepseek-official` on the `web` row, so merely
+#     registering a provider would leave web_search on the DeepSeek backend
+#     even with this bundle installed. Per the layer rules a bundle patch may
+#     override an earlier row by id, restating every key the row needs (config
+#     is replaced wholesale, never deep-merged). Later layers (profile / home
+#     cordis.patch.yml / --patch overlays) can still override this row by id.
+#  3. `tool-web` — re-enables the model-facing web tools. The dsh-web-app
+#     bundle ships `tool-web` disabled (and `fetch: true` is a dsh-base key
+#     already restated here); without this row the model never sees
+#     `web_search` at all, leaving the TinyFish provider idle. Restates every
+#     dsh-base key for the same replace-wholesale reason as above.
+#
+# Users can override any of these in their profile's cordis.patch.yml — the
+# user layer applies after bundle layers ("last write wins per row").
+
 - insert:
     - id: dsh-tinyfish-search
       name: dsh-tinyfish-search
@@ -24,3 +34,9 @@
   config:
     searchProvider: tinyfish
     fetchProvider: http
+- id: tool-web
+  config:
+    search: true
+    fetch: true
+    searchTimeoutMs: 60000
+    fetchTimeoutMs: 30000
