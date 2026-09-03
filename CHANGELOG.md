@@ -3,6 +3,20 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.8] - 2026-09-03
+
+### English
+
+**Compatibility / 兼容性**
+
+- Verified against deepseek-harness `0.1.2-rc.1` (latest `master`): no seam changes since `0.1.2-alpha.5` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`, credentials seam, launch-environment seam); the vendored `@deepseek-ai/cordis` `4.0.2` and the loader/bundle patch mechanism are unchanged. Bumped `devDependencies` to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` at `0.1.2-rc.1` and `USER_AGENT` to `dsh-tinyfish-search/0.1.8`. The full test suite passes against the new package set.
+
+### 中文
+
+**兼容性 / Compatibility**
+
+- 已针对 deepseek-harness `0.1.2-rc.1`（最新 `master`）验证：自 `0.1.2-alpha.5` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-rc.1`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.8`。全部测试在新区间依赖下通过。
+
 ## [0.1.7] - 2026-09-02
 
 ### English
