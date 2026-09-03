@@ -35,6 +35,10 @@
     searchProvider: tinyfish
     fetchProvider: http
 - id: tool-web
+  # `disabled: false` is REQUIRED: the merge is per-key, so a config-only row
+  # would leave the `disabled: true` shipped by the dsh-web-app bundle in place
+  # and web_search would never register.
+  disabled: false
   config:
     search: true
     fetch: true
