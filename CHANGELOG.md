@@ -3,6 +3,13 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.1.9] - 2026-09-03
+
+### Fixed / 修复
+
+- **Fix: the bundle patch now re-enables `tool-web` — without it `web_search` was never registered.** The `@deepseek-ai/dsh-web-app` bundle ships the `tool-web` row **disabled**; dsh-base enables it only in headless/server profiles. The searxng-web bundle re-enables the row in its own patch, but the dsh-tinyfish-search patch did not, so on a clean install into a web profile the model saw no `web_search` tool at all and the TinyFish provider sat idle (devices that appeared to work had a manual `tool-web` override in their profile patch from earlier debugging). The patch now restates the row with `search: true`, `fetch: true`, and the base timeouts, mirroring searxng-web. / **修复：bundle 补丁现重新启用 `tool-web` —— 缺失时 `web_search` 根本不会注册。** `@deepseek-ai/dsh-web-app` bundle 自带 `tool-web` **禁用**行（dsh-base 仅在 headless/server 组合中启用它）。searxng-web 的补丁自己重新启用了该行，而 dsh-tinyfish-search 的补丁没有 —— 干净安装到 web profile 后模型看不到 `web_search` 工具，TinyFish 提供方完全闲置（此前"能用"的设备是因为排障时在 profile 补丁里手工加了 `tool-web` 覆盖行）。现按 searxng-web 的方式补上该行（`search: true`、`fetch: true` 及基础超时值）。
+- **Settings hot-reload per the docs** — `apply` now registers the config through `ctx.settings.installSection` (namespace `dsh-tinyfish-search`), exactly like `web-search-deepseek`: the Plugins settings card renders the section, and a saved edit (e.g. a new `apiKeyEnv` or `baseURL`) reaches the next search without a restart. Removed the dead no-op settings probe and its misleading comment. / **按文档接入设置热更新** —— `apply` 现通过 `ctx.settings.installSection` 注册配置（命名空间 `dsh-tinyfish-search`），与 `web-search-deepseek` 完全一致：Plugins 设置卡片可渲染该节，保存的修改（如新的 `apiKeyEnv` 或 `baseURL`）无需重启即对下一次搜索生效。同时删除了无操作死代码及其误导性注释。
+
 ## [0.1.8] - 2026-09-03
 
 ### English

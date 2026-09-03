@@ -21,8 +21,14 @@ Installing the bundle **takes over the built-in `web_search` automatically**: th
 bundle patch overrides the `web` seam row (`searchProvider: tinyfish`,
 `fetchProvider: http` restated), because `dsh-base` pins the seam to
 `deepseek-official` and would otherwise keep the tool on the DeepSeek backend.
-Later layers (profile / home `cordis.patch.yml` / `--patch`) can still
-override that row, and `available()` still requires a TinyFish API key.
+It also **re-enables the `tool-web` row** (`search: true`, `fetch: true` and the
+base timeouts restated) — the `dsh-web-app` bundle ships `tool-web` disabled,
+and without that row the model would see no `web_search` tool at all (fixed in
+0.1.9; earlier releases needed a manual profile-patch override). Later layers
+(profile / home `cordis.patch.yml` / `--patch`) can still override those rows,
+and `available()` still requires a TinyFish API key. Configuration is also
+exposed as a `dsh-tinyfish-search` settings section (Plugins settings page):
+a saved edit reaches the next search without a restart.
 
 ### Requirements
 
@@ -149,7 +155,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 - 把 `results[]`（标题 / 摘要 / 链接 / 日期）归一化为缝接口的可移植来源结构
 - **每次搜索不消耗一次模型调用**——与 Anthropic 服务器工具方案不同，更快更省
 
-安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖该行；并且 `available()` 仍要求配置 TinyFish API key。
+安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。同时补丁还会**重新启用 `tool-web` 行**（重述 `search: true`、`fetch: true` 及基础超时值）——`dsh-web-app` bundle 自带 `tool-web` 禁用行，缺了这一行模型根本看不到 `web_search` 工具（0.1.9 修复；更早版本需要在 profile 补丁里手工覆盖）。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖这些行；并且 `available()` 仍要求配置 TinyFish API key。配置同时以 `dsh-tinyfish-search` 设置节暴露（Plugins 设置页）：保存的修改无需重启即对下一次搜索生效。
 
 ### 环境要求
 
