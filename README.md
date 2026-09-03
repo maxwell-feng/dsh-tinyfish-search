@@ -26,7 +26,7 @@ override that row, and `available()` still requires a TinyFish API key.
 
 ### Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.2-alpha.5` (latest `master`; `0.1.2-alpha.4` → `0.1.2-alpha.5` no seam changes)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.2-rc.1` (latest `master`; `0.1.2-alpha.5` → `0.1.2-rc.1` no seam changes)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 
 ### Install
@@ -153,7 +153,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ### 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已验证 `0.1.2-alpha.5`（最新 `master`；`0.1.2-alpha.4` → `0.1.2-alpha.5` 缝接口无变更）
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已验证 `0.1.2-rc.1`（最新 `master`；`0.1.2-alpha.5` → `0.1.2-rc.1` 缝接口无变更）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 
 ### 安装
