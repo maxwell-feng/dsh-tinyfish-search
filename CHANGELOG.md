@@ -3,6 +3,20 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.2.1] - 2026-09-04
+
+### English
+
+**Compatibility / 兼容性**
+
+- Verified against deepseek-harness `0.1.3-alpha.1` (latest release): no seam changes since `0.1.2-rc.1` — the web seam (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), the credentials seam, the launch-environment seam, and the settings section install (`ctx.settings.installSection`) are all source-identical between the two tags, as are the vendored `@deepseek-ai/cordis` `4.0.2` and the loader / bundle patch mechanism. 0.1.3's headline changes (environment-proxy support, Session persistence rework, file attachments) do not touch any seam this plugin consumes. The published `@deepseek-ai/dsh-*` type packages remain at `0.1.2-rc.1` (the newest release on npm); because the seam sources are unchanged, type-checking against them is equivalent to checking against `0.1.3-alpha.1` sources. `USER_AGENT` bumped to `dsh-tinyfish-search/0.2.1`. The full test suite passes.
+
+### 中文
+
+**兼容性 / Compatibility**
+
+- 已针对 deepseek-harness `0.1.3-alpha.1`（最新发行版）验证：自 `0.1.2-rc.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝、启动环境缝以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。0.1.3 的主要变更（环境代理支持、Session 持久化重构、文件附件）均不涉及本插件消费的任何缝。npm 上已发布的 `@deepseek-ai/dsh-*` 类型包仍为 `0.1.2-rc.1`（npm 上的最新版本）；由于缝源码未变，针对它们做类型检查与针对 `0.1.3-alpha.1` 源码等价。`USER_AGENT` 升至 `dsh-tinyfish-search/0.2.1`。全部测试通过。
+
 ## [0.2.0] - 2026-09-03
 
 ### Fixed / 修复
