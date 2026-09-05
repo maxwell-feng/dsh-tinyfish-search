@@ -3,6 +3,42 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.3.0] - 2026-09-05
+
+### English
+
+**Changed / 变更**
+
+- **Scope note documented for the `tool-web` re-enable row.** The bundle patch deliberately re-enables the HOST-level `tool-web` row (which `@deepseek-ai/dsh-web-app` ships disabled), so `web_search` / `web_fetch` are visible to *every* agent preset on a profile that composes this bundle — including presets that would not otherwise carry web tools (e.g. `minimal`). A preset mounting its own `tool-web` row still shadows the global registration for its agents. The README and the patch header now document this scope and how to scope the tools to one preset instead (override/remove the `tool-web` row in the profile's `cordis.patch.yml` and add `tool-web` to that preset's agent composition). The row behavior itself is unchanged from 0.2.1.
+- **New optional config fields `location` and `language`**, forwarded to the TinyFish Search API as `location` / `language` query parameters (geo targeting / search language). Blank or unset values send nothing, so the default wire format is identical to 0.2.1. Both render on the settings card and support settings hot-reload like every other field.
+- **Required peer dependencies made honest.** `@deepseek-ai/dsh-credentials` and `@deepseek-ai/dsh-launch-environment` are imported unconditionally at module load, so they are no longer declared `optional` in `peerDependenciesMeta` (an optional peer that fails to resolve crashes the import anyway — the declaration lied). Their peer ranges are now `>=0.1.2-alpha.4`; `@deepseek-ai/dsh-web` relaxes to `>=0.1.2-alpha.2`. Every `dsh` profile already carries all three.
+
+**Fixed / 修复**
+
+- **`mapTinyFishResponse` no longer throws on a malformed TinyFish response.** A result item without a string `url`, a non-array `results`, or non-string `title` / `snippet` / `publishedAt` fields are skipped/dropped instead of surfacing as a masked `TypeError` wrapped into an unrelated `WEB_PROVIDER_ERROR` ("unprocessable response body"). One malformed response now degrades to zero sources.
+
+**Added / 新增**
+
+- **Integration tests for `apply()`** on the real `@deepseek-ai/cordis` runtime (`test/apply.test.mjs`): provider registration, optional settings-service presence, `installSection` wiring with a committed edit reaching the next search, the credential resolution chain (credentials → launch environment → process env), and the stable `WEB_PROVIDER_CREDENTIAL_MISSING` surface. The patch test now parses `cordis.patch.yml` with js-yaml and asserts the composed rows against the real dsh-base rows under the loader's per-key/wholesale-replace semantics, instead of regex-scraping YAML text.
+- **Dead code removed**: the `declare const process` shim (every ambient read already went through `globalThis.process`). `USER_AGENT` bumped to `dsh-tinyfish-search/0.3.0`.
+
+### 中文
+
+**变更 / Changed**
+
+- **为 `tool-web` 重启用行补充作用范围说明。** bundle 补丁有意重启用宿主层 `tool-web` 行（`@deepseek-ai/dsh-web-app` 自带该行禁用），因此 `web_search` / `web_fetch` 对组合了本 bundle 的 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）。自带 `tool-web` 行的预设仍会以自己的注册为它的 agent 遮蔽这个全局注册。README 与补丁头注释现说明该作用范围，以及改为单预设限定的方法（在 profile 的 `cordis.patch.yml` 中覆盖/移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合）。行的行为本身与 0.2.1 一致。
+- **新增可选配置字段 `location` 与 `language`**，作为 `location` / `language` 查询参数转发给 TinyFish Search API（地区定位 / 搜索语言）。留空或未设置时不发送，默认请求线格式与 0.2.1 完全一致。两者均渲染在设置卡片上，并与其他字段一样支持设置热更新。
+- **必需 peer 依赖声明回归诚实。** `@deepseek-ai/dsh-credentials` 与 `@deepseek-ai/dsh-launch-environment` 在模块加载时即被无条件导入，因此不再声明为 `optional`（可选 peer 解析失败同样会让 import 崩溃，原声明名不副实）。两者 peer 区间现为 `>=0.1.2-alpha.4`；`@deepseek-ai/dsh-web` 放宽为 `>=0.1.2-alpha.2`。所有 `dsh` profile 均已内置这三个包。
+
+**修复 / Fixed**
+
+- **`mapTinyFishResponse` 不再因 TinyFish 畸形响应抛异常。** 缺字符串 `url` 的结果项、非数组 `results`、非字符串的 `title` / `snippet` / `publishedAt` 字段均被跳过/丢弃，不再以被掩盖的 `TypeError` 形式包进无关的 `WEB_PROVIDER_ERROR`（"unprocessable response body"）。一条畸形响应现在退化为零来源。
+
+**新增 / Added**
+
+- **`apply()` 集成测试**，运行在真实 `@deepseek-ai/cordis` 运行时上（`test/apply.test.mjs`）：提供方注册、settings 服务可选性、`installSection` 接线及已提交修改对下一次搜索的生效、凭据解析链（credentials → 启动环境 → process env）、稳定的 `WEB_PROVIDER_CREDENTIAL_MISSING` 错误面。补丁测试现用 js-yaml 真实解析 `cordis.patch.yml`，并按 loader 的按键覆盖 / config 整体替换语义对真实 dsh-base 行做组合断言，取代原先对 YAML 原文的正则匹配。
+- **移除死代码**：`declare const process` 垫片（所有环境读取本就经由 `globalThis.process`）。`USER_AGENT` 升至 `dsh-tinyfish-search/0.3.0`。
+
 ## [0.2.1] - 2026-09-04
 
 ### English

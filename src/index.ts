@@ -37,11 +37,10 @@ export const TINYFISH_PROVIDER_ID = 'tinyfish'
 export const TINYFISH_SETTINGS_NAMESPACE = 'dsh-tinyfish-search'
 
 /**
- * Minimal module-scoped `process` reference (only `process.env` is used). The
- * package deliberately avoids an `@types/node` dependency, so Node globals
- * are declared where needed instead.
+ * A `declare const process` shim used to sit here for Node globals. Removed in
+ * 0.3.0: every ambient read already went through `globalThis.process`, so the
+ * declaration was dead.
  */
-declare const process: { env: Record<string, string | undefined> }
 
 /** TinyFish canonical Search API endpoint (GET). */
 export const TINYFISH_DEFAULT_BASE_URL = 'https://api.search.tinyfish.ai'
@@ -50,7 +49,7 @@ export const TINYFISH_DEFAULT_BASE_URL = 'https://api.search.tinyfish.ai'
 export const DEFAULT_API_KEY_ENV = 'TINYFISH_API_KEY'
 
 /** Attribution header sent on every request. Bump with the package version. */
-const USER_AGENT = 'dsh-tinyfish-search/0.2.1'
+const USER_AGENT = 'dsh-tinyfish-search/0.3.0'
 
 /** Cordis plugin name used by loader diagnostics and the bundle patch row. */
 export const name = 'dsh-tinyfish-search'
@@ -66,12 +65,18 @@ export interface Config {
   apiKeyEnv?: string
   /** TinyFish Search API endpoint base; defaults to `https://api.search.tinyfish.ai`. */
   baseURL?: string
+  /** Optional geo location forwarded to TinyFish as `location` (e.g. `US`); unset sends nothing. */
+  location?: string
+  /** Optional search language forwarded to TinyFish as `language` (e.g. `en`); unset sends nothing. */
+  language?: string
 }
 
 export const Config: Schema<Config> = Schema.object({
   apiKey: Schema.string().role('secret'),
   apiKeyEnv: Schema.string().role('credential-ref').default(DEFAULT_API_KEY_ENV),
   baseURL: Schema.string().default(TINYFISH_DEFAULT_BASE_URL),
+  location: Schema.string(),
+  language: Schema.string(),
 })
 
 export interface TinyFishOptions {
@@ -79,6 +84,8 @@ export interface TinyFishOptions {
   readonly resolveApiKey?: () => Promise<string | undefined>
   readonly apiKeyEnv: string
   readonly baseURL: string
+  readonly location?: string
+  readonly language?: string
 }
 
 function resolveOptions(ctx: Context, config: Config): TinyFishOptions {
@@ -101,7 +108,16 @@ function resolveOptions(ctx: Context, config: Config): TinyFishOptions {
     },
     apiKeyEnv: String(apiKeyEnv),
     baseURL: config.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
+    // Unset (empty/whitespace) fields send nothing, so the request stays
+    // identical to pre-0.3.0 unless the user opts into geo/language targeting.
+    ...nonEmpty(config.location) ? { location: config.location } : {},
+    ...nonEmpty(config.language) ? { language: config.language } : {},
   }
+}
+
+/** True for a defined, non-empty, non-whitespace-only string. */
+function nonEmpty(value: string | undefined): value is string {
+  return value !== undefined && value.trim().length > 0
 }
 
 /** Register the TinyFish search provider with `ctx.web`. */
@@ -185,6 +201,8 @@ export class TinyFishSearchProvider implements WebSearchProvider {
       apiKeyEnv: envName,
       baseURL: cfg.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
       resolveApiKey: async () => (globalThis as any).process?.env?.[envName] ?? '',
+      ...nonEmpty(cfg.location) ? { location: cfg.location } : {},
+      ...nonEmpty(cfg.language) ? { language: cfg.language } : {},
     } as TinyFishOptions
   }
 
@@ -217,6 +235,9 @@ export class TinyFishSearchProvider implements WebSearchProvider {
 
     const url = new URL(o.baseURL)
     url.searchParams.set('query', request.query)
+    // Optional geo/language targeting; unset fields send nothing.
+    if (o.location !== undefined) url.searchParams.set('location', o.location)
+    if (o.language !== undefined) url.searchParams.set('language', o.language)
     throwIfSearchAborted(signal)
 
     let response: Response
@@ -278,16 +299,19 @@ export function mapTinyFishResponse(
 ): WebSearchResult {
   const seen = new Set<string>()
   const sources: WebSearchSource[] = []
-  for (const item of payload.results ?? []) {
+  // Defensive: a non-array `results` (or a result item without a usable
+  // string `url`) is skipped rather than thrown, so one malformed response
+  // surfaces as "zero sources" instead of a masked TypeError.
+  for (const item of Array.isArray(payload.results) ? payload.results : []) {
     if (maxResults !== undefined && sources.length >= maxResults) break
-    if (item.url.length === 0 || seen.has(item.url)) continue
+    if (typeof item.url !== 'string' || item.url.length === 0 || seen.has(item.url)) continue
     seen.add(item.url)
     const publishedAt = item.publishedAt ?? item.date
     sources.push({
       url: item.url,
-      ...item.title !== undefined && item.title !== null && item.title.length > 0 ? { title: item.title } : {},
-      ...item.snippet !== undefined && item.snippet !== null && item.snippet.length > 0 ? { snippet: item.snippet } : {},
-      ...publishedAt !== undefined && publishedAt !== null && publishedAt.length > 0 ? { publishedAt } : {},
+      ...typeof item.title === 'string' && item.title.length > 0 ? { title: item.title } : {},
+      ...typeof item.snippet === 'string' && item.snippet.length > 0 ? { snippet: item.snippet } : {},
+      ...typeof publishedAt === 'string' && publishedAt.length > 0 ? { publishedAt } : {},
     })
   }
   return { sources, truncated: false }

@@ -14,11 +14,18 @@
 #     override an earlier row by id, restating every key the row needs (config
 #     is replaced wholesale, never deep-merged). Later layers (profile / home
 #     cordis.patch.yml / --patch overlays) can still override this row by id.
-#  3. `tool-web` — re-enables the model-facing web tools. The dsh-web-app
-#     bundle ships `tool-web` disabled (and `fetch: true` is a dsh-base key
-#     already restated here); without this row the model never sees
-#     `web_search` at all, leaving the TinyFish provider idle. Restates every
-#     dsh-base key for the same replace-wholesale reason as above.
+#  3. `tool-web` — re-enables the HOST-level model-facing web tools. The
+#     dsh-web-app bundle ships `tool-web` disabled because the Web app composes
+#     the tools per agent preset; dsh-base keeps it enabled. Restating the row
+#     with `disabled: false` re-enables the tools at the host layer, so they
+#     are visible to EVERY preset on profiles that compose this bundle —
+#     including presets that would not otherwise carry web tools (e.g.
+#     `minimal`). Per-preset web enablement is untouched: a preset that mounts
+#     its own `tool-web` row shadows this global registration for its agents.
+#     If you want the tools scoped to one preset instead, remove this row in
+#     your profile's cordis.patch.yml and add `tool-web` to that preset's
+#     agent composition. Restates every dsh-base key for the same
+#     replace-wholesale reason as above.
 #
 # Users can override any of these in their profile's cordis.patch.yml — the
 # user layer applies after bundle layers ("last write wins per row").
@@ -30,6 +37,8 @@
         # apiKey: "literal-key"          # alternative to the env var; avoid committing it
         # apiKeyEnv: TINYFISH_API_KEY     # default
         # baseURL: https://api.search.tinyfish.ai   # default
+        # location: US                    # optional geo targeting forwarded to TinyFish
+        # language: en                    # optional search language forwarded to TinyFish
 - id: web
   config:
     searchProvider: tinyfish

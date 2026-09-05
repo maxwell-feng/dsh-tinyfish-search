@@ -95,6 +95,47 @@ test('search() caps to maxResults at request layer', async () => {
   }
 })
 
+test('search() forwards location/language only when configured', async () => {
+  // Unset: the request must carry no location/language at all (identical to
+  // the pre-0.3.0 wire format).
+  {
+    let seen
+    const restore = stubFetch(async (url) => { seen = url; return fakeResponse(200, { results: [] }) })
+    try {
+      await new TinyFishSearchProvider({ apiKey: 'k' }).search({ query: 'q' })
+      assert.equal(seen.searchParams.has('location'), false)
+      assert.equal(seen.searchParams.has('language'), false)
+    } finally { restore() }
+  }
+  // Set: both forwarded; blank values are treated as unset.
+  {
+    let seen
+    const restore = stubFetch(async (url) => { seen = url; return fakeResponse(200, { results: [] }) })
+    try {
+      await new TinyFishSearchProvider({ apiKey: 'k', location: 'US', language: 'en' }).search({ query: 'q' })
+      assert.equal(seen.searchParams.get('location'), 'US')
+      assert.equal(seen.searchParams.get('language'), 'en')
+      await new TinyFishSearchProvider({ apiKey: 'k', location: '  ', language: '' }).search({ query: 'q' })
+      assert.equal(seen.searchParams.has('location'), false)
+      assert.equal(seen.searchParams.has('language'), false)
+    } finally { restore() }
+  }
+})
+
+test('mapTinyFishResponse skips malformed results instead of throwing', async () => {
+  // A result item without a string `url` and a non-array `results` are both
+  // skipped/tolerated: one malformed response surfaces as zero sources, not a
+  // masked TypeError wrapped into an unrelated WEB_PROVIDER_ERROR.
+  assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' }, { url: 42 }] }, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse({}, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse({ results: 'not-an-array' }, undefined).sources, [])
+  // Non-string title/snippet/publishedAt fields are dropped, not copied.
+  assert.deepEqual(
+    mapTinyFishResponse({ results: [{ url: 'https://a.test', title: 7, snippet: {}, date: null }] }, undefined).sources,
+    [{ url: 'https://a.test' }],
+  )
+})
+
 test('search() surfaces HTTP errors with the TinyFish message', async () => {
   const restore = stubFetch(async () => fakeResponse(401, {
     error: { code: 'INVALID_API_KEY', message: 'The provided API key is invalid' },
