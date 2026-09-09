@@ -39,9 +39,16 @@ restart.
 
 ### Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.3-alpha.1` (latest release; `0.1.2-rc.1` → `0.1.3-alpha.1` no seam changes)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.5-alpha.1` (latest release)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
-- The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers since 0.3.0 — every `dsh` profile carries them already
+- The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
+
+### Documentation
+
+- [Configuration Guide / 配置说明](CONFIG.md) ([中文版](CONFIG.zh.md))
+- [Update Guide / 更新说明](UPDATE.md) ([中文版](UPDATE.zh.md))
+- [Uninstall Guide / 卸载说明](UNINSTALL.md) ([中文版](UNINSTALL.zh.md))
+- [Changelog / 更新日志](CHANGELOG.md)
 
 ### Install
 
@@ -182,9 +189,16 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ### 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已验证 `0.1.3-alpha.1`（最新发行版；`0.1.2-rc.1` → `0.1.3-alpha.1` 缝接口无变更）
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.5-alpha.1` 上全面验证
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
-- 自 0.3.0 起，harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
+- harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
+
+### 文档导航
+
+- [配置说明文档](CONFIG.zh.md) ([English](CONFIG.md))
+- [更新说明文档](UPDATE.zh.md) ([English](UPDATE.md))
+- [卸载说明文档](UNINSTALL.zh.md) ([English](UNINSTALL.md))
+- [更新日志 (Changelog)](CHANGELOG.md)
 
 ### 安装
 

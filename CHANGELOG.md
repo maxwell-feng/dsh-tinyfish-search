@@ -3,6 +3,22 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.4.0] - 2026-09-09
+
+### English
+
+**Changed / 变更**
+- **DeepSeek Harness 0.1.5-alpha.1 compatibility verified**: updated internal user agent to `dsh-tinyfish-search/0.4.0` and verified against the latest `dsh-web@0.1.5-alpha.1` capability seam.
+- **Documentation standard suite added**: added dedicated standalone `CONFIG.md`, `CONFIG.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `UNINSTALL.md`, and `UNINSTALL.zh.md`.
+- **Package manifest updated**: included newly created documentation files into package `files` manifest for npm and tarball distribution.
+
+### 中文
+
+**变更 / Changed**
+- **适配最新版 DeepSeek Harness 0.1.5-alpha.1**：更新内部客户端标识 `USER_AGENT` 至 `dsh-tinyfish-search/0.4.0`，全面通过最新版 `dsh-web@0.1.5-alpha.1` 契约验证。
+- **补齐标准四文档体系**：新增独立的配置说明（`CONFIG.zh.md` / `CONFIG.md`）、更新升级说明（`UPDATE.zh.md` / `UPDATE.md`）和卸载说明（`UNINSTALL.zh.md` / `UNINSTALL.md`）。
+- **打包清单更新**：在 `package.json` 的 `files` 字段中正式纳入全部新说明文档，支持 npm 及离线 tarball 发布分发。
+
 ## [0.3.0] - 2026-09-05
 
 ### English
