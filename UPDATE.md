@@ -2,7 +2,7 @@
 
 English | [简体中文](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-alpha.1**.
+> Verified against DeepSeek Harness **0.1.5-rc.1** with `dsh-tinyfish-search` **0.5.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.4.0
+dsh plugin --profile web add dsh-tinyfish-search@0.5.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,7 +40,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.4.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
 ```
 
 ---
@@ -62,5 +62,5 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 To roll back to a previous version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.3.0
+dsh plugin --profile web add dsh-tinyfish-search@0.4.0
 ```

@@ -54,4 +54,10 @@ dsh web
 ```
 
 - 检查 Web 界面的 Settings -> Plugins 列表中不再显示 `dsh-tinyfish-search`。
+- 确认 bundle 层已移除：
+
+```sh
+dsh --profile web --dump-config | grep tinyfish   # 应无任何输出
+```
+
 - 原生 `web_search` 工具将自动回退为默认的搜索后端（如 `deepseek-official` 或其它已安装的 search provider）。

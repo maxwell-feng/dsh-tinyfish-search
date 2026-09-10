@@ -2,7 +2,7 @@
 
 [English](UPDATE.md) | 简体中文
 
-> 本版本已在 DeepSeek Harness **0.1.5-alpha.1** 最新发布版本上完成全面验证。
+> 本版本已在 DeepSeek Harness **0.1.5-rc.1** 上随 `dsh-tinyfish-search` **0.5.0** 完成全面验证。
 
 本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
 
@@ -20,7 +20,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 或指定确切目标版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.4.0
+dsh plugin --profile web add dsh-tinyfish-search@0.5.0
 ```
 
 ### 从 Git 仓库升级
@@ -42,7 +42,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### 从 Tarball 离线包升级
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.4.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
 ```
 
 ---
@@ -64,5 +64,5 @@ dsh web
 若新版本与你的本地环境存在偶发冲突，可随时回退到上一稳定版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.3.0
+dsh plugin --profile web add dsh-tinyfish-search@0.4.0
 ```

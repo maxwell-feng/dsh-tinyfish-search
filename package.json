@@ -1,6 +1,6 @@
 {
   "name": "dsh-tinyfish-search",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "TinyFish-backed web search provider for DeepSeek Harness (ctx.web): makes the built-in web_search tool run on the TinyFish Search API — 将内置 web_search 接入 TinyFish Search API 的 DeepSeek Harness 插件",
   "type": "module",
   "main": "lib/index.js",
@@ -16,18 +16,23 @@
     "lib",
     "cordis.patch.yml",
     "README.md",
+    "README.zh.md",
     "CONFIG.md",
     "CONFIG.zh.md",
+    "INSTALL.md",
+    "INSTALL.zh.md",
     "UPDATE.md",
     "UPDATE.zh.md",
     "UNINSTALL.md",
     "UNINSTALL.zh.md",
+    "USAGE.md",
+    "USAGE.zh.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
   "license": "MIT",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -61,17 +66,17 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": ">=4.0.0 <5.0.0",
-    "@deepseek-ai/dsh-credentials": ">=0.1.2-alpha.4",
-    "@deepseek-ai/dsh-launch-environment": ">=0.1.2-alpha.4",
-    "@deepseek-ai/dsh-web": ">=0.1.2-alpha.2"
+    "@deepseek-ai/dsh-credentials": "^0.1.5-rc.1",
+    "@deepseek-ai/dsh-launch-environment": "^0.1.5-rc.1",
+    "@deepseek-ai/dsh-web": "^0.1.5-rc.1"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
-    "@deepseek-ai/dsh-credentials": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-launch-environment": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-llm": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-settings": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-web": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-credentials": "0.1.5-rc.1",
+    "@deepseek-ai/dsh-launch-environment": "0.1.5-rc.1",
+    "@deepseek-ai/dsh-llm": "0.1.5-rc.1",
+    "@deepseek-ai/dsh-settings": "0.1.5-rc.1",
+    "@deepseek-ai/dsh-web": "0.1.5-rc.1",
     "js-yaml": "4.1.1",
     "typescript": "5.8.3"
   }

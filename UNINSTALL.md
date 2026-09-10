@@ -54,4 +54,10 @@ dsh web
 ```
 
 - Confirm `dsh-tinyfish-search` no longer appears in Settings -> Plugins.
+- Confirm the bundle layer is gone:
+
+```sh
+dsh --profile web --dump-config | grep tinyfish   # no output expected
+```
+
 - `web_search` automatically falls back to default providers (e.g. `deepseek-official`).

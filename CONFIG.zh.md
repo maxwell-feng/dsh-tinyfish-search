@@ -58,3 +58,16 @@ $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 1. 打开左侧菜单中的 **Settings（设置）**。
 2. 进入 **Plugins（插件设置）** 页面。
 3. 找到 **`dsh-tinyfish-search`** 卡片，即可直接通过可视化表单修改 API Key、Base URL 与地区语言参数，修改立即生效，无需重启进程。
+
+---
+
+## 5. 凭据解析顺序
+
+每次搜索按以下顺序取第一个非空值作为 API key（已对照 `src/index.ts` 实测验证）：
+
+1. 插件配置中的字面量 `apiKey`。
+2. 凭据服务：`ctx.credentials.resolve(apiKeyEnv)`。
+3. 启动环境：`launchEnvironmentOf(ctx).get(apiKeyEnv)`。
+4. `process.env[apiKeyEnv]`（覆盖宿主之外的独立使用场景）。
+
+只要存在解析器，提供方即视为 `available`，即使密钥尚未存储——缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错并点名所配置的变量。示例与完整错误表见[使用说明](USAGE.zh.md)。

@@ -57,3 +57,16 @@ In the DeepSeek Harness Web UI:
 1. Open **Settings** from the sidebar.
 2. Navigate to the **Plugins** page.
 3. Locate the **`dsh-tinyfish-search`** card to edit configuration live without restarting the host.
+
+---
+
+## 5. Credential Resolution Order
+
+Each search resolves the API key from the first non-empty source (verified against `src/index.ts`):
+
+1. Literal `apiKey` in the plugin config.
+2. The credentials service: `ctx.credentials.resolve(apiKeyEnv)`.
+3. The launch environment: `launchEnvironmentOf(ctx).get(apiKeyEnv)`.
+4. `process.env[apiKeyEnv]` (covers standalone use outside the host).
+
+The provider counts as `available` while a resolver exists, even before the key is stored — a missing key then surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) for examples and the full error table.
