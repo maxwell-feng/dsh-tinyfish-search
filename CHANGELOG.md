@@ -3,6 +3,46 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.5.0] - 2026-09-10
+
+### English
+
+**Compatibility / 兼容性**
+
+- Verified against deepseek-harness `0.1.5-rc.1` (latest release): no seam changes since `0.1.5-alpha.1` — the web seam (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), the credentials seam (`credentialRef`), the launch-environment seam (`launchEnvironmentOf`), and the settings section install (`ctx.settings.installSection`) are all source-identical between the two tags, as is the vendored `@deepseek-ai/cordis` `4.0.2`. The rc.1 headline change (scope-aware `tool-web` system-prompt guidance) does not touch any seam this plugin consumes. `devDependencies` bumped to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` / `@deepseek-ai/dsh-settings` at `0.1.5-rc.1`; peer ranges now `^0.1.5-rc.1`; engines now `node >=22` (matching the harness range); `USER_AGENT` bumped to `dsh-tinyfish-search/0.5.0`. The full test suite (20 tests) passes against the new package set.
+
+**Added / 新增**
+
+- **Standalone `INSTALL.md` / `INSTALL.zh.md` and `USAGE.md` / `USAGE.zh.md`**, completing the standard documentation suite: install methods, verification, search flow, providers, credential resolution order, worked examples (wire outputs captured from the shipped build), and the error table.
+- **Standalone `README.zh.md`**: the README is now an EN/ZH pair (`README.md` / `README.zh.md`) like every other guide.
+
+### 中文
+
+**兼容性 / Compatibility**
+
+- 已针对 deepseek-harness `0.1.5-rc.1`（最新发行版）验证：自 `0.1.5-alpha.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝（`credentialRef`）、启动环境缝（`launchEnvironmentOf`）以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 亦未变化。rc.1 的主要变更（`tool-web` 系统提示词的作用域感知）不涉及本插件消费的任何缝。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` / `@deepseek-ai/dsh-settings` `0.1.5-rc.1`；peer 区间现为 `^0.1.5-rc.1`；engines 现为 `node >=22`（与 harness 区间一致）；`USER_AGENT` 升至 `dsh-tinyfish-search/0.5.0`。全部测试（20 项）在新区间依赖下通过。
+
+**新增 / Added**
+
+- **独立的 `INSTALL.md` / `INSTALL.zh.md` 与 `USAGE.md` / `USAGE.zh.md`**，补齐标准文档体系：安装方式、验证、搜索流转、提供方、凭据解析顺序、完整示例（线路输出取自发布构建实测）与错误表。
+- **独立的 `README.zh.md`**：README 现为与其他指南一致的中英成对文档（`README.md` / `README.zh.md`）。
+
+## [0.4.0] - 2026-09-09
+
+### English
+
+**Changed / 变更**
+- **DeepSeek Harness 0.1.5-alpha.1 compatibility verified**: updated internal user agent to `dsh-tinyfish-search/0.4.0` and verified against the latest `dsh-web@0.1.5-alpha.1` capability seam.
+- **Documentation standard suite added**: added dedicated standalone `CONFIG.md`, `CONFIG.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `UNINSTALL.md`, and `UNINSTALL.zh.md`.
+- **Package manifest updated**: included newly created documentation files into package `files` manifest for npm and tarball distribution.
+
+### 中文
+
+**变更 / Changed**
+- **适配最新版 DeepSeek Harness 0.1.5-alpha.1**：更新内部客户端标识 `USER_AGENT` 至 `dsh-tinyfish-search/0.4.0`，全面通过最新版 `dsh-web@0.1.5-alpha.1` 契约验证。
+- **补齐标准四文档体系**：新增独立的配置说明（`CONFIG.zh.md` / `CONFIG.md`）、更新升级说明（`UPDATE.zh.md` / `UPDATE.md`）和卸载说明（`UNINSTALL.zh.md` / `UNINSTALL.md`）。
+- **打包清单更新**：在 `package.json` 的 `files` 字段中正式纳入全部新说明文档，支持 npm 及离线 tarball 发布分发。
+
 ## [0.3.0] - 2026-09-05
 
 ### English
@@ -188,6 +228,11 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.5.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.5.0
+[0.4.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.4.0
+[0.3.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.3.0
+[0.2.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.1
+[0.2.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.0
 [0.1.6]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.6
 [0.1.5]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.5
 [0.1.4]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.4
