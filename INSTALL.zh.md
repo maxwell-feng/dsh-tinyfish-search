@@ -2,7 +2,7 @@
 
 [English](INSTALL.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.5-rc.1** 上随 `dsh-tinyfish-search` **0.5.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.6.0** 完成全面验证。
 
 本文档覆盖环境要求、全部安装方式与安装验证方法。
 
@@ -10,7 +10,7 @@
 
 ## 1. 环境要求
 
-- DeepSeek Harness `dsh` CLI `0.1.5-rc.1` 或更新（任意带 web 缝的 profile，如 `web`）
+- DeepSeek Harness `dsh` CLI `0.1.5-rc.2` 或更新（任意带 web 缝的 profile，如 `web`）
 - Node.js `>=22`（与 harness 引擎区间 `^22.19.0 || >=24.0.0` 一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 在任意钱包余额下免费）
 - 源码目录 / git 安装需要 pnpm `>=10`（它经 `prepare` 脚本从源码构建 `lib/`）
@@ -26,7 +26,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 或锁定确切版本：
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.5.0
+dsh plugin --profile web add dsh-tinyfish-search@0.6.0
 ```
 
 ---
@@ -46,7 +46,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ## 4. 从 tarball 或源码目录安装
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
 ```
 
 ```sh

@@ -2,7 +2,7 @@
 
 English | [简体中文](INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.1** with `dsh-tinyfish-search` **0.5.0**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.6.0**.
 
 This document covers the requirements, every install method, and how to verify the installation.
 
@@ -10,7 +10,7 @@ This document covers the requirements, every install method, and how to verify t
 
 ## 1. Requirements
 
-- DeepSeek Harness `dsh` CLI at `0.1.5-rc.1` or newer (any profile with the web seam, e.g. `web`)
+- DeepSeek Harness `dsh` CLI at `0.1.5-rc.2` or newer (any profile with the web seam, e.g. `web`)
 - Node.js `>=22` (matches the harness engine range `^22.19.0 || >=24.0.0`)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free at any wallet balance)
 - pnpm `>=10` for source-checkout and git installs (it builds `lib/` from source via the `prepare` script)
@@ -26,7 +26,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 or pin an exact version:
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.5.0
+dsh plugin --profile web add dsh-tinyfish-search@0.6.0
 ```
 
 ---
@@ -46,7 +46,7 @@ Pick up unreleased changes the same way before they reach npm — the command ab
 ## 4. Install from a tarball or source checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
 ```
 
 ```sh

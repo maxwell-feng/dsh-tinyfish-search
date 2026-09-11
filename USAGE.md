@@ -2,7 +2,7 @@
 
 English | [简体中文](USAGE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.1** with `dsh-tinyfish-search` **0.5.0**. All wire outputs below were captured from the shipped `lib/` build.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.6.0**. All wire outputs below were captured from the shipped `lib/` build.
 
 This document explains how searches flow through the plugin, which providers are involved, how credentials resolve, and what errors look like — with runnable examples.
 
@@ -21,7 +21,7 @@ Concretely, one search is one HTTP request (verified against the built output):
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.5.0
+user-agent: dsh-tinyfish-search/0.6.0
 accept: application/json
 ```
 

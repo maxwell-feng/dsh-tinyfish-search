@@ -17,7 +17,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.5-rc.1` 上全面验证
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.5-rc.2` 上全面验证
 - Node.js `>=22`（与 harness 的引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
@@ -41,7 +41,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -129,6 +129,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # 或走 git，在改动进入 npm 前先行取用：
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+从 ≤ 0.5.0 升级到 0.6.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。可见的变化是元数据规范遵循最新 `@deepseek-ai/dsh-package-manifest`（`manifestVersion: 1`，宿主声明 `"dsh": "^0.1.5-rc.2"`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.6.0`）。
 
 从 ≤ 0.4.0 升级到 0.5.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。唯一可见的变化是 harness 基线（`@deepseek-ai/dsh-*` peer 现为 `^0.1.5-rc.1`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.5.0`）。
 

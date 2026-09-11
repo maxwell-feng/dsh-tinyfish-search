@@ -35,7 +35,7 @@ restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.5-rc.1` (latest release)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.5-rc.2` (latest release)
 - Node.js `>=22` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
@@ -59,7 +59,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -152,6 +152,12 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.6.0 from ≤ 0.5.0 needs no manual steps: the settings section,
+patch rows, and credential reference are all carried by the bundle layer, and
+pnpm refreshes the package in place. The user-visible changes are the
+manifest declaration (`manifestVersion: 1`, `@deepseek-ai/dsh-*` peers now `^0.1.5-rc.2`, Node `>=22`) and
+the `USER_AGENT` attribution (`dsh-tinyfish-search/0.6.0`).
 
 Upgrading to 0.5.0 from ≤ 0.4.0 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and
