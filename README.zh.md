@@ -41,7 +41,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -130,7 +130,7 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-从 ≤ 0.5.0 升级到 0.6.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。可见的变化是元数据规范遵循最新 `@deepseek-ai/dsh-package-manifest`（`manifestVersion: 1`，宿主声明 `"dsh": "^0.1.5-rc.2"`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.6.0`）。
+从 ≤ 0.5.0 升级到 0.6.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。可见的变化是元数据规范遵循最新 `@deepseek-ai/dsh-package-manifest`（`manifestVersion: 1`，宿主声明 `"dsh": "^0.1.5-rc.2"`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.6.1`）。
 
 从 ≤ 0.4.0 升级到 0.5.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。唯一可见的变化是 harness 基线（`@deepseek-ai/dsh-*` peer 现为 `^0.1.5-rc.1`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.5.0`）。
 

@@ -59,7 +59,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -153,11 +153,11 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-Upgrading to 0.6.0 from ≤ 0.5.0 needs no manual steps: the settings section,
+Upgrading to 0.6.1 from ≤ 0.5.0 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and
 pnpm refreshes the package in place. The user-visible changes are the
 manifest declaration (`manifestVersion: 1`, `@deepseek-ai/dsh-*` peers now `^0.1.5-rc.2`, Node `>=22`) and
-the `USER_AGENT` attribution (`dsh-tinyfish-search/0.6.0`).
+the `USER_AGENT` attribution (`dsh-tinyfish-search/0.6.1`).
 
 Upgrading to 0.5.0 from ≤ 0.4.0 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and

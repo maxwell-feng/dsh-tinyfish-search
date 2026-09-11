@@ -2,7 +2,7 @@
 
 [English](INSTALL.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.6.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.6.1** 完成全面验证。
 
 本文档覆盖环境要求、全部安装方式与安装验证方法。
 
@@ -26,7 +26,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 或锁定确切版本：
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.6.0
+dsh plugin --profile web add dsh-tinyfish-search@0.6.1
 ```
 
 ---
@@ -46,7 +46,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ## 4. 从 tarball 或源码目录安装
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.1.tgz
 ```
 
 ```sh

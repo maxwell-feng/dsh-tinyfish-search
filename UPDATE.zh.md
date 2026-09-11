@@ -2,7 +2,7 @@
 
 [English](UPDATE.md) | 简体中文
 
-> 本版本已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.6.0** 完成全面验证。
+> 本版本已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.6.1** 完成全面验证。
 
 本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
 
@@ -20,7 +20,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 或指定确切目标版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.6.0
+dsh plugin --profile web add dsh-tinyfish-search@0.6.1
 ```
 
 ### 从 Git 仓库升级
@@ -42,14 +42,14 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### 从 Tarball 离线包升级
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.1.tgz
 ```
 
 ---
 
-## 2. 从 0.5.0 升级至 0.6.0 注意事项
+## 2. 从 0.5.0 升级至 0.6.1 注意事项
 
-0.6.0 引入了符合 `@deepseek-ai/dsh-package-manifest` 规范的 `manifestVersion: 1` 声明与 `"dsh": "^0.1.5-rc.2"` 宿主兼容性声明。配置项与运行时无需任何手工改动，pnpm 会原地刷新依赖与产物。
+0.6.1 引入了符合 `@deepseek-ai/dsh-package-manifest` 规范的 `manifestVersion: 1` 声明与 `"dsh": "^0.1.5-rc.2"` 宿主兼容性声明。配置项与运行时无需任何手工改动，pnpm 会原地刷新依赖与产物。
 
 ---
 
