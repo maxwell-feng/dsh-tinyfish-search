@@ -2,7 +2,7 @@
 
 English | [简体中文](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.1** with `dsh-tinyfish-search` **0.5.0**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.6.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.5.0
+dsh plugin --profile web add dsh-tinyfish-search@0.6.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,12 +40,18 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.5.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.6.0.tgz
 ```
 
 ---
 
-## 2. Verification
+## 2. Upgrading to 0.6.0 from 0.5.0
+
+Upgrading to 0.6.0 introduces `manifestVersion: 1` conforming to `@deepseek-ai/dsh-package-manifest` and host requirement `"dsh": "^0.1.5-rc.2"`. No breaking changes to existing config or settings: pnpm refreshes the package in place.
+
+---
+
+## 3. Verification
 
 Start the profile:
 
