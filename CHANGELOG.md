@@ -3,7 +3,7 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
-## [0.6.0] - 2026-09-11
+## [0.6.1] - 2026-09-11
 
 ### English
 
@@ -13,7 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Declared `manifestVersion: 1` under `package.json.dsh` conforming to `@deepseek-ai/dsh-package-manifest`.
   - Declared explicit host engine compatibility in `package.json.engines`: `"dsh": "^0.1.5-rc.2"`.
   - Bumped peer and dev dependencies (`@deepseek-ai/dsh-web`, `@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`, `@deepseek-ai/dsh-settings`, `@deepseek-ai/dsh-llm`) to `0.1.5-rc.2`.
-  - Bumped `USER_AGENT` attribution header to `dsh-tinyfish-search/0.6.0`.
+  - Bumped `USER_AGENT` attribution header to `dsh-tinyfish-search/0.6.1`.
   - Verified full test suite against DeepSeek Harness `0.1.5-rc.2`.
 
 ### 中文
@@ -24,7 +24,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - 在 `package.json.dsh` 中显式声明 `manifestVersion: 1`，遵循最新的 `@deepseek-ai/dsh-package-manifest` 插件规范。
   - 在 `package.json.engines` 中声明兼容宿主范围 `"dsh": "^0.1.5-rc.2"`。
   - 将 peer 和 dev 依赖（`@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`、`@deepseek-ai/dsh-settings`、`@deepseek-ai/dsh-llm`）升级至 `0.1.5-rc.2`。
-  - 更新 `USER_AGENT` 请求头为 `dsh-tinyfish-search/0.6.0`。
+  - 更新 `USER_AGENT` 请求头为 `dsh-tinyfish-search/0.6.1`。
   - 针对 DeepSeek Harness `0.1.5-rc.2` 完成全部测试验证。
 
 ## [0.5.0] - 2026-09-10
@@ -252,7 +252,7 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
-[0.6.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.6.0
+[0.6.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.6.1
 [0.5.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.5.0
 [0.4.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.4.0
 [0.3.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.3.0
