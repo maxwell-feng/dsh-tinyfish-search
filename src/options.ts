@@ -1,8 +1,8 @@
 import type { Context } from "@deepseek-ai/cordis";
 import { credentialRef } from "@deepseek-ai/dsh-credentials";
 import { launchEnvironmentOf } from "@deepseek-ai/dsh-launch-environment";
-import { DEFAULT_API_KEY_ENV, TINYFISH_DEFAULT_BASE_URL, nonEmpty } from "./config.js";
-import type { Config, TinyFishOptions } from "./types.js";
+import { DEFAULT_API_KEY_ENV, TINYFISH_DEFAULT_BASE_URL, nonEmpty } from "./config.ts";
+import type { Config, TinyFishOptions } from "./types.ts";
 
 export function resolveOptions(ctx: Context, config: Config): TinyFishOptions {
   const apiKeyEnv = credentialRef(config.apiKeyEnv ?? DEFAULT_API_KEY_ENV);

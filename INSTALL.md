@@ -2,7 +2,7 @@
 
 English | [简体中文](INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.7.0**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.0**.
 
 This document covers the requirements, every install method, and how to verify the installation.
 
@@ -26,7 +26,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 or pin an exact version:
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.7.0
+dsh plugin --profile web add dsh-tinyfish-search@0.8.0
 ```
 
 ---
@@ -46,7 +46,7 @@ Pick up unreleased changes the same way before they reach npm — the command ab
 ## 4. Install from a tarball or source checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.7.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.8.0.tgz
 ```
 
 ```sh

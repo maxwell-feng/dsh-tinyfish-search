@@ -11,13 +11,13 @@ import {
   TINYFISH_PROVIDER_ID,
   USER_AGENT,
   nonEmpty,
-} from "./config.js";
+} from "./config.ts";
 import type {
   Config,
   TinyFishError,
   TinyFishOptions,
   TinyFishSearchResponse,
-} from "./types.js";
+} from "./types.ts";
 
 /** Throw the provider's stable cancellation error when the caller already aborted. */
 function throwIfSearchAborted(signal?: AbortSignal): void {
@@ -64,8 +64,11 @@ export function mapTinyFishResponse(
 
 export class TinyFishSearchProvider implements WebSearchProvider {
   readonly id = TINYFISH_PROVIDER_ID;
+  private readonly resolve: Config | (() => TinyFishOptions) | TinyFishOptions;
 
-  constructor(private readonly resolve: Config | (() => TinyFishOptions) | TinyFishOptions) {}
+  constructor(resolve: Config | (() => TinyFishOptions) | TinyFishOptions) {
+    this.resolve = resolve;
+  }
 
   private opts(): TinyFishOptions {
     if (typeof this.resolve === "function") return (this.resolve as () => TinyFishOptions)();

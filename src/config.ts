@@ -1,5 +1,5 @@
 import Schema from "@deepseek-ai/schemastery";
-import type { Config as PluginConfig } from "./types.js";
+import type { Config as PluginConfig } from "./types.ts";
 
 /** Stable provider id this plugin registers under. */
 export const TINYFISH_PROVIDER_ID = "tinyfish";
@@ -14,7 +14,7 @@ export const TINYFISH_DEFAULT_BASE_URL = "https://api.search.tinyfish.ai";
 export const DEFAULT_API_KEY_ENV = "TINYFISH_API_KEY";
 
 /** Attribution header sent on every request. */
-export const USER_AGENT = "dsh-tinyfish-search/0.7.0";
+export const USER_AGENT = "dsh-tinyfish-search/0.8.0";
 
 export const Config: Schema<PluginConfig> = Schema.object({
   apiKey: Schema.string().role("secret"),
