@@ -2,7 +2,7 @@
 
 English | [简体中文](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.6.1**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.7.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.6.1
+dsh plugin --profile web add dsh-tinyfish-search@0.7.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,14 +40,14 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.6.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.7.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.6.1 from 0.5.0
+## 2. Upgrading to 0.7.0 from 0.6.x
 
-Upgrading to 0.6.1 introduces `manifestVersion: 1` conforming to `@deepseek-ai/dsh-package-manifest` and host requirement `"dsh": "^0.1.5-rc.2"`. No breaking changes to existing config or settings: pnpm refreshes the package in place.
+0.7.0 refactors the codebase into a modular TypeScript architecture (`types.ts`, `config.ts`, `options.ts`, `provider.ts`, `index.ts`), retaining 100% backward compatibility for configuration and runtime settings. No breaking changes to existing settings: pnpm refreshes the package in place.
 
 ---
 

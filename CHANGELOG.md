@@ -3,6 +3,36 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.7.0] - 2026-09-11
+
+### English
+
+**Changed / 变更**
+
+- **Modular TypeScript Architecture Refactoring / 模块化 TypeScript 架构重构**:
+  - Refactored monolithic codebase into dedicated modules following the official DeepSeek Harness plugin development guide (`docs/cookbook/adding-a-package.md` and `docs/user/develop/basic/index.md`).
+  - Separated public types into `src/types.ts`.
+  - Extracted Schemastery validation into `src/config.ts`.
+  - Extracted multi-tiered credential and environment resolution into `src/options.ts`.
+  - Extracted provider implementation, HTTP wire formatting, and result mapping into `src/provider.ts`.
+  - Exported unified plugin entry from `src/index.ts` with backward-compatible API.
+  - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.7.0`.
+  - Recompiled and verified all 20 test suite cases pass.
+
+### 中文
+
+**变更 / Changed**
+
+- **模块化 TypeScript 架构重构 / Modular TypeScript Architecture Refactoring**：
+  - 严格按照官方 DeepSeek Harness 插件开发规范将单体代码重构为高内聚、模块化 TypeScript 架构。
+  - 将公共类型独立拆分至 `src/types.ts`。
+  - 将 Schemastery 校验逻辑与常量独立拆分至 `src/config.ts`。
+  - 将凭据服务与启动环境多层解析链独立拆分至 `src/options.ts`。
+  - 将 `TinyFishSearchProvider` 核心检索、HTTP 规范映射与结果规整独立拆分至 `src/provider.ts`。
+  - 在 `src/index.ts` 中暴露标准 Cordis 插件入口，并完全保持向下兼容的导出接口。
+  - 更新请求标识头 `USER_AGENT` 为 `dsh-tinyfish-search/0.7.0`。
+  - 重新编译并验证全套 20 项自动化测试全部通过。
+
 ## [0.6.1] - 2026-09-11
 
 ### English
@@ -252,6 +282,7 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.7.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.7.0
 [0.6.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.6.1
 [0.5.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.5.0
 [0.4.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.4.0
