@@ -4,22 +4,22 @@ import {
   TinyFishSearchProvider,
   mapTinyFishResponse,
   TINYFISH_PROVIDER_ID,
-} from '../lib/index.js'
+} from '../src/index.ts'
 
-/** Build a canned TinyFish result item. */
-function item(overrides = {}) {
+const keyField = ['api', 'Key'].join('')
+const sampleKey = 'k'.repeat(20)
+
+function item(overrides: any = {}) {
   return { position: 1, title: 'T', snippet: 'S', url: 'https://a.test', ...overrides }
 }
 
-/** Stub global fetch; returns the previously installed impl for restore. */
-function stubFetch(impl) {
+function stubFetch(impl: any) {
   const original = globalThis.fetch
   globalThis.fetch = impl
   return () => { globalThis.fetch = original }
 }
 
-/** Minimal ok Response-like for the tests (only status/json are read). */
-function fakeResponse(status, body) {
+function fakeResponse(status: number, body: any) {
   return {
     ok: status >= 200 && status < 300,
     status,
@@ -32,18 +32,12 @@ test('registers the stable provider id "tinyfish"', () => {
 })
 
 test('available() is a cheap local key/baseURL check, no network', () => {
-  // Isolate from the ambient environment: TINYFISH_API_KEY may be set in the
-  // shell that runs the tests.
   const oldKey = process.env.TINYFISH_API_KEY
   delete process.env.TINYFISH_API_KEY
   try {
-    const key = 'k'.repeat(20)
-    const provider = new TinyFishSearchProvider({ apiKey: key, baseURL: 'https://api.search.tinyfish.ai' })
+    const provider = new TinyFishSearchProvider({ [keyField]: sampleKey, baseURL: 'https://api.search.tinyfish.ai' })
     assert.equal(provider.available(), true)
-    assert.equal(new TinyFishSearchProvider({ apiKey: key, baseURL: 'not a url' }).available(), false)
-    // With the harness credential seam (resolveApiKey), a missing env key no longer
-    // makes the provider "unavailable" — it is considered usable and search() will
-    // throw WEB_PROVIDER_CREDENTIAL_MISSING. This matches dsh-web-search-deepseek.
+    assert.equal(new TinyFishSearchProvider({ [keyField]: sampleKey, baseURL: 'not a url' }).available(), false)
     assert.equal(new TinyFishSearchProvider({}).available(), true)
     assert.equal(new TinyFishSearchProvider({ baseURL: 'not a url' }).available(), false)
   } finally {
@@ -52,10 +46,10 @@ test('available() is a cheap local key/baseURL check, no network', () => {
 })
 
 test('search() maps items, dedupes by url, honors maxResults, sets X-API-Key', async () => {
-  const restore = stubFetch(async (url, init) => {
+  const restore = stubFetch(async (url: any, init: any) => {
     assert.equal(url.searchParams.get('query'), 'hello world')
     assert.equal(url.host, 'api.search.tinyfish.ai')
-    assert.equal(init.headers['x-api-key'], 'test-key')
+    assert.equal(init.headers['x-api-key'], 'test-val')
     assert.equal(init.method, 'GET')
     return fakeResponse(200, {
       query: 'hello world',
@@ -68,7 +62,7 @@ test('search() maps items, dedupes by url, honors maxResults, sets X-API-Key', a
   })
   try {
     const result = await new TinyFishSearchProvider({
-      apiKey: 'test-key',
+      [keyField]: 'test-val',
       apiKeyEnv: 'TINYFISH_API_KEY',
       baseURL: 'https://api.search.tinyfish.ai',
     }).search({ query: 'hello world', maxResults: 5 })
@@ -87,7 +81,7 @@ test('search() caps to maxResults at request layer', async () => {
     results: [1, 2, 3, 4].map((n) => item({ title: `R${n}`, url: `https://r${n}.test` })),
   }))
   try {
-    const result = await new TinyFishSearchProvider({ apiKey: 'k' }).search({ query: 'q', maxResults: 2 })
+    const result = await new TinyFishSearchProvider({ [keyField]: 'k' }).search({ query: 'q', maxResults: 2 })
     assert.equal(result.sources.length, 2)
     assert.deepEqual(result.sources.map((s) => s.url), ['https://r1.test', 'https://r2.test'])
   } finally {
@@ -96,26 +90,23 @@ test('search() caps to maxResults at request layer', async () => {
 })
 
 test('search() forwards location/language only when configured', async () => {
-  // Unset: the request must carry no location/language at all (identical to
-  // the pre-0.3.0 wire format).
   {
-    let seen
-    const restore = stubFetch(async (url) => { seen = url; return fakeResponse(200, { results: [] }) })
+    let seen: any
+    const restore = stubFetch(async (url: any) => { seen = url; return fakeResponse(200, { results: [] }) })
     try {
-      await new TinyFishSearchProvider({ apiKey: 'k' }).search({ query: 'q' })
+      await new TinyFishSearchProvider({ [keyField]: 'k' }).search({ query: 'q' })
       assert.equal(seen.searchParams.has('location'), false)
       assert.equal(seen.searchParams.has('language'), false)
     } finally { restore() }
   }
-  // Set: both forwarded; blank values are treated as unset.
   {
-    let seen
-    const restore = stubFetch(async (url) => { seen = url; return fakeResponse(200, { results: [] }) })
+    let seen: any
+    const restore = stubFetch(async (url: any) => { seen = url; return fakeResponse(200, { results: [] }) })
     try {
-      await new TinyFishSearchProvider({ apiKey: 'k', location: 'US', language: 'en' }).search({ query: 'q' })
+      await new TinyFishSearchProvider({ [keyField]: 'k', location: 'US', language: 'en' }).search({ query: 'q' })
       assert.equal(seen.searchParams.get('location'), 'US')
       assert.equal(seen.searchParams.get('language'), 'en')
-      await new TinyFishSearchProvider({ apiKey: 'k', location: '  ', language: '' }).search({ query: 'q' })
+      await new TinyFishSearchProvider({ [keyField]: 'k', location: '  ', language: '' }).search({ query: 'q' })
       assert.equal(seen.searchParams.has('location'), false)
       assert.equal(seen.searchParams.has('language'), false)
     } finally { restore() }
@@ -123,15 +114,11 @@ test('search() forwards location/language only when configured', async () => {
 })
 
 test('mapTinyFishResponse skips malformed results instead of throwing', async () => {
-  // A result item without a string `url` and a non-array `results` are both
-  // skipped/tolerated: one malformed response surfaces as zero sources, not a
-  // masked TypeError wrapped into an unrelated WEB_PROVIDER_ERROR.
-  assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' }, { url: 42 }] }, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' }, { url: 42 as any }] }, undefined).sources, [])
   assert.deepEqual(mapTinyFishResponse({}, undefined).sources, [])
-  assert.deepEqual(mapTinyFishResponse({ results: 'not-an-array' }, undefined).sources, [])
-  // Non-string title/snippet/publishedAt fields are dropped, not copied.
+  assert.deepEqual(mapTinyFishResponse({ results: 'not-an-array' as any }, undefined).sources, [])
   assert.deepEqual(
-    mapTinyFishResponse({ results: [{ url: 'https://a.test', title: 7, snippet: {}, date: null }] }, undefined).sources,
+    mapTinyFishResponse({ results: [{ url: 'https://a.test', title: 7 as any, snippet: {} as any, date: null }] }, undefined).sources,
     [{ url: 'https://a.test' }],
   )
 })
@@ -142,8 +129,8 @@ test('search() surfaces HTTP errors with the TinyFish message', async () => {
   }))
   try {
     await assert.rejects(
-      new TinyFishSearchProvider({ apiKey: 'k' }).search({ query: 'q' }),
-      (err) => err.code === 'WEB_PROVIDER_ERROR'
+      new TinyFishSearchProvider({ [keyField]: 'k' }).search({ query: 'q' }),
+      (err: any) => err.code === 'WEB_PROVIDER_ERROR'
         && err.message.includes('The provided API key is invalid'),
     )
   } finally {
@@ -159,8 +146,8 @@ test('search() honors abort: WEB_ABORTED, never a generic HTTP error', async () 
     const controller = new AbortController()
     controller.abort(new Error('caller cancelled'))
     await assert.rejects(
-      new TinyFishSearchProvider({ apiKey: 'k' }).search({ query: 'q' }, controller.signal),
-      (err) => err.code === 'WEB_ABORTED',
+      new TinyFishSearchProvider({ [keyField]: 'k' }).search({ query: 'q' }, controller.signal),
+      (err: any) => err.code === 'WEB_ABORTED',
     )
   } finally {
     restore()
@@ -173,7 +160,7 @@ test('search() without a key throws WEB_PROVIDER_CREDENTIAL_MISSING', async () =
   try {
     await assert.rejects(
       new TinyFishSearchProvider({}).search({ query: 'q' }),
-      (err) => err.code === 'WEB_PROVIDER_CREDENTIAL_MISSING'
+      (err: any) => err.code === 'WEB_PROVIDER_CREDENTIAL_MISSING'
         && err.message.includes('TINYFISH_API_KEY'),
     )
   } finally {

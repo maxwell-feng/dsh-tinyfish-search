@@ -2,7 +2,7 @@
 
 English | [简体中文](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.7.0**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.7.0
+dsh plugin --profile web add dsh-tinyfish-search@0.8.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,14 +40,14 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.7.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.8.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.7.0 from 0.6.x
+## 2. Upgrading to 0.8.0 from 0.7.x / 0.6.x
 
-0.7.0 refactors the codebase into a modular TypeScript architecture (`types.ts`, `config.ts`, `options.ts`, `provider.ts`, `index.ts`), retaining 100% backward compatibility for configuration and runtime settings. No breaking changes to existing settings: pnpm refreshes the package in place.
+0.8.0 introduces a pure TypeScript architecture (zero JavaScript tracked), running tests natively via Node `--experimental-strip-types`, while keeping 100% backward compatibility for configuration and runtime settings. No breaking changes to existing settings: pnpm refreshes the package in place.
 
 ---
 

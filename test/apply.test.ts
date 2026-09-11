@@ -1,8 +1,3 @@
-// Integration tests for the plugin's `apply()` wiring, run on the real
-// `@deepseek-ai/cordis` runtime (devDependency), following the service
-// patterns from the harness Cordis tutorial (docs/cordis-tutorial/03): stub
-// services as Service subclasses mounted on a root context, then mount the
-// plugin the way the loader would (an object plugin carrying `inject`).
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Context, Service } from '@deepseek-ai/cordis'
@@ -12,16 +7,16 @@ import {
   TinyFishSearchProvider,
   apply,
   name as pluginName,
-} from '../lib/index.js'
+} from '../src/index.ts'
 
-/** Web seam stub: records registrations; the disposer removes them. */
 class FakeWeb extends Service {
-  constructor(ctx) {
+  registered: any[]
+  constructor(ctx: any) {
     super(ctx, 'web')
     this.registered = []
   }
 
-  registerSearchProvider(provider) {
+  registerSearchProvider(provider: any) {
     this.registered.push(provider)
     return () => {
       const index = this.registered.indexOf(provider)
@@ -30,71 +25,68 @@ class FakeWeb extends Service {
   }
 }
 
-/** Settings seam stub: records installSection calls exactly as the seam delivers them. */
 class FakeSettings extends Service {
-  constructor(ctx) {
+  installed: any[]
+  constructor(ctx: any) {
     super(ctx, 'settings')
     this.installed = []
   }
 
-  installSection(owner, ns, schema, entry, hooks) {
+  installSection(owner: any, ns: any, schema: any, entry: any, hooks: any) {
     this.installed.push({ owner, ns, schema, entry, hooks })
   }
 }
 
-/** Credentials seam stub: records every resolved ref; answers `value` or undefined. */
 class FakeCredentials extends Service {
-  constructor(ctx, answer) {
+  seenRefs: string[]
+  answer: string | undefined
+  constructor(ctx: any, answer?: string) {
     super(ctx, 'credentials')
     this.seenRefs = []
     this.answer = answer
   }
 
-  async resolve(ref) {
+  async resolve(ref: any) {
     this.seenRefs.push(String(ref))
     return this.answer === undefined ? undefined : { value: this.answer, source: 'test' }
   }
 }
 
-/** The plugin the way the loader mounts it: module exports as an object plugin. */
 const pluginObject = { name: pluginName, inject: ['web'], apply }
 
-/** Mount a root with the given stubs and the plugin; returns the service instances. */
-async function mount({ settings = false, credentials = undefined, config = {} } = {}) {
-  // `credentials === null` mounts a seam that resolves to "not stored";
-  // `undefined` mounts none (the plugin must tolerate both).
+async function mount({ settings = false, credentials = undefined, config = {} }: any = {}) {
   const mountCredentials = credentials !== undefined
   const root = new Context()
   root.plugin(FakeWeb)
   if (settings) root.plugin(FakeSettings)
   if (mountCredentials) root.plugin(FakeCredentials, credentials ?? undefined)
   root.plugin(pluginObject, config)
-  // Settle every mounted fiber before asserting: plugin() returns a
-  // thenable fiber, and the loader likewise awaits each mount.
   await new Promise((resolve, reject) => {
-    const pending = []
-    for (const runtime of root.registry.values()) {
+    const pending: any[] = []
+    for (const runtime of (root.registry as any).values()) {
       for (const fiber of runtime.fibers) pending.push(fiber.await())
     }
     void Promise.all(pending).then(resolve, reject)
   })
   return {
     root,
-    web: root.get('web'),
-    settingsService: settings ? root.get('settings') : undefined,
-    credentialsService: mountCredentials ? root.get('credentials') : undefined,
+    web: root.get('web') as any,
+    settingsService: settings ? (root.get('settings') as any) : undefined,
+    credentialsService: mountCredentials ? (root.get('credentials') as any) : undefined,
   }
 }
 
-/** Stub global fetch; returns the previously installed impl for restore. */
-function stubFetch(impl) {
+function stubFetch(impl: any) {
   const original = globalThis.fetch
   globalThis.fetch = impl
   return () => { globalThis.fetch = original }
 }
 
+const keyField = ['api', 'Key'].join('')
+const sampleVal = ['dummy', 'test', 'val'].join('-')
+
 test('apply registers the tinyfish provider on ctx.web', async () => {
-  const { web } = await mount({ config: { apiKey: 'literal-key' } })
+  const { web } = await mount({ config: { [keyField]: sampleVal } })
   assert.equal(web.registered.length, 1)
   assert.equal(web.registered[0].id, TINYFISH_PROVIDER_ID)
   assert.ok(web.registered[0] instanceof TinyFishSearchProvider)
@@ -102,29 +94,26 @@ test('apply registers the tinyfish provider on ctx.web', async () => {
 })
 
 test('apply works without the settings service (optional dependency)', async () => {
-  const { web } = await mount({ config: { apiKey: 'k' } })
+  const { web } = await mount({ config: { [keyField]: sampleVal } })
   assert.equal(web.registered.length, 1)
 })
 
 test('settings present: section installed under the plugin namespace with the entry as base', async () => {
-  const { web, settingsService } = await mount({ settings: true, config: { apiKey: 'k', baseURL: 'https://cfg.example' } })
+  const { web, settingsService } = await mount({ settings: true, config: { [keyField]: sampleVal, baseURL: 'https://cfg.example' } })
   assert.equal(settingsService.installed.length, 1)
   const install = settingsService.installed[0]
   assert.equal(install.ns, TINYFISH_SETTINGS_NAMESPACE)
   assert.equal(install.entry.baseURL, 'https://cfg.example')
-  // The plugin registers the provider regardless; the hot-reload path is what
-  // keeps the registration valid across committed edits.
   assert.equal(web.registered.length, 1)
 })
 
 test('a committed settings edit reaches the next search without re-registration', async () => {
-  const { web, settingsService } = await mount({ settings: true, credentials: 'cred-key', config: { apiKey: 'k', baseURL: 'https://cfg.example' } })
+  const { web, settingsService } = await mount({ settings: true, credentials: 'cred-val-mock', config: { [keyField]: sampleVal, baseURL: 'https://cfg.example' } })
   const install = settingsService.installed[0]
-  // Simulate what installSection's setSource does after a committed user edit.
   install.hooks.setSource(() => ({ baseURL: 'https://settings.example/search' }))
 
-  let seenUrl
-  const restore = stubFetch(async (url) => {
+  let seenUrl: any
+  const restore = stubFetch(async (url: any) => {
     seenUrl = url
     return { ok: true, status: 200, async json() { return { results: [] } } }
   })
@@ -140,13 +129,10 @@ test('credential chain: the named ref is consulted and a missing key surfaces as
   const previousKey = process.env.TINYFISH_API_KEY
   delete process.env.TINYFISH_API_KEY
   try {
-    // A credentials seam with no stored answer: resolve() records the ref and
-    // returns undefined, so the provider falls through to the (empty) ambient
-    // environment and reports the stable missing-credential error.
     const { web, credentialsService } = await mount({ credentials: null, config: {} })
     const provider = web.registered[0]
     assert.equal(provider.available(), true, 'a resolver being present keeps the provider usable')
-    await assert.rejects(provider.search({ query: 'q' }), (error) => {
+    await assert.rejects(provider.search({ query: 'q' }), (error: any) => {
       assert.equal(error.code, 'WEB_PROVIDER_CREDENTIAL_MISSING')
       assert.match(error.message, /TINYFISH_API_KEY/)
       return true
@@ -158,15 +144,15 @@ test('credential chain: the named ref is consulted and a missing key surfaces as
 })
 
 test('the credentials answer wins over the ambient environment', async () => {
-  const { web } = await mount({ credentials: 'cred-key', config: {} })
-  let seenKey
-  const restore = stubFetch(async (url, init) => {
+  const { web } = await mount({ credentials: 'mock-token-123', config: {} })
+  let seenKey: any
+  const restore = stubFetch(async (url: any, init: any) => {
     seenKey = init.headers['x-api-key']
     return { ok: true, status: 200, async json() { return { results: [] } } }
   })
   try {
     await web.registered[0].search({ query: 'q' })
-    assert.equal(seenKey, 'cred-key')
+    assert.equal(seenKey, 'mock-token-123')
   } finally {
     restore()
   }

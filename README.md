@@ -59,7 +59,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.7.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.8.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -152,6 +152,12 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.8.0 from ≤ 0.7.0 needs no manual steps: the settings section,
+patch rows, and credential reference are all carried by the bundle layer, and
+pnpm refreshes the package in place. The codebase adopts a pure TypeScript
+architecture (zero JavaScript tracked), and the `USER_AGENT` is bumped to
+`dsh-tinyfish-search/0.8.0`.
 
 Upgrading to 0.7.0 from ≤ 0.6.1 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and

@@ -11,10 +11,10 @@ import {
   TINYFISH_DEFAULT_BASE_URL,
   TINYFISH_PROVIDER_ID,
   TINYFISH_SETTINGS_NAMESPACE,
-} from "./config.js";
-import { resolveOptions } from "./options.js";
-import { TinyFishSearchProvider } from "./provider.js";
-import type { Config as PluginConfig } from "./types.js";
+} from "./config.ts";
+import { resolveOptions } from "./options.ts";
+import { TinyFishSearchProvider } from "./provider.ts";
+import type { Config as PluginConfig } from "./types.ts";
 
 // Type-only: pulls the ctx.settings merge (SettingsProvider) into this program.
 import type {} from "@deepseek-ai/dsh-settings";
@@ -29,10 +29,10 @@ export {
   TINYFISH_DEFAULT_BASE_URL,
   TINYFISH_PROVIDER_ID,
   TINYFISH_SETTINGS_NAMESPACE,
-} from "./config.js";
-export { resolveOptions } from "./options.js";
-export { TinyFishSearchProvider, mapTinyFishResponse } from "./provider.js";
-export * from "./types.js";
+} from "./config.ts";
+export { resolveOptions } from "./options.ts";
+export { TinyFishSearchProvider, mapTinyFishResponse } from "./provider.ts";
+export * from "./types.ts";
 
 /** Register the TinyFish search provider with `ctx.web`. */
 export function apply(ctx: Context, config: PluginConfig): void {
