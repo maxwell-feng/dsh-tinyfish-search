@@ -2,7 +2,7 @@
 
 [English](UPDATE.md) | 简体中文
 
-> 本版本已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.0** 完成全面验证。
+> 本版本已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.1** 完成全面验证。
 
 本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
 
@@ -20,7 +20,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 或指定确切目标版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.8.0
+dsh plugin --profile web add dsh-tinyfish-search@0.8.1
 ```
 
 ### 从 Git 仓库升级
@@ -42,14 +42,14 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### 从 Tarball 离线包升级
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.8.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.8.1.tgz
 ```
 
 ---
 
-## 2. 从 0.7.x / 0.6.x 升级至 0.8.0 注意事项
+## 2. 从 0.8.0 / 0.7.x 升级至 0.8.1 注意事项
 
-0.8.0 采用纯 TypeScript 架构（源码与测试零 JavaScript 残留），测试由 Node `--experimental-strip-types` 原生运行。配置项与运行时完全保持兼容，无需任何手工调整。
+0.8.1 完整解决了 Dependabot 报告的 `js-yaml` 安全漏洞（升级至 `4.3.2`，修复 CVE-2026-84375、GHSA-5p4m-2wfm-xmqj、CVE-2026-59869 与 CVE-2026-53550），并维持纯 TypeScript 架构（零 JavaScript 残留）。配置项与运行时完全保持兼容，无需任何手工调整。
 
 ---
 

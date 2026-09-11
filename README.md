@@ -59,7 +59,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.8.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.8.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -152,6 +152,13 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.8.1 from ≤ 0.8.0 needs no manual steps: the settings section,
+patch rows, and credential reference are all carried by the bundle layer, and
+pnpm refreshes the package in place. It resolves all Dependabot security alerts
+for `js-yaml` (upgraded to `4.3.2`, fixing CVE-2026-84375 and related advisories),
+retaining the pure TypeScript architecture (zero JavaScript tracked), and the
+`USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
 
 Upgrading to 0.8.0 from ≤ 0.7.0 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and

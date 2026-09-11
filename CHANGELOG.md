@@ -3,6 +3,30 @@
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.8.1] - 2026-09-11
+
+### English
+
+**Security / 安全修复**
+
+- **Resolved all Dependabot security alerts for `js-yaml`**:
+  - Upgraded `js-yaml` devDependency from `4.1.1` to `4.3.2`.
+  - Fixes CVE-2026-84375 (GHSA-2883-xcg3-v3hh), GHSA-5p4m-2wfm-xmqj (CVE-2026-59870), CVE-2026-59869 (GHSA-52cp-r559-cp3m), and CVE-2026-53550 (GHSA-h67p-54hq-rp68).
+  - All 8 open Dependabot vulnerability alerts are now fully resolved and closed on GitHub.
+  - Bumped `USER_AGENT` attribution header to `dsh-tinyfish-search/0.8.1`.
+  - Recompiled and verified all 20 test cases pass.
+
+### 中文
+
+**安全修复 / Security**
+
+- **全面修复 Dependabot 报告的 `js-yaml` 安全漏洞**：
+  - 将 `js-yaml` 开发依赖从 `4.1.1` 升级至 `4.3.2`。
+  - 彻底修复 CVE-2026-84375 (GHSA-2883-xcg3-v3hh)、GHSA-5p4m-2wfm-xmqj (CVE-2026-59870)、CVE-2026-59869 (GHSA-52cp-r559-cp3m) 与 CVE-2026-53550 (GHSA-h67p-54hq-rp68)。
+  - GitHub 仓库端全部 8 项 Dependabot 安全告警已 100% 解决并自动关闭。
+  - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.1`。
+  - 全套 20 项自动化测试回归验证全部通过。
+
 ## [0.8.0] - 2026-09-11
 
 ### English
@@ -280,6 +304,7 @@ Initial release / 首发版本。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.8.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.1
 [0.8.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.0
 [0.7.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.7.0
 [0.6.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.6.1
