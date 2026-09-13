@@ -2,7 +2,7 @@
 
 English | [简体中文](INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.2**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.3**.
 
 This document covers the requirements, every install method, and how to verify the installation.
 
@@ -26,7 +26,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 or pin an exact version:
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.8.2
+dsh plugin --profile web add dsh-tinyfish-search@0.8.3
 ```
 
 ---

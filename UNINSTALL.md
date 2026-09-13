@@ -2,7 +2,7 @@
 
 English | [简体中文](UNINSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.2**.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.3**.
 
 This document explains how to completely uninstall `dsh-tinyfish-search` from a DeepSeek Harness profile and remove lingering configurations.
 
