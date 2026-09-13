@@ -2,7 +2,9 @@
 
 [English](CONFIG.md) | 简体中文
 
-本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、环境变量覆盖及加载层配置方法。
+> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.2** 完成全面验证。
+
+本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 
 ---
 
@@ -14,7 +16,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | `apiKey` | `string` | `undefined` | `secret` | 明文 TinyFish API Key。**推荐留空**，优先使用 `apiKeyEnv`，避免密钥写入明文配置文件。 |
 | `apiKeyEnv` | `string` | `"TINYFISH_API_KEY"` | `credential-ref` | 存放 TinyFish API Key 的环境变量名称。优先从该环境变量中读取。 |
-| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | 普通 | TinyFish Search API 的根请求地址。 |
+| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | 普通 | TinyFish Search API 的根请求地址。必须使用 `http:` 或 `https:`，直连 `localhost` 或私网 IP 会被 SSRF 安全策略拒绝。 |
 | `location` | `string` | `undefined` | 普通 | 可选的地理定位参数（例如 `"US"`, `"CN"`），将透传给 TinyFish 搜索接口进行定向检索。 |
 | `language` | `string` | `undefined` | 普通 | 可选的搜索语言参数（例如 `"en"`, `"zh"`），将透传给 TinyFish 搜索接口。 |
 

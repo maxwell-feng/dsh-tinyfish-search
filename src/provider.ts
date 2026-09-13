@@ -36,6 +36,48 @@ function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
 }
 
+/** Check whether a hostname is localhost, loopback, private or reserved address. */
+export function isPrivateOrLocalHost(rawHostname: string): boolean {
+  let host = rawHostname.toLowerCase().trim();
+  if (host.startsWith("[") && host.endsWith("]")) {
+    host = host.slice(1, -1);
+  }
+  if (
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host === "local" ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal") ||
+    host.endsWith(".lan") ||
+    host.endsWith(".corp") ||
+    host === "0.0.0.0"
+  ) {
+    return true;
+  }
+  const parts = host.split(".");
+  if (parts.length === 4 && parts.every((p) => /^\d{1,3}$/.test(p))) {
+    const o1 = Number(parts[0]);
+    const o2 = Number(parts[1]);
+    const o3 = Number(parts[2]);
+    const o4 = Number(parts[3]);
+    if (o1 > 255 || o2 > 255 || o3 > 255 || o4 > 255) return true;
+    if (o1 === 0 || o1 === 10 || o1 === 127) return true;
+    if (o1 === 100 && o2 >= 64 && o2 <= 127) return true;
+    if (o1 === 169 && o2 === 254) return true;
+    if (o1 === 172 && o2 >= 16 && o2 <= 31) return true;
+    if (o1 === 192 && o2 === 168) return true;
+    if (o1 >= 224) return true;
+    return false;
+  }
+  if (host.includes(":")) {
+    if (host === "::1" || host === "::") return true;
+    if (host.startsWith("::ffff:")) return isPrivateOrLocalHost(host.slice(7));
+    if (/^fe[89ab]/i.test(host)) return true;
+    if (/^f[cd]/i.test(host)) return true;
+  }
+  return false;
+}
+
 /**
  * Map a TinyFish search response to a normalized search result, deduped by
  * URL and capped early to `maxResults`.
@@ -125,6 +167,9 @@ export class TinyFishSearchProvider implements WebSearchProvider {
     const url = new URL(o.baseURL);
     if (url.protocol !== "http:" && url.protocol !== "https:") {
       throw new WebError("unsupported protocol for TinyFish search endpoint", "WEB_PROVIDER_ERROR");
+    }
+    if (isPrivateOrLocalHost(url.hostname)) {
+      throw new WebError(`TinyFish search endpoint "${url.hostname}" is forbidden (SSRF protection)`, "WEB_PROVIDER_ERROR");
     }
 
     url.searchParams.set("query", request.query);

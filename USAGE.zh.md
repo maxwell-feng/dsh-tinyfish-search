@@ -2,7 +2,7 @@
 
 [English](USAGE.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.1** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
+> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.2** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
 
 本文档说明搜索在本插件中的流转路径、涉及的提供方、凭据解析顺序与错误形态，并附可运行示例。
 

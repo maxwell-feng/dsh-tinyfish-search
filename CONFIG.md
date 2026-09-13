@@ -2,7 +2,9 @@
 
 English | [简体中文](CONFIG.zh.md)
 
-This document describes all configuration options, schema validation rules, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
+> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.2**.
+
+This document describes all configuration options, schema validation rules, SSRF security defenses, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
 
 ---
 
@@ -14,7 +16,7 @@ The `Config` exported by the plugin is validated at runtime with `@deepseek-ai/s
 | :--- | :--- | :--- | :--- | :--- |
 | `apiKey` | `string` | `undefined` | `secret` | Literal TinyFish API Key. **Leave empty** and prefer `apiKeyEnv` to prevent committing secrets to disk. |
 | `apiKeyEnv` | `string` | `"TINYFISH_API_KEY"` | `credential-ref` | Environment variable name carrying the TinyFish API Key. |
-| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | Normal | TinyFish Search API root endpoint. |
+| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | Normal | TinyFish Search API root endpoint. Must use `http:` or `https:`. Requests to `localhost` or private IP ranges are blocked by SSRF defense. |
 | `location` | `string` | `undefined` | Normal | Optional geo location targeting (e.g. `"US"`, `"CN"`) forwarded to TinyFish. |
 | `language` | `string` | `undefined` | Normal | Optional search language (e.g. `"en"`, `"zh"`) forwarded to TinyFish. |
 
