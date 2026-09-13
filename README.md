@@ -160,11 +160,12 @@ for `js-yaml` (upgraded to `4.3.2`, fixing CVE-2026-84375 and related advisories
 retaining the pure TypeScript architecture (zero JavaScript tracked), and the
 `USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
 
-Upgrading to 0.8.0 from ≤ 0.7.0 needs no manual steps: the settings section,
-patch rows, and credential reference are all carried by the bundle layer, and
-pnpm refreshes the package in place. The codebase adopts a pure TypeScript
-architecture (zero JavaScript tracked), and the `USER_AGENT` is bumped to
-`dsh-tinyfish-search/0.8.0`.
+Upgrading to 0.8.2 from ≤ 0.8.1 needs no manual steps: hardened with enterprise-grade SSRF security defenses, verified against DeepSeek Harness `0.1.5-rc.2`, and `USER_AGENT` attribution updated to `dsh-tinyfish-search/0.8.2`.
+
+Upgrading to 0.8.1 from ≤ 0.8.0 needs no manual steps: resolved all Dependabot
+security alerts for `js-yaml` (CVE-2026-84375, GHSA-5p4m-2wfm-xmqj, CVE-2026-59869, CVE-2026-53550),
+retaining the pure TypeScript architecture (zero JavaScript tracked), and the
+`USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
 
 Upgrading to 0.7.0 from ≤ 0.6.1 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and

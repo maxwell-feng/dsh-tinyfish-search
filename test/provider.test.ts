@@ -114,7 +114,7 @@ test('search() forwards location/language only when configured', async () => {
 })
 
 test('mapTinyFishResponse skips malformed results instead of throwing', async () => {
-  assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' }, { url: 42 as any }] }, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' } as any, { url: 42 as any }] }, undefined).sources, [])
   assert.deepEqual(mapTinyFishResponse({}, undefined).sources, [])
   assert.deepEqual(mapTinyFishResponse({ results: 'not-an-array' as any }, undefined).sources, [])
   assert.deepEqual(
@@ -171,7 +171,7 @@ test('search() without a key throws WEB_PROVIDER_CREDENTIAL_MISSING', async () =
 test('mapTinyFishResponse dedupes by url and omits empty fields', () => {
   const result = mapTinyFishResponse({
     results: [
-      { url: 'https://a.test', title: '', snippet: null, date: '' },
+      { url: 'https://a.test', title: '', snippet: null as any, date: '' },
       { url: 'https://a.test', title: 'dup' },
       { url: 'https://b.test', publishedAt: '2026-01-02' },
     ],
@@ -181,4 +181,24 @@ test('mapTinyFishResponse dedupes by url and omits empty fields', () => {
     { url: 'https://b.test', publishedAt: '2026-01-02' },
   ])
   assert.equal(result.truncated, false)
+})
+
+test('search() rejects localhost and private IPs via SSRF defense', async () => {
+  const localProvider = new TinyFishSearchProvider({
+    [keyField]: sampleKey,
+    baseURL: 'http://127.0.0.1:8080',
+  } as any)
+  await assert.rejects(
+    localProvider.search({ query: 'test' }),
+    (err: any) => err.code === 'WEB_PROVIDER_ERROR' && err.message.includes('SSRF protection'),
+  )
+
+  const privateProvider = new TinyFishSearchProvider({
+    [keyField]: sampleKey,
+    baseURL: 'http://192.168.1.1',
+  } as any)
+  await assert.rejects(
+    privateProvider.search({ query: 'test' }),
+    (err: any) => err.code === 'WEB_PROVIDER_ERROR' && err.message.includes('SSRF protection'),
+  )
 })
