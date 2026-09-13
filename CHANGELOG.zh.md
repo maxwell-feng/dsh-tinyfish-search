@@ -4,6 +4,14 @@
 
 本项目的所有重要版本演进记录均归档于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，并严格遵循 [语义化版本规范](https://semver.org/lang/zh-CN/)。
 
+## [0.8.3] - 2026-09-13
+
+### 发行包资产优化
+
+- 优化 Release 资产附件结构，仅保留生产安装包（`dsh-tinyfish-search-0.8.3.tgz`），不再挂载多余的原始 markdown 文档。
+
+---
+
 ## [0.8.2] - 2026-09-13
 
 ### 安全加固与生态同步

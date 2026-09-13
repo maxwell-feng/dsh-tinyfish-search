@@ -5,6 +5,16 @@ English | [中文](CHANGELOG.zh.md)
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.8.3] - 2026-09-13
+
+### English
+
+- **Release Asset Packaging**: Streamlined release assets to ship exclusively the production tarball without redundant raw documentation files.
+
+### 中文
+
+- **发行包资产优化**：优化 Release 资产附件结构，仅保留生产安装包（tarball），不再挂载多余的原始 markdown 文档。
+
 ## [0.8.2] - 2026-09-13
 
 ### English
