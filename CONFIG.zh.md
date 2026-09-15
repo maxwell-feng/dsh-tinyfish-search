@@ -2,7 +2,7 @@
 
 [English](CONFIG.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.3** 完成全面验证。
+> 已在 DeepSeek Harness **0.1.6-alpha.1** 上随 `dsh-tinyfish-search` **0.9.0** 完成全面验证。
 
 本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 

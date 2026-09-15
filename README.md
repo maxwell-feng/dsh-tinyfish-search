@@ -35,8 +35,8 @@ restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.5-rc.2` (latest release)
-- Node.js `>=22` (matches the harness engine range)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.6-alpha.1` (latest release)
+- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
 
@@ -59,7 +59,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.8.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.9.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -159,6 +159,13 @@ pnpm refreshes the package in place. It resolves all Dependabot security alerts
 for `js-yaml` (upgraded to `4.3.2`, fixing CVE-2026-84375 and related advisories),
 retaining the pure TypeScript architecture (zero JavaScript tracked), and the
 `USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
+
+Upgrading to 0.9.0 from ≤ 0.8.3 needs no manual steps: aligned with DeepSeek
+Harness `0.1.6-alpha.1` (`@deepseek-ai/dsh-*` peers now `^0.1.6-alpha.1`, Node
+`^22.19.0 || >=24.0.0`), and the published package now ships only `lib/`,
+`cordis.patch.yml`, and `LICENSE` — the guides stay in this repository and are
+no longer installed into your profile. The `USER_AGENT` is bumped to
+`dsh-tinyfish-search/0.9.0`.
 
 Upgrading to 0.8.3 from ≤ 0.8.1 needs no manual steps: hardened with enterprise-grade SSRF security defenses, verified against DeepSeek Harness `0.1.5-rc.2`, and `USER_AGENT` attribution updated to `dsh-tinyfish-search/0.8.3`.
 

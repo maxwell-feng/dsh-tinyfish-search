@@ -4,6 +4,17 @@
 
 本项目的所有重要版本演进记录均归档于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，并严格遵循 [语义化版本规范](https://semver.org/lang/zh-CN/)。
 
+## [0.9.0] - 2026-09-16
+
+### 适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包
+
+- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`（旧区间 `^0.1.5-rc.2` 按 SemVer 预发布规则不满足 `0.1.6` 的预发布版本，在 `0.1.6` 宿主上安装会报未满足 peer）；`devDependencies` 同步升级，`engines.dsh` = `^0.1.6-alpha.1`，`engines.node` = `^22.19.0 || >=24.0.0`；
+- **缝接口复核**：`ctx.web`、`ctx.settings.installSection`、`ctx.credentials.resolve`、`launchEnvironmentOf` 在两个 harness 版本之间源码完全一致，提供方源码零改动，SSRF 防御原样保留；
+- **精简发行包**：发布 tarball 仅含 `lib/`、`cordis.patch.yml` 与 `LICENSE`（15 个文件 / 14.8 kB，此前 27 个文件 / 35.9 kB），双语文档不再随包安装进 `node_modules`；
+- `USER_AGENT` 升级为 `dsh-tinyfish-search/0.9.0`；21 项测试与类型检查全部通过。
+
+---
+
 ## [0.8.3] - 2026-09-13
 
 ### 发行包资产优化

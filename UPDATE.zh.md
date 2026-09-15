@@ -2,7 +2,7 @@
 
 [English](UPDATE.md) | 简体中文
 
-> 本版本已在 DeepSeek Harness **0.1.5-rc.2** 上随 `dsh-tinyfish-search` **0.8.3** 完成全面验证。
+> 本版本已在 DeepSeek Harness **0.1.6-alpha.1** 上随 `dsh-tinyfish-search` **0.9.0** 完成全面验证。
 
 本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
 
@@ -20,7 +20,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 或指定确切目标版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.8.3
+dsh plugin --profile web add dsh-tinyfish-search@0.9.0
 ```
 
 ### 从 Git 仓库升级
@@ -42,14 +42,14 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### 从 Tarball 离线包升级
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.8.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.9.0.tgz
 ```
 
 ---
 
-## 2. 从 0.8.0 / 0.7.x 升级至 0.8.1 注意事项
+## 2. 从 0.8.3 / 0.8.x 升级至 0.9.0 注意事项
 
-0.8.1 完整解决了 Dependabot 报告的 `js-yaml` 安全漏洞（升级至 `4.3.2`，修复 CVE-2026-84375、GHSA-5p4m-2wfm-xmqj、CVE-2026-59869 与 CVE-2026-53550），并维持纯 TypeScript 架构（零 JavaScript 残留）。配置项与运行时完全保持兼容，无需任何手工调整。
+0.9.0 完成与 DeepSeek Harness `0.1.6-alpha.1` 的对齐：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`——旧的 `^0.1.5-rc.2` 按 SemVer 预发布规则并不满足 `0.1.6` 的预发布版本；`engines.dsh` 与 `engines.node` 跟随宿主（`^22.19.0 || >=24.0.0`）。本插件消费的全部缝（`ctx.web`、`ctx.settings.installSection`、`ctx.credentials`、`launchEnvironmentOf`）在两个 harness 版本之间源码完全一致，因此无需改动源码。发布包现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`：各文档保留在仓库中，不再随包安装进你的 profile。配置项完全兼容，pnpm 会原地刷新，无需任何手工调整。
 
 ---
 

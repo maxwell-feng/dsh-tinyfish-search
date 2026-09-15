@@ -5,6 +5,26 @@ English | [中文](CHANGELOG.zh.md)
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.9.0] - 2026-09-16
+
+### English
+
+**DeepSeek Harness 0.1.6-alpha.1 Alignment & Lean Distribution**:
+
+- **Harness compatibility**: `@deepseek-ai/dsh-*` peer ranges are now `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under SemVer prerelease rules, so a `0.1.6` host reported an unmet peer on install. `devDependencies` moved to the same set, `engines.dsh` is `^0.1.6-alpha.1`, and `engines.node` now follows the host range `^22.19.0 || >=24.0.0`.
+- **Seam audit**: every seam this plugin consumes — `ctx.web` (`registerSearchProvider`, `WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), `ctx.settings.installSection`, `ctx.credentials.resolve`, and `launchEnvironmentOf` — is source-identical between `0.1.5-rc.2` and `0.1.6-alpha.1`, so no provider source changed and the SSRF defenses (http/https only, localhost/loopback/private/reserved rejection) carry over unchanged.
+- **Lean distribution package**: the published tarball now ships only `lib/`, `cordis.patch.yml`, and `LICENSE` — 15 files and 14.8 kB packed, down from 27 files and 35.9 kB. The bilingual guides stay in the repository and are no longer installed into your profile's `node_modules`. `package.json` and `LICENSE` are always packed by npm, and npm's packing rules also force the two `README` files.
+- `USER_AGENT` bumped to `dsh-tinyfish-search/0.9.0`; typecheck clean and all 21 tests pass against `0.1.6-alpha.1`.
+
+### 中文
+
+**适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包**：
+
+- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`——旧区间 `^0.1.5-rc.2` 按 SemVer 预发布规则不满足 `0.1.6` 的预发布版本，在 `0.1.6` 宿主上安装会报未满足 peer；`devDependencies` 同步升级，`engines.dsh` 为 `^0.1.6-alpha.1`，`engines.node` 跟随宿主区间 `^22.19.0 || >=24.0.0`。
+- **缝接口复核**：本插件消费的全部缝——`ctx.web`（`registerSearchProvider`、`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、`ctx.settings.installSection`、`ctx.credentials.resolve`、`launchEnvironmentOf`——在 `0.1.5-rc.2` 与 `0.1.6-alpha.1` 之间源码完全一致，因此提供方源码零改动，SSRF 防御（仅 http/https、拦截 localhost/环回/私网/保留网段）原样保留。
+- **精简发行包**：发布 tarball 现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`——由 27 个文件 35.9 kB 降至 15 个文件 14.8 kB。双语文档保留在仓库中，不再安装进你的 profile 的 `node_modules`。`package.json` 与 `LICENSE` 由 npm 强制打包，两个 `README` 文件亦为 npm 打包规则强制包含。
+- `USER_AGENT` 升级为 `dsh-tinyfish-search/0.9.0`；类型检查零错误，全部 21 项测试在 `0.1.6-alpha.1` 上通过。
+
 ## [0.8.3] - 2026-09-13
 
 ### English

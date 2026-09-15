@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.8.3
+dsh plugin --profile web add dsh-tinyfish-search@0.9.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,17 +40,21 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.8.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.9.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.8.1 from 0.8.0 / 0.7.x
+## 2. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
-0.8.1 resolves all Dependabot security advisories for `js-yaml` (upgraded to `4.3.2`),
-fixes CVE-2026-84375, GHSA-5p4m-2wfm-xmqj, CVE-2026-59869, and CVE-2026-53550, while
-retaining the pure TypeScript architecture (zero JavaScript tracked). No breaking changes:
-pnpm refreshes the package in place.
+0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
+accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
+SemVer prerelease rules — and `engines.dsh` / `engines.node` follow the host (`^22.19.0 || >=24.0.0`).
+Every seam this plugin consumes (`ctx.web`, `ctx.settings.installSection`, `ctx.credentials`,
+`launchEnvironmentOf`) is source-identical between the two harness versions, so no source change was
+needed. The published package now ships only `lib/`, `cordis.patch.yml`, and `LICENSE`: the guides stay
+in the repository and are no longer installed into your profile. No configuration changes — pnpm
+refreshes the package in place.
 
 ---
 
