@@ -1,6 +1,6 @@
 # 使用说明文档 (Usage Guide)
 
-[English](USAGE.md) | 简体中文
+[英文](USAGE.md) | 简体中文
 
 > 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
 

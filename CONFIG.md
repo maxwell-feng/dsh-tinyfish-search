@@ -1,6 +1,6 @@
 # Configuration Guide
 
-English | [简体中文](CONFIG.zh.md)
+English | [Chinese](CONFIG.zh.md)
 
 > Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**.
 

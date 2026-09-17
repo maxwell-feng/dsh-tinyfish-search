@@ -1,6 +1,6 @@
 # Update Guide
 
-English | [简体中文](UPDATE.zh.md)
+English | [Chinese](UPDATE.zh.md)
 
 > Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**.
 
@@ -68,7 +68,7 @@ refreshes the package in place.
 
 ---
 
-## 3. Verification
+## 4. Verification
 
 Start the profile:
 
@@ -80,7 +80,7 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 
 ---
 
-## 3. Rollback
+## 5. Rollback
 
 To roll back to a previous version:
 

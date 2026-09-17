@@ -1,13 +1,10 @@
-# Changelog / 更新说明
+# Changelog
 
-English | [中文](CHANGELOG.zh.md)
+English | [Chinese](CHANGELOG.zh.md)
 
-All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
-The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
+All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [0.10.0] - 2026-09-18
-
-### English
 
 **DeepSeek Harness 0.1.6-alpha.2 Alignment**:
 
@@ -16,18 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
 - **Attribution**: `USER_AGENT` bumped to `dsh-tinyfish-search/0.10.0`.
 - **Quality & Verification**: 21 unit tests passing, TypeScript compilation and typecheck completely clean. Refreshed all bilingual documentation for `0.1.6-alpha.2`.
 
-### 中文
-
-**适配 DeepSeek Harness 0.1.6-alpha.2**：
-
-- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 依赖区间升级至 `^0.1.6-alpha.2`，开发依赖锁定至 `0.1.6-alpha.2`，`engines.dsh` 更新为 `^0.1.6-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
-- **扩展缝接口复核**：复核确认 `ctx.web`（`registerSearchProvider`、`WebSearchProvider`、`WebError`）、`ctx.settings.installSection`、`ctx.credentials.resolve` 与 `launchEnvironmentOf` 在 `0.1.6-alpha.2` 下完全兼容，严谨保留 SSRF 安全基线（仅允许 http/https，拦截 localhost/环回/私网/保留网段）。
-- **标识头更新**：请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.10.0`。
-- **严格测试与文档**：21 项单元测试全量通过，TypeScript 类型检查零错误。全面刷新全套双语文档，写明适配 DeepSeek Harness `0.1.6-alpha.2`。
-
 ## [0.9.0] - 2026-09-16
-
-### English
 
 **DeepSeek Harness 0.1.6-alpha.1 Alignment & Lean Distribution**:
 
@@ -36,28 +22,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
 - **Lean distribution package**: the published tarball now ships only `lib/`, `cordis.patch.yml`, and `LICENSE` — 15 files and 14.8 kB packed, down from 27 files and 35.9 kB. The bilingual guides stay in the repository and are no longer installed into your profile's `node_modules`. `package.json` and `LICENSE` are always packed by npm, and npm's packing rules also force the two `README` files.
 - `USER_AGENT` bumped to `dsh-tinyfish-search/0.9.0`; typecheck clean and all 21 tests pass against `0.1.6-alpha.1`.
 
-### 中文
-
-**适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包**：
-
-- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`——旧区间 `^0.1.5-rc.2` 按 SemVer 预发布规则不满足 `0.1.6` 的预发布版本，在 `0.1.6` 宿主上安装会报未满足 peer；`devDependencies` 同步升级，`engines.dsh` 为 `^0.1.6-alpha.1`，`engines.node` 跟随宿主区间 `^22.19.0 || >=24.0.0`。
-- **缝接口复核**：本插件消费的全部缝——`ctx.web`（`registerSearchProvider`、`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、`ctx.settings.installSection`、`ctx.credentials.resolve`、`launchEnvironmentOf`——在 `0.1.5-rc.2` 与 `0.1.6-alpha.1` 之间源码完全一致，因此提供方源码零改动，SSRF 防御（仅 http/https、拦截 localhost/环回/私网/保留网段）原样保留。
-- **精简发行包**：发布 tarball 现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`——由 27 个文件 35.9 kB 降至 15 个文件 14.8 kB。双语文档保留在仓库中，不再安装进你的 profile 的 `node_modules`。`package.json` 与 `LICENSE` 由 npm 强制打包，两个 `README` 文件亦为 npm 打包规则强制包含。
-- `USER_AGENT` 升级为 `dsh-tinyfish-search/0.9.0`；类型检查零错误，全部 21 项测试在 `0.1.6-alpha.1` 上通过。
-
 ## [0.8.3] - 2026-09-13
-
-### English
 
 - **Release Asset Packaging**: Streamlined release assets to ship exclusively the production tarball without redundant raw documentation files.
 
-### 中文
-
-- **发行包资产优化**：优化 Release 资产附件结构，仅保留生产安装包（tarball），不再挂载多余的原始 markdown 文档。
-
 ## [0.8.2] - 2026-09-13
-
-### English
 
 **Security & Ecosystem Synchronization**:
 - **SSRF Defenses & Host Boundary Protection**:
@@ -68,22 +37,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Refreshed all bilingual documentation (`INSTALL.md`, `INSTALL.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `USAGE.md`, `USAGE.zh.md`, `CONFIG.md`, `CONFIG.zh.md`, `UNINSTALL.md`, `UNINSTALL.zh.md`, `README.md`, `README.zh.md`), confirming verification against DeepSeek Harness `0.1.5-rc.2`.
   - All 21 test cases passing.
 
-### 中文
-
-**安全加固与生态同步**:
-- **SSRF 深度防御与主机边界校验**：
-  - 在 `src/provider.ts` 中实现严格的协议与主机安全校验：仅允许 `http:` 与 `https:` 协议，自动拦截指向 `localhost`、环回地址（`127.0.0.0/8`, `::1`）、RFC1918 私网网段（`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`）及保留网段的请求，防范 SSRF 风险。
-- **DeepSeek Harness 0.1.5-rc.2 验证与文档全面同步**：
-  - 精简 `pnpm-workspace.yaml` 中的旧版本白名单声明；
-  - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.2`；
-  - 全面更新双语文档体系（`INSTALL.md`, `INSTALL.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `USAGE.md`, `USAGE.zh.md`, `CONFIG.md`, `CONFIG.zh.md`, `UNINSTALL.md`, `UNINSTALL.zh.md`, `README.md`, `README.zh.md`），明确标注经 DeepSeek Harness `0.1.5-rc.2` 全面验证；
-  - 自动化测试用例扩充至 21 项，全量验证通过。
-
 ## [0.8.1] - 2026-09-11
 
-### English
-
-**Security / 安全修复**
+**Security**
 
 - **Resolved all Dependabot security alerts for `js-yaml`**:
   - Upgraded `js-yaml` devDependency from `4.1.1` to `4.3.2`.
@@ -92,24 +48,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Bumped `USER_AGENT` attribution header to `dsh-tinyfish-search/0.8.1`.
   - Recompiled and verified all 20 test cases pass.
 
-### 中文
-
-**安全修复 / Security**
-
-- **全面修复 Dependabot 报告的 `js-yaml` 安全漏洞**：
-  - 将 `js-yaml` 开发依赖从 `4.1.1` 升级至 `4.3.2`。
-  - 彻底修复 CVE-2026-84375 (GHSA-2883-xcg3-v3hh)、GHSA-5p4m-2wfm-xmqj (CVE-2026-59870)、CVE-2026-59869 (GHSA-52cp-r559-cp3m) 与 CVE-2026-53550 (GHSA-h67p-54hq-rp68)。
-  - GitHub 仓库端全部 8 项 Dependabot 安全告警已 100% 解决并自动关闭。
-  - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.1`。
-  - 全套 20 项自动化测试回归验证全部通过。
-
 ## [0.8.0] - 2026-09-11
 
-### English
+**Changed**
 
-**Changed / 变更**
-
-- **Pure TypeScript Architecture Refactoring (Zero JavaScript) / 纯 TypeScript 架构重构（无 JavaScript 残留）**:
+**Pure TypeScript Architecture Refactoring (Zero JavaScript)**:
   - Fully refactored into a pure TypeScript codebase following official DeepSeek Harness plugin development guidelines.
   - Completely removed all legacy `.mjs` / `.js` files from repository tracking and test runners.
   - Converted the entire test suite into pure TypeScript (`test/apply.test.ts`, `test/patch.test.ts`, `test/provider.test.ts`), executed natively using Node `--experimental-strip-types`.
@@ -118,26 +61,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.7.0`.
   - Verified 100% test pass rate across all 20 tests.
 
-### 中文
-
-**变更 / Changed**
-
-- **纯 TypeScript 架构重构（无 JavaScript 残留） / Pure TypeScript Architecture Refactoring (Zero JavaScript)**：
-  - 严格按照官方 DeepSeek Harness 插件开发规范将代码全面重构为纯 TypeScript 架构。
-  - 从源码仓库与测试流程中彻底清除全部历史遗留 `.mjs` / `.js` 文件。
-  - 测试套件全部转换为纯 TypeScript（`test/apply.test.ts`、`test/patch.test.ts`、`test/provider.test.ts`），通过 Node 原生 `--experimental-strip-types` 执行。
-  - 配置 `allowImportingTsExtensions` 与 `rewriteRelativeImportExtensions` 现代化双配置（`tsconfig.json` 用于源码运行，`tsconfig.build.json` 用于分发产物编译）。
-  - 将公共类型、Schemastery 校验、凭据解析链、检索提供方等职责独立拆分为专属模块。
-  - 更新请求标识头 `USER_AGENT` 为 `dsh-tinyfish-search/0.7.0`。
-  - 全套 20 项自动化测试验证全部通过。
-
 ## [0.7.0] - 2026-09-11
 
-### English
+**Changed**
 
-**Changed / 变更**
-
-- **Modular TypeScript Architecture Refactoring / 模块化 TypeScript 架构重构**:
+**Modular TypeScript Architecture Refactoring**:
   - Refactored monolithic codebase into dedicated modules following the official DeepSeek Harness plugin development guide (`docs/cookbook/adding-a-package.md` and `docs/user/develop/basic/index.md`).
   - Separated public types into `src/types.ts`.
   - Extracted Schemastery validation into `src/config.ts`.
@@ -147,25 +75,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.7.0`.
   - Recompiled and verified all 20 test suite cases pass.
 
-### 中文
-
-**变更 / Changed**
-
-- **模块化 TypeScript 架构重构 / Modular TypeScript Architecture Refactoring**：
-  - 严格按照官方 DeepSeek Harness 插件开发规范将单体代码重构为高内聚、模块化 TypeScript 架构。
-  - 将公共类型独立拆分至 `src/types.ts`。
-  - 将 Schemastery 校验逻辑与常量独立拆分至 `src/config.ts`。
-  - 将凭据服务与启动环境多层解析链独立拆分至 `src/options.ts`。
-  - 将 `TinyFishSearchProvider` 核心检索、HTTP 规范映射与结果规整独立拆分至 `src/provider.ts`。
-  - 在 `src/index.ts` 中暴露标准 Cordis 插件入口，并完全保持向下兼容的导出接口。
-  - 更新请求标识头 `USER_AGENT` 为 `dsh-tinyfish-search/0.7.0`。
-  - 重新编译并验证全套 20 项自动化测试全部通过。
-
 ## [0.6.1] - 2026-09-11
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - **DeepSeek Harness 0.1.5-rc.2 compliance & manifest modernization**:
   - Declared `manifestVersion: 1` under `package.json.dsh` conforming to `@deepseek-ai/dsh-package-manifest`.
@@ -174,241 +86,134 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵�
   - Bumped `USER_AGENT` attribution header to `dsh-tinyfish-search/0.6.1`.
   - Verified full test suite against DeepSeek Harness `0.1.5-rc.2`.
 
-### 中文
-
-**兼容性 / Compatibility**
-
-- **适配 DeepSeek Harness 0.1.5-rc.2 与清单规范现代化**：
-  - 在 `package.json.dsh` 中显式声明 `manifestVersion: 1`，遵循最新的 `@deepseek-ai/dsh-package-manifest` 插件规范。
-  - 在 `package.json.engines` 中声明兼容宿主范围 `"dsh": "^0.1.5-rc.2"`。
-  - 将 peer 和 dev 依赖（`@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`、`@deepseek-ai/dsh-settings`、`@deepseek-ai/dsh-llm`）升级至 `0.1.5-rc.2`。
-  - 更新 `USER_AGENT` 请求头为 `dsh-tinyfish-search/0.6.1`。
-  - 针对 DeepSeek Harness `0.1.5-rc.2` 完成全部测试验证。
-
 ## [0.5.0] - 2026-09-10
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - Verified against deepseek-harness `0.1.5-rc.1` (latest release): no seam changes since `0.1.5-alpha.1` — the web seam (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), the credentials seam (`credentialRef`), the launch-environment seam (`launchEnvironmentOf`), and the settings section install (`ctx.settings.installSection`) are all source-identical between the two tags, as is the vendored `@deepseek-ai/cordis` `4.0.2`. The rc.1 headline change (scope-aware `tool-web` system-prompt guidance) does not touch any seam this plugin consumes. `devDependencies` bumped to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` / `@deepseek-ai/dsh-settings` at `0.1.5-rc.1`; peer ranges now `^0.1.5-rc.1`; engines now `node >=22` (matching the harness range); `USER_AGENT` bumped to `dsh-tinyfish-search/0.5.0`. The full test suite (20 tests) passes against the new package set.
 
-**Added / 新增**
+**Added**
 
 - **Standalone `INSTALL.md` / `INSTALL.zh.md` and `USAGE.md` / `USAGE.zh.md`**, completing the standard documentation suite: install methods, verification, search flow, providers, credential resolution order, worked examples (wire outputs captured from the shipped build), and the error table.
 - **Standalone `README.zh.md`**: the README is now an EN/ZH pair (`README.md` / `README.zh.md`) like every other guide.
 
-### 中文
-
-**兼容性 / Compatibility**
-
-- 已针对 deepseek-harness `0.1.5-rc.1`（最新发行版）验证：自 `0.1.5-alpha.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝（`credentialRef`）、启动环境缝（`launchEnvironmentOf`）以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 亦未变化。rc.1 的主要变更（`tool-web` 系统提示词的作用域感知）不涉及本插件消费的任何缝。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` / `@deepseek-ai/dsh-settings` `0.1.5-rc.1`；peer 区间现为 `^0.1.5-rc.1`；engines 现为 `node >=22`（与 harness 区间一致）；`USER_AGENT` 升至 `dsh-tinyfish-search/0.5.0`。全部测试（20 项）在新区间依赖下通过。
-
-**新增 / Added**
-
-- **独立的 `INSTALL.md` / `INSTALL.zh.md` 与 `USAGE.md` / `USAGE.zh.md`**，补齐标准文档体系：安装方式、验证、搜索流转、提供方、凭据解析顺序、完整示例（线路输出取自发布构建实测）与错误表。
-- **独立的 `README.zh.md`**：README 现为与其他指南一致的中英成对文档（`README.md` / `README.zh.md`）。
-
 ## [0.4.0] - 2026-09-09
 
-### English
-
-**Changed / 变更**
+**Changed**
 - **DeepSeek Harness 0.1.5-alpha.1 compatibility verified**: updated internal user agent to `dsh-tinyfish-search/0.4.0` and verified against the latest `dsh-web@0.1.5-alpha.1` capability seam.
 - **Documentation standard suite added**: added dedicated standalone `CONFIG.md`, `CONFIG.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `UNINSTALL.md`, and `UNINSTALL.zh.md`.
 - **Package manifest updated**: included newly created documentation files into package `files` manifest for npm and tarball distribution.
 
-### 中文
-
-**变更 / Changed**
-- **适配最新版 DeepSeek Harness 0.1.5-alpha.1**：更新内部客户端标识 `USER_AGENT` 至 `dsh-tinyfish-search/0.4.0`，全面通过最新版 `dsh-web@0.1.5-alpha.1` 契约验证。
-- **补齐标准四文档体系**：新增独立的配置说明（`CONFIG.zh.md` / `CONFIG.md`）、更新升级说明（`UPDATE.zh.md` / `UPDATE.md`）和卸载说明（`UNINSTALL.zh.md` / `UNINSTALL.md`）。
-- **打包清单更新**：在 `package.json` 的 `files` 字段中正式纳入全部新说明文档，支持 npm 及离线 tarball 发布分发。
-
 ## [0.3.0] - 2026-09-05
 
-### English
-
-**Changed / 变更**
+**Changed**
 
 - **Scope note documented for the `tool-web` re-enable row.** The bundle patch deliberately re-enables the HOST-level `tool-web` row (which `@deepseek-ai/dsh-web-app` ships disabled), so `web_search` / `web_fetch` are visible to *every* agent preset on a profile that composes this bundle — including presets that would not otherwise carry web tools (e.g. `minimal`). A preset mounting its own `tool-web` row still shadows the global registration for its agents. The README and the patch header now document this scope and how to scope the tools to one preset instead (override/remove the `tool-web` row in the profile's `cordis.patch.yml` and add `tool-web` to that preset's agent composition). The row behavior itself is unchanged from 0.2.1.
 - **New optional config fields `location` and `language`**, forwarded to the TinyFish Search API as `location` / `language` query parameters (geo targeting / search language). Blank or unset values send nothing, so the default wire format is identical to 0.2.1. Both render on the settings card and support settings hot-reload like every other field.
 - **Required peer dependencies made honest.** `@deepseek-ai/dsh-credentials` and `@deepseek-ai/dsh-launch-environment` are imported unconditionally at module load, so they are no longer declared `optional` in `peerDependenciesMeta` (an optional peer that fails to resolve crashes the import anyway — the declaration lied). Their peer ranges are now `>=0.1.2-alpha.4`; `@deepseek-ai/dsh-web` relaxes to `>=0.1.2-alpha.2`. Every `dsh` profile already carries all three.
 
-**Fixed / 修复**
+**Fixed**
 
 - **`mapTinyFishResponse` no longer throws on a malformed TinyFish response.** A result item without a string `url`, a non-array `results`, or non-string `title` / `snippet` / `publishedAt` fields are skipped/dropped instead of surfacing as a masked `TypeError` wrapped into an unrelated `WEB_PROVIDER_ERROR` ("unprocessable response body"). One malformed response now degrades to zero sources.
 
-**Added / 新增**
+**Added**
 
 - **Integration tests for `apply()`** on the real `@deepseek-ai/cordis` runtime (`test/apply.test.mjs`): provider registration, optional settings-service presence, `installSection` wiring with a committed edit reaching the next search, the credential resolution chain (credentials → launch environment → process env), and the stable `WEB_PROVIDER_CREDENTIAL_MISSING` surface. The patch test now parses `cordis.patch.yml` with js-yaml and asserts the composed rows against the real dsh-base rows under the loader's per-key/wholesale-replace semantics, instead of regex-scraping YAML text.
 - **Dead code removed**: the `declare const process` shim (every ambient read already went through `globalThis.process`). `USER_AGENT` bumped to `dsh-tinyfish-search/0.3.0`.
 
-### 中文
-
-**变更 / Changed**
-
-- **为 `tool-web` 重启用行补充作用范围说明。** bundle 补丁有意重启用宿主层 `tool-web` 行（`@deepseek-ai/dsh-web-app` 自带该行禁用），因此 `web_search` / `web_fetch` 对组合了本 bundle 的 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）。自带 `tool-web` 行的预设仍会以自己的注册为它的 agent 遮蔽这个全局注册。README 与补丁头注释现说明该作用范围，以及改为单预设限定的方法（在 profile 的 `cordis.patch.yml` 中覆盖/移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合）。行的行为本身与 0.2.1 一致。
-- **新增可选配置字段 `location` 与 `language`**，作为 `location` / `language` 查询参数转发给 TinyFish Search API（地区定位 / 搜索语言）。留空或未设置时不发送，默认请求线格式与 0.2.1 完全一致。两者均渲染在设置卡片上，并与其他字段一样支持设置热更新。
-- **必需 peer 依赖声明回归诚实。** `@deepseek-ai/dsh-credentials` 与 `@deepseek-ai/dsh-launch-environment` 在模块加载时即被无条件导入，因此不再声明为 `optional`（可选 peer 解析失败同样会让 import 崩溃，原声明名不副实）。两者 peer 区间现为 `>=0.1.2-alpha.4`；`@deepseek-ai/dsh-web` 放宽为 `>=0.1.2-alpha.2`。所有 `dsh` profile 均已内置这三个包。
-
-**修复 / Fixed**
-
-- **`mapTinyFishResponse` 不再因 TinyFish 畸形响应抛异常。** 缺字符串 `url` 的结果项、非数组 `results`、非字符串的 `title` / `snippet` / `publishedAt` 字段均被跳过/丢弃，不再以被掩盖的 `TypeError` 形式包进无关的 `WEB_PROVIDER_ERROR`（"unprocessable response body"）。一条畸形响应现在退化为零来源。
-
-**新增 / Added**
-
-- **`apply()` 集成测试**，运行在真实 `@deepseek-ai/cordis` 运行时上（`test/apply.test.mjs`）：提供方注册、settings 服务可选性、`installSection` 接线及已提交修改对下一次搜索的生效、凭据解析链（credentials → 启动环境 → process env）、稳定的 `WEB_PROVIDER_CREDENTIAL_MISSING` 错误面。补丁测试现用 js-yaml 真实解析 `cordis.patch.yml`，并按 loader 的按键覆盖 / config 整体替换语义对真实 dsh-base 行做组合断言，取代原先对 YAML 原文的正则匹配。
-- **移除死代码**：`declare const process` 垫片（所有环境读取本就经由 `globalThis.process`）。`USER_AGENT` 升至 `dsh-tinyfish-search/0.3.0`。
-
 ## [0.2.1] - 2026-09-04
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - Verified against deepseek-harness `0.1.3-alpha.1` (latest release): no seam changes since `0.1.2-rc.1` — the web seam (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), the credentials seam, the launch-environment seam, and the settings section install (`ctx.settings.installSection`) are all source-identical between the two tags, as are the vendored `@deepseek-ai/cordis` `4.0.2` and the loader / bundle patch mechanism. 0.1.3's headline changes (environment-proxy support, Session persistence rework, file attachments) do not touch any seam this plugin consumes. The published `@deepseek-ai/dsh-*` type packages remain at `0.1.2-rc.1` (the newest release on npm); because the seam sources are unchanged, type-checking against them is equivalent to checking against `0.1.3-alpha.1` sources. `USER_AGENT` bumped to `dsh-tinyfish-search/0.2.1`. The full test suite passes.
 
-### 中文
-
-**兼容性 / Compatibility**
-
-- 已针对 deepseek-harness `0.1.3-alpha.1`（最新发行版）验证：自 `0.1.2-rc.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝、启动环境缝以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。0.1.3 的主要变更（环境代理支持、Session 持久化重构、文件附件）均不涉及本插件消费的任何缝。npm 上已发布的 `@deepseek-ai/dsh-*` 类型包仍为 `0.1.2-rc.1`（npm 上的最新版本）；由于缝源码未变，针对它们做类型检查与针对 `0.1.3-alpha.1` 源码等价。`USER_AGENT` 升至 `dsh-tinyfish-search/0.2.1`。全部测试通过。
-
 ## [0.2.0] - 2026-09-03
 
-### Fixed / 修复
-
-- **Fix: the `tool-web` re-enable row now clears `disabled` explicitly (`disabled: false`).** The loader's id-patch merge is **per-key**: a config-only row restates `config` but leaves the `disabled: true` shipped by the `@deepseek-ai/dsh-web-app` bundle in place, so 0.1.9's re-enable row still left `web_search` unregistered. Verified with `dsh --profile web --dump-config`: the composed `tool-web` row now carries `disabled: false` and the model-facing `web_search` / `web_fetch` tools mount. / **修复：`tool-web` 重启用行现在显式清除 `disabled`（`disabled: false`）。** loader 的按 id 补丁合并是**按键生效**的：仅带 `config` 的行会重述配置但保留 `@deepseek-ai/dsh-web-app` bundle 自带的 `disabled: true`，因此 0.1.9 的重启用行依然让 `web_search` 处于未注册状态。已用 `dsh --profile web --dump-config` 验证：组合后的 `tool-web` 行现为 `disabled: false`，模型可见的 `web_search` / `web_fetch` 工具正常挂载。
+### Fixed
+- - **Fix: the `tool-web` re-enable row now clears `disabled` explicitly (`disabled: false`).** The loader's id-patch merge is **per-key**: a config-only row restates `config` but leaves the `disabled: true` shipped by the `@deepseek-ai/dsh-web-app` bundle in place, so 0.1.9's re-enable row still left `web_search` unregistered. Verified with `dsh --profile web --dump-config`: the composed `tool-web` row now carries `disabled: false` and the model-facing `web_search` / `web_fetch` tools mount.
 
 ## [0.1.9] - 2026-09-03
 
-### Fixed / 修复
+### Fixed
 
-- **Fix: the bundle patch now re-enables `tool-web` — without it `web_search` was never registered.** The `@deepseek-ai/dsh-web-app` bundle ships the `tool-web` row **disabled**; dsh-base enables it only in headless/server profiles. The searxng-web bundle re-enables the row in its own patch, but the dsh-tinyfish-search patch did not, so on a clean install into a web profile the model saw no `web_search` tool at all and the TinyFish provider sat idle (devices that appeared to work had a manual `tool-web` override in their profile patch from earlier debugging). The patch now restates the row with `search: true`, `fetch: true`, and the base timeouts, mirroring searxng-web. / **修复：bundle 补丁现重新启用 `tool-web` —— 缺失时 `web_search` 根本不会注册。** `@deepseek-ai/dsh-web-app` bundle 自带 `tool-web` **禁用**行（dsh-base 仅在 headless/server 组合中启用它）。searxng-web 的补丁自己重新启用了该行，而 dsh-tinyfish-search 的补丁没有 —— 干净安装到 web profile 后模型看不到 `web_search` 工具，TinyFish 提供方完全闲置（此前"能用"的设备是因为排障时在 profile 补丁里手工加了 `tool-web` 覆盖行）。现按 searxng-web 的方式补上该行（`search: true`、`fetch: true` 及基础超时值）。
-- **Settings hot-reload per the docs** — `apply` now registers the config through `ctx.settings.installSection` (namespace `dsh-tinyfish-search`), exactly like `web-search-deepseek`: the Plugins settings card renders the section, and a saved edit (e.g. a new `apiKeyEnv` or `baseURL`) reaches the next search without a restart. Removed the dead no-op settings probe and its misleading comment. / **按文档接入设置热更新** —— `apply` 现通过 `ctx.settings.installSection` 注册配置（命名空间 `dsh-tinyfish-search`），与 `web-search-deepseek` 完全一致：Plugins 设置卡片可渲染该节，保存的修改（如新的 `apiKeyEnv` 或 `baseURL`）无需重启即对下一次搜索生效。同时删除了无操作死代码及其误导性注释。
+- **Fix: the bundle patch now re-enables `tool-web` — without it `web_search` was never registered.** The `@deepseek-ai/dsh-web-app` bundle ships the `tool-web` row **disabled**; dsh-base enables it only in headless/server profiles. The searxng-web bundle re-enables the row in its own patch, but the dsh-tinyfish-search patch did not, so on a clean install into a web profile the model saw no `web_search` tool at all and the TinyFish provider sat idle (devices that appeared to work had a manual `tool-web` override in their profile patch from earlier debugging). The patch now restates the row with `search: true`, `fetch: true`, and the base timeouts, mirroring searxng-web.
+- **Settings hot-reload per the docs** — `apply` now registers the config through `ctx.settings.installSection` (namespace `dsh-tinyfish-search`), exactly like `web-search-deepseek`: the Plugins settings card renders the section, and a saved edit (e.g. a new `apiKeyEnv` or `baseURL`) reaches the next search without a restart. Removed the dead no-op settings probe and its misleading comment.
 
 ## [0.1.8] - 2026-09-03
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - Verified against deepseek-harness `0.1.2-rc.1` (latest `master`): no seam changes since `0.1.2-alpha.5` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`, credentials seam, launch-environment seam); the vendored `@deepseek-ai/cordis` `4.0.2` and the loader/bundle patch mechanism are unchanged. Bumped `devDependencies` to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` at `0.1.2-rc.1` and `USER_AGENT` to `dsh-tinyfish-search/0.1.8`. The full test suite passes against the new package set.
 
-### 中文
-
-**兼容性 / Compatibility**
-
-- 已针对 deepseek-harness `0.1.2-rc.1`（最新 `master`）验证：自 `0.1.2-alpha.5` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-rc.1`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.8`。全部测试在新区间依赖下通过。
-
 ## [0.1.7] - 2026-09-02
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - Verified against deepseek-harness `0.1.2-alpha.5` (latest `master`): no seam changes since `0.1.2-alpha.4` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`, credentials seam, launch-environment seam). Bumped `devDependencies` to `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` at `0.1.2-alpha.5` and `USER_AGENT` to `dsh-tinyfish-search/0.1.7`. The full test suite passes against the new package set.
 
-### 中文
-
-**兼容性 / Compatibility**
-
-- 已针对 deepseek-harness `0.1.2-alpha.5`（最新 `master`）验证：自 `0.1.2-alpha.4` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-alpha.5`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.7`。全部测试在新区间依赖下通过。
-
 ## [0.1.6] - 2026-09-02
 
-### Fixed / 修复
+### Fixed
 
 - **Fix `Search service unavailable` (`WEB_PROVIDER_UNAVAILABLE` / `WEB_PROVIDER_CONFIGURED_UNAVAILABLE`) after harness `0.1.2-alpha.4`.** The provider now resolves the TinyFish API key through the harness credential seam (`ctx.credentials.resolve` + `launchEnvironmentOf(ctx)`) instead of only `process.env`, matching `dsh-web-search-deepseek`. `available()` now mirrors that provider: a resolver being present makes the provider usable, so a missing key surfaces as `WEB_PROVIDER_CREDENTIAL_MISSING` (“set `TINYFISH_API_KEY` / `dsh credentials set` / `apiKey`”) instead of the generic unavailable. `Config.apiKeyEnv` is now `role: 'credential-ref'`. Update `dsh-tinyfish-search` to `0.1.6` and ensure the key is set via `TINYFISH_API_KEY` env or `dsh credentials set TINYFISH_API_KEY <key>`. Verified on harness `0.1.2-alpha.4` with live TinyFish Search (mocked fetch in tests, live fetch manually verified).
-- **修复 Harness `0.1.2-alpha.4` 后 `Search service unavailable`（`WEB_PROVIDER_UNAVAILABLE` / `WEB_PROVIDER_CONFIGURED_UNAVAILABLE`）。** 提供方现通过 Harness 凭据缝（`ctx.credentials.resolve` + `launchEnvironmentOf(ctx)`）解析 TinyFish API Key，而非仅 `process.env`，与 `dsh-web-search-deepseek` 保持一致。`available()` 现与该实现一致：只要存在解析器即视为可用，缺失密钥时在 `search()` 阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确定位（“请设置 `TINYFISH_API_KEY` / `dsh credentials set` / `apiKey`”），而非通用的 `unavailable`。`Config.apiKeyEnv` 现为 `role: 'credential-ref'`。请升级至 `0.1.6` 并通过 `TINYFISH_API_KEY` 环境变量或 `dsh credentials set` 配置密钥。已在 Harness `0.1.2-alpha.4` 上通过真实 TinyFish Search 验证（测试中 mock fetch，手工真实请求验证）。
 
 ## [0.1.5] - 2026-09-02
 
-### English
-
-**Compatibility / 兼容性**
+**Compatibility**
 
 - Verified against deepseek-harness `0.1.2-alpha.4` (latest `master`): `ctx.web` seam unchanged since `0.1.2-alpha.3` (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`). Bumped `devDependencies` to `@deepseek-ai/dsh-web 0.1.2-alpha.4` / `@deepseek-ai/dsh-llm 0.1.2-alpha.4`, `USER_AGENT` to `dsh-tinyfish-search/0.1.5`.
-- 已针对 deepseek-harness `0.1.2-alpha.4`（最新 `master`）验证：自 `0.1.2-alpha.3` 以来 `ctx.web` 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web 0.1.2-alpha.4` / `@deepseek-ai/dsh-llm 0.1.2-alpha.4`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.5`。
 
-**Docs / 文档**
+**Docs**
 
 - Added explicit **Usage** and **Uninstall** sections (EN+ZH), completing six-section bilingual coverage: Release / Changelog / Install / Uninstall / Usage / Config. Requirements now notes verified harness `0.1.2-alpha.4`.
-- 新增显式**使用**与**卸载**章节（中英双语），补齐六项覆盖：发行版 / 更新说明 / 安装 / 卸载 / 使用 / 配置；环境要求现标明已验证的 `0.1.2-alpha.4`。
 
 ## [0.1.4] - 2026-09-01
 
-### English
-
-**Changed / 变更**
+**Changed**
 
 - Adapted to DeepSeek Harness **0.1.2-alpha.3** (master): `devDependencies` now pin `@deepseek-ai/dsh-web` and `@deepseek-ai/dsh-llm` at `0.1.2-alpha.3` and `@deepseek-ai/schemastery` moves to `3.18.2` (the schemastery revision the alpha.3 checkout builds against); `@deepseek-ai/cordis` stays at `4.0.2`. Between `0.1.2-alpha.2` and `0.1.2-alpha.3` the `ctx.web` provider contract (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`) and the seam registry are unchanged, so no provider code changes were required; the full test suite passes against the new package set. The request `user-agent` attribution header now reports `dsh-tinyfish-search/0.1.4`.
-- 适配 DeepSeek Harness **0.1.2-alpha.3**（master）：`devDependencies` 锁定 `@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-llm` 至 `0.1.2-alpha.3`，`@deepseek-ai/schemastery` 升至 `3.18.2`（alpha.3 检出所依赖的 schemastery 版本）；`@deepseek-ai/cordis` 保持 `4.0.2`。从 `0.1.2-alpha.2` 到 `0.1.2-alpha.3`，`ctx.web` 提供方契约（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）与缝注册表没有变化，因此无需改动提供方代码；全部测试在新区间依赖下通过。请求的 `user-agent` 归属头现在上报 `dsh-tinyfish-search/0.1.4`。
 
 ## [0.1.3] - 2026-08-31
 
-### English
-
-**Changed / 变更**
+**Changed**
 
 - Adapted to DeepSeek Harness **0.1.2-alpha.2**: `devDependencies` now pin `@deepseek-ai/dsh-web` and `@deepseek-ai/dsh-llm` at `0.1.2-alpha.2` and `@deepseek-ai/cordis` at `4.0.2`, and the `@deepseek-ai/dsh-web` peer range now starts at `0.1.2-alpha.2`. The `ctx.web` provider contract (`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`) is unchanged in this harness release, so no provider code changes were required; the full test suite passes against the new package set. The request `user-agent` attribution header now reports `dsh-tinyfish-search/0.1.3`.
-- 适配 DeepSeek Harness **0.1.2-alpha.2**：`devDependencies` 锁定 `@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-llm` 至 `0.1.2-alpha.2`、`@deepseek-ai/cordis` 至 `4.0.2`；`@deepseek-ai/dsh-web` 的 peer 依赖区间下限升至 `0.1.2-alpha.2`。该版 harness 的 `ctx.web` 提供方契约（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）没有变化，因此无需改动提供方代码；全部测试在新区间依赖下通过。请求的 `user-agent` 归属头现在上报 `dsh-tinyfish-search/0.1.3`。
 
 ## [0.1.2] - 2026-08-30
 
-### English
-
-**Fixed / 修复**
+**Fixed**
 
 - The bundle's `cordis.patch.yml` now ships the documented `config` scaffolding on the `dsh-tinyfish-search` row (`apiKey` / `apiKeyEnv` / `baseURL`, all commented out — defaults apply until a later layer overrides the row), matching the README "Configure" example; the patch test guards it.
-- bundle 的 `cordis.patch.yml` 现在随包附带 README「配置」一节所示的 `config` 脚手架（`apiKey` / `apiKeyEnv` / `baseURL`，全部为注释示例——在更后层覆盖该行之前均使用默认值），并由 patch 回归测试守护。
 
-**Changed / 变更**
+**Changed**
 
 - The request `user-agent` attribution header now reports the package version (`dsh-tinyfish-search/0.1.2`).
-- 请求的 `user-agent` 归属头现在上报包版本（`dsh-tinyfish-search/0.1.2`）。
 
 ## [0.1.1] - 2026-08-30
 
-### English
-
-**Fixed / 修复**
+**Fixed**
 
 - **The bundle now actually takes over `web_search`**: the `dsh-base` bundle pins `searchProvider: deepseek-official` on the `web` row, so merely registering the `tinyfish` provider left the built-in tool on the DeepSeek backend (failing against a non-DeepSeek key with "DeepSeek API error (HTTP 404)"). Per the harness layer rules, the bundle patch now overrides the `web` row by id (`searchProvider: tinyfish`, `fetchProvider: http` restated) — installing the plugin switches the built-in `web_search` to TinyFish automatically. Later layers (profile / home `cordis.patch.yml` / `--patch`) can still override the row.
-- **修复了插件不生效的问题**:`dsh-base` 把 `web` 行的 `searchProvider` 钉死为 `deepseek-official`,因此仅仅注册 `tinyfish` provider 时,内置 `web_search` 仍走 DeepSeek 后端(用非 DeepSeek 密钥调用即报 "DeepSeek API error (HTTP 404)")。按 harness 的层规则,bundle patch 现在按 id 覆盖 `web` 行(`searchProvider: tinyfish`,并完整重述 `fetchProvider: http`)——安装插件即自动将内置 `web_search` 切换到 TinyFish。更后层(profile / home `cordis.patch.yml` / `--patch`)仍可按 id 覆盖。
 - Added a regression test asserting the bundle patch carries the `web` row override.
-- 新增回归测试,断言 bundle patch 携带了 `web` 行覆盖。
 
 ## [0.1.0] - 2026-08-27
 
-### English
+**Added**
 
-**Added / 功能**
-
-Initial release / 首发版本。
+Initial release
 
 - Register a TinyFish-backed web search provider (`tinyfish`) on the DeepSeek Harness web capability seam (`ctx.web`), so the built-in `web_search` tool queries the TinyFish Search API (`GET https://api.search.tinyfish.ai`) instead of the DeepSeek Anthropic-compatible endpoint.
-- 在 DeepSeek Harness 的 web 能力缝（`ctx.web`）上注册 TinyFish 网页搜索提供方（`tinyfish`），使内置 `web_search` 工具改用 TinyFish Search API（`GET https://api.search.tinyfish.ai`），不再走 DeepSeek 的 Anthropic 兼容端点。
 - No LLM turn consumed per search — a plain REST GET with the `X-API-Key` header; TinyFish Search is free at any wallet balance.
-- 每次搜索不消耗模型调用——普通 REST GET 请求，携带 `X-API-Key` 头；TinyFish Search 任意余额下免费。
 - Normalizes `results[]` (title / snippet / url / date) into the seam's portable `WebSearchSource` shape, dedupes by URL, and honors `maxResults` early.
-- 将 `results[]`（标题 / 摘要 / 链接 / 日期）归一化为缝接口的 `WebSearchSource` 结构，按 URL 去重，并提前遵守 `maxResults` 上限。
 - Config through the bundle patch layer: `apiKey` (secret), `apiKeyEnv` (default `TINYFISH_API_KEY`), `baseURL` (default TinyFish canonical endpoint).
-- 支持通过 bundle patch 层配置：`apiKey`（secret 角色）、`apiKeyEnv`（默认 `TINYFISH_API_KEY`）、`baseURL`（默认 TinyFish 官方端点）。
 - Stable error mapping on the seam's vocabulary: `WEB_PROVIDER_CREDENTIAL_MISSING`, `WEB_PROVIDER_ERROR`, `WEB_ABORTED`.
-- 采用缝接口的错误词表：`WEB_PROVIDER_CREDENTIAL_MISSING`、`WEB_PROVIDER_ERROR`、`WEB_ABORTED`。
 - Ships as an installable bundle (`dsh.bundle` + `cordis.patch.yml`): `dsh plugin --profile web add dsh-tinyfish-search`.
-- 以可安装 bundle 形式发布（`dsh.bundle` + `cordis.patch.yml`）：`dsh plugin --profile web add dsh-tinyfish-search`。
 - Unit tests (node:test, mocked fetch) covering mapping, dedupe, caps, errors, and cancellation.
-- 单元测试（node:test，mock fetch），覆盖映射、去重、上限、错误与取消。
 
-**Known limitations / 已知限制**
+**Known limitations**
 
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
-- 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
-- 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
 [0.8.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.1
 [0.8.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.0

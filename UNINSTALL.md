@@ -1,6 +1,6 @@
 # Uninstall Guide
 
-English | [简体中文](UNINSTALL.zh.md)
+English | [Chinese](UNINSTALL.zh.md)
 
 > Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**.
 

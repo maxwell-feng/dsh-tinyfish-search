@@ -1,6 +1,6 @@
 # Usage Guide
 
-English | [简体中文](USAGE.zh.md)
+English | [Chinese](USAGE.zh.md)
 
 > Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**. All wire outputs below were captured from the shipped `lib/` build.
 

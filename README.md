@@ -1,6 +1,6 @@
 # dsh-tinyfish-search
 
-English | [简体中文](README.zh.md)
+English | [Chinese](README.zh.md)
 
 > [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin that backs the built-in `web_search` tool with the [TinyFish Search API](https://docs.tinyfish.ai/search-api). One GET per query, no model call — fast and free (TinyFish Search is free at any wallet balance).
 
@@ -42,12 +42,12 @@ restart.
 
 ## Documentation
 
-- [Install Guide / 安装说明](INSTALL.md) ([中文版](INSTALL.zh.md))
-- [Usage Guide / 使用说明](USAGE.md) ([中文版](USAGE.zh.md))
-- [Configuration Guide / 配置说明](CONFIG.md) ([中文版](CONFIG.zh.md))
-- [Update Guide / 更新说明](UPDATE.md) ([中文版](UPDATE.zh.md))
-- [Uninstall Guide / 卸载说明](UNINSTALL.md) ([中文版](UNINSTALL.zh.md))
-- [Changelog / 更新日志](CHANGELOG.md)
+- [Install Guide](INSTALL.md) ([Chinese](INSTALL.zh.md))
+- [Usage Guide](USAGE.md) ([Chinese](USAGE.zh.md))
+- [Configuration Guide](CONFIG.md) ([Chinese](CONFIG.zh.md))
+- [Update Guide](UPDATE.md) ([Chinese](UPDATE.zh.md))
+- [Uninstall Guide](UNINSTALL.md) ([Chinese](UNINSTALL.zh.md))
+- [Changelog](CHANGELOG.md) ([Chinese](CHANGELOG.zh.md))
 
 ## Install
 
@@ -117,7 +117,7 @@ See the [Configuration Guide](CONFIG.md) for the full schema, credential resolut
 dsh --profile web --dump-config | grep tinyfish   # layer present
 ```
 
-Inside a session, call `web_search` and check that results carry TinyFish URLs/snippets. The web search settings card in the GUI (`网页搜索`) shows the provider state.
+Inside a session, call `web_search` and check that results carry TinyFish URLs/snippets. The web search settings card in the GUI shows the provider state.
 
 ## Usage
 
@@ -215,7 +215,7 @@ Publishing to npm runs through GitHub Actions with npm **Trusted Publishing** (O
 
 ## Release notes
 
-See [CHANGELOG.md](./CHANGELOG.md) (bilingual) and the [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) page.
+See [CHANGELOG.md](./CHANGELOG.md) (English) or [CHANGELOG.zh.md](./CHANGELOG.zh.md) and the [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) page.
 
 ## License
 
