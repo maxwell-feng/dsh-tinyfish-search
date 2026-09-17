@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # Bilingual docs rule (AGENTS.md): one language per file, pairs and switchers
+      # Bilingual docs rule: one language per file, pairs and switchers
       # complete. Needs no dependencies, so it gates before the install step.
       - name: Docs language
         run: node scripts/check-docs-language.mjs

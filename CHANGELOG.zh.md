@@ -14,7 +14,7 @@
 
 ### 新增
 
-- `AGENTS.md` 写明双语规则；`scripts/check-docs-language.mjs` 在本地与 CI 中检查文档、源码文案与配对（CI 在安装依赖前运行）。
+- `scripts/check-docs-language.mjs` 在本地与 CI 中检查文档、源码文案与配对（CI 在安装依赖前运行）。
 
 ## [0.10.0] - 2026-09-18
 

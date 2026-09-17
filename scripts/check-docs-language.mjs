@@ -2,7 +2,7 @@
 /**
  * check-docs-language.mjs — one language per file, enforced.
  *
- * Rules (see AGENTS.md):
+ * Bilingual documentation rule — one language per file, always in pairs:
  *   X.md         English only: no CJK anywhere, code fences included.
  *   X.zh.md      Chinese only: no English sentences (code, links, quoted literals
  *                and product names are exempt; fenced blocks are ignored).
@@ -10,6 +10,9 @@
  *                listed in SRC_CJK_ALLOW below.
  *   Every doc pair exists, and both sides carry a single-language switcher line
  *   (documents under .github/ are exempt from the switcher only).
+ *   New or changed documents are submitted as a pair; never one side alone.
+ *   Forbidden: bilingual labels, bilingual entries on one line, Chinese terms or
+ *   product-name glosses in English prose (and the reverse).
  *
  * Run: node scripts/check-docs-language.mjs
  * Exits 1 with `file:line` findings when a rule is broken.
@@ -27,7 +30,6 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '..')
  *   check: false           — exempt from the language scan (a file that must quote both languages).
  */
 const FILES = {
-  'AGENTS.md': { pair: false, check: false },
   '.github/ISSUE_TEMPLATE/config.yml': { check: false },
 }
 /** Source files allowed to contain CJK, with the reason. Everything else under src/ must be English. */
@@ -154,5 +156,5 @@ for (const f of findings) {
   console.error(`${f.file}:${f.line}  ${f.message}`)
   if (f.snippet) console.error(`    ${f.snippet}`)
 }
-console.error('\nRules: AGENTS.md "Bilingual documentation rule". Exemptions: scripts/check-docs-language.mjs (FILES, SRC_CJK_ALLOW).')
+console.error('\nRules: see the header of scripts/check-docs-language.mjs (FILES, SRC_CJK_ALLOW).')
 process.exit(1)
