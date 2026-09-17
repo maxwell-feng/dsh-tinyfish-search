@@ -3,9 +3,11 @@
  * check-docs-language.mjs — one language per file, enforced.
  *
  * Rules (see AGENTS.md):
- *   X.md      English only: no CJK anywhere, code fences included.
- *   X.zh.md   Chinese only: no English sentences (code, links, quoted literals
- *             and product names are exempt; fenced blocks are ignored).
+ *   X.md         English only: no CJK anywhere, code fences included.
+ *   X.zh.md      Chinese only: no English sentences (code, links, quoted literals
+ *                and product names are exempt; fenced blocks are ignored).
+ *   src/**\/*.ts English only: no CJK in strings or comments, unless the file is
+ *                listed in SRC_CJK_ALLOW below.
  *   Every doc pair exists, and both sides carry a single-language switcher line
  *   (documents under .github/ are exempt from the switcher only).
  *
@@ -28,8 +30,10 @@ const FILES = {
   'AGENTS.md': { pair: false, check: false },
   '.github/ISSUE_TEMPLATE/config.yml': { check: false },
 }
+/** Source files allowed to contain CJK, with the reason. Everything else under src/ must be English. */
+const SRC_CJK_ALLOW = {}
 /** Directories never scanned. */
-const SKIP_DIRS = new Set(['node_modules', 'lib', 'dist', '.git', 'test', 'src', 'scripts', '.mimosa'])
+const SKIP_DIRS = new Set(['node_modules', 'lib', 'dist', '.git', 'test', 'scripts', '.mimosa'])
 /** Text files scanned as English docs unless declared otherwise. */
 const SCAN_EXT = new Set(['.md', '.yml', '.yaml'])
 
@@ -71,7 +75,7 @@ function englishSentences(line) {
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/')
 const files = walk(ROOT).sort()
 
-// ---- language checks ----
+// ---- language checks: documents ----
 for (const file of files) {
   const path = rel(file)
   const decl = FILES[path] ?? {}
@@ -96,6 +100,18 @@ for (const file of files) {
       for (const run of englishSentences(line)) report(path, i + 1, `Chinese document contains an English sentence: "${run}"`, line)
     } else if (CJK.test(line)) {
       report(path, i + 1, 'English document contains Chinese', line) // code fences included
+    }
+  })
+}
+
+// ---- language checks: source strings and comments ----
+for (const file of files) {
+  const path = rel(file)
+  if (!path.startsWith('src/') || !/\.tsx?$/.test(path)) continue
+  if (SRC_CJK_ALLOW[path] !== undefined) continue
+  readFileSync(file, 'utf8').split(/\r?\n/).forEach((line, i) => {
+    if (CJK.test(line)) {
+      report(path, i + 1, 'source file contains Chinese (strings and comments are English; register an exception in SRC_CJK_ALLOW otherwise)', line)
     }
   })
 }
@@ -130,7 +146,7 @@ for (const file of files) {
 
 // ---- result ----
 if (findings.length === 0) {
-  console.log('check-docs-language: OK — English docs free of Chinese, Chinese docs free of English prose, pairs and switchers complete')
+  console.log('check-docs-language: OK — English docs free of Chinese, Chinese docs free of English prose, source strings English, pairs and switchers complete')
   process.exit(0)
 }
 console.error(`check-docs-language: ${findings.length} violation(s)\n`)
@@ -138,5 +154,5 @@ for (const f of findings) {
   console.error(`${f.file}:${f.line}  ${f.message}`)
   if (f.snippet) console.error(`    ${f.snippet}`)
 }
-console.error('\nRules: AGENTS.md "Bilingual documentation rule". Exemptions: scripts/check-docs-language.mjs (FILES).')
+console.error('\nRules: AGENTS.md "Bilingual documentation rule". Exemptions: scripts/check-docs-language.mjs (FILES, SRC_CJK_ALLOW).')
 process.exit(1)
