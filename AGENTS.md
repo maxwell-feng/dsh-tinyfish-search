@@ -31,3 +31,7 @@ node scripts/check-docs-language.mjs
 ```
 
 It fails on: any Chinese character in an English document; an English sentence in a Chinese document (outside code, links, quoted literals and product names); a missing counterpart file; a malformed or missing switcher line.
+
+## Security scan status
+
+Mimosa deep scans of this repository complete with **0 findings but `runStatus: inconclusive`** (coverage `partial`): the call graph cannot close across dynamic dispatch, because DSH plugins register tools and services at runtime. A zero-finding scan therefore means "nothing found within the parsed call graph", not "verified safe" — do not describe this project as security-verified, and do not treat the scan as a substitute for review.
