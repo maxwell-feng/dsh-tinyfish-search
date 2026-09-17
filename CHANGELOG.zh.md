@@ -4,6 +4,17 @@
 
 本项目的所有重要版本演进记录均归档于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，并严格遵循 [语义化版本规范](https://semver.org/lang/zh-CN/)。
 
+## [0.10.0] - 2026-09-18
+
+### 适配 DeepSeek Harness 0.1.6-alpha.2
+
+- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 依赖区间升级至 `^0.1.6-alpha.2`，开发依赖锁定至 `0.1.6-alpha.2`，`engines.dsh` 更新为 `^0.1.6-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`；
+- **缝接口复核**：复核确认 `ctx.web`（`registerSearchProvider`、`WebSearchProvider`、`WebError`）、`ctx.settings.installSection`、`ctx.credentials.resolve` 与 `launchEnvironmentOf` 在 `0.1.6-alpha.2` 下完全兼容，严谨保留 SSRF 安全基线（仅允许 http/https，拦截 localhost/环回/私网/保留网段）；
+- **标识头更新**：请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.10.0`；
+- **严格测试与文档**：21 项单元测试全量通过，TypeScript 类型检查零错误。全面刷新全套双语文档，写明适配 DeepSeek Harness `0.1.6-alpha.2`。
+
+---
+
 ## [0.9.0] - 2026-09-16
 
 ### 适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包

@@ -2,7 +2,7 @@
 
 English | [简体中文](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.5-rc.2** with `dsh-tinyfish-search` **0.8.3**.
+> Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.9.0
+dsh plugin --profile web add dsh-tinyfish-search@0.10.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,12 +40,22 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.9.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.10.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
+## 2. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
+
+0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
+accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
+Every seam this plugin consumes (`ctx.web`, `ctx.settings.installSection`, `ctx.credentials`,
+`launchEnvironmentOf`) remains fully source-compatible. SSRF defenses continue to protect requests.
+Configuration fields remain 100% backward-compatible.
+
+---
+
+## 3. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
 0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
