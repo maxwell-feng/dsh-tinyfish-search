@@ -12,7 +12,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Added
 
-- `AGENTS.md` states the bilingual rule; `scripts/check-docs-language.mjs` enforces documents, source strings and pairs locally and in CI, which runs it before installing dependencies.
+- `scripts/check-docs-language.mjs` enforces documents, source strings and pairs locally and in CI, which runs it before installing dependencies.
 
 ## [0.10.0] - 2026-09-18
 
