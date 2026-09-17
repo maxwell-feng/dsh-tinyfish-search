@@ -5,6 +5,26 @@ English | [中文](CHANGELOG.zh.md)
 All notable changes to this project are documented here / 本项目的所有重要变更均记录于此。
 The format follows [Keep a Changelog](https://keepachangelog.com/) / 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## [0.10.0] - 2026-09-18
+
+### English
+
+**DeepSeek Harness 0.1.6-alpha.2 Alignment**:
+
+- **Harness compatibility**: `@deepseek-ai/dsh-*` peer ranges updated to `^0.1.6-alpha.2`. `devDependencies` bumped to `0.1.6-alpha.2`, `engines.dsh` updated to `^0.1.6-alpha.2`, and `engines.node` remains `^22.19.0 || >=24.0.0`.
+- **Seam audit**: Verified that all consumed seams (`ctx.web` search provider registration, `ctx.settings.installSection`, `ctx.credentials.resolve`, and `launchEnvironmentOf`) remain fully compatible with DSH `0.1.6-alpha.2`. SSRF defense policies (http/https only, rejection of localhost/loopback/private/reserved subnets) continue to protect all external requests.
+- **Attribution**: `USER_AGENT` bumped to `dsh-tinyfish-search/0.10.0`.
+- **Quality & Verification**: 21 unit tests passing, TypeScript compilation and typecheck completely clean. Refreshed all bilingual documentation for `0.1.6-alpha.2`.
+
+### 中文
+
+**适配 DeepSeek Harness 0.1.6-alpha.2**：
+
+- **宿主兼容性**：`@deepseek-ai/dsh-*` peer 依赖区间升级至 `^0.1.6-alpha.2`，开发依赖锁定至 `0.1.6-alpha.2`，`engines.dsh` 更新为 `^0.1.6-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
+- **扩展缝接口复核**：复核确认 `ctx.web`（`registerSearchProvider`、`WebSearchProvider`、`WebError`）、`ctx.settings.installSection`、`ctx.credentials.resolve` 与 `launchEnvironmentOf` 在 `0.1.6-alpha.2` 下完全兼容，严谨保留 SSRF 安全基线（仅允许 http/https，拦截 localhost/环回/私网/保留网段）。
+- **标识头更新**：请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.10.0`。
+- **严格测试与文档**：21 项单元测试全量通过，TypeScript 类型检查零错误。全面刷新全套双语文档，写明适配 DeepSeek Harness `0.1.6-alpha.2`。
+
 ## [0.9.0] - 2026-09-16
 
 ### English

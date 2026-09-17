@@ -2,7 +2,7 @@
 
 [English](UNINSTALL.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.6-alpha.1** 上随 `dsh-tinyfish-search` **0.9.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。
 
 本文档指导如何从 DeepSeek Harness 的指定 Profile 中完整卸载 **dsh-tinyfish-search** 插件及其相关配置与密钥引用。
 
