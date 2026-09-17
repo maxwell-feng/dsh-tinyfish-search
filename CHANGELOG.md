@@ -4,6 +4,16 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+
+- **Documentation normalized.** Every document is single-language — `X.md` English, `X.zh.md` Chinese — with complete pairs and switcher lines; the bilingual changelog was split so both sides cover all 23 releases.
+
+### Added
+
+- `AGENTS.md` states the bilingual rule; `scripts/check-docs-language.mjs` enforces documents, source strings and pairs locally and in CI, which runs it before installing dependencies.
+
 ## [0.10.0] - 2026-09-18
 
 **DeepSeek Harness 0.1.6-alpha.2 Alignment**:
