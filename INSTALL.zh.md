@@ -1,6 +1,6 @@
 # 安装说明文档 (Install Guide)
 
-[English](INSTALL.md) | 简体中文
+[英文](INSTALL.md) | 简体中文
 
 > 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。
 

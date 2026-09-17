@@ -1,6 +1,6 @@
 # 配置说明文档 (Configuration Guide)
 
-[English](CONFIG.md) | 简体中文
+[英文](CONFIG.md) | 简体中文
 
 > 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。
 

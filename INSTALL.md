@@ -1,6 +1,6 @@
 # Install Guide
 
-English | [简体中文](INSTALL.zh.md)
+English | [Chinese](INSTALL.zh.md)
 
 > Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**.
 
@@ -83,6 +83,6 @@ Check the bundle layer is composed:
 dsh --profile web --dump-config | grep tinyfish   # layer present
 ```
 
-Then start a session and ask something requiring live information (e.g. “What is today's weather in Tokyo?”). Confirm the model calls `web_search` and the results carry TinyFish URLs/snippets. The web search settings card in the GUI (`网页搜索`) shows provider `tinyfish` with `available: true` once the key is configured.
+Then start a session and ask something requiring live information (e.g. “What is today's weather in Tokyo?”). Confirm the model calls `web_search` and the results carry TinyFish URLs/snippets. The web search settings card in the GUI shows provider `tinyfish` with `available: true` once the key is configured.
 
 If the key is missing, the first search fails with `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable — see the [Usage Guide](USAGE.md) error table.

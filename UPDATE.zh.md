@@ -1,6 +1,6 @@
 # 更新说明文档 (Update Guide)
 
-[English](UPDATE.md) | 简体中文
+[英文](UPDATE.md) | 简体中文
 
 > 本版本已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。
 
@@ -71,7 +71,7 @@ dsh web
 
 ---
 
-## 3. 版本回滚方案
+## 5. 版本回滚方案
 
 若新版本与你的本地环境存在偶发冲突，可随时回退到上一稳定版本：
 

@@ -1,6 +1,6 @@
 # dsh-tinyfish-search
 
-[English](README.md) | 简体中文
+[英文](README.md) | 简体中文
 
 > [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件，把内置 `web_search` 工具接到 [TinyFish Search API](https://docs.tinyfish.ai/search-api)。每次查询只需一次 GET，无模型调用——更快且免费（TinyFish Search 在任意钱包余额下免费）。
 
@@ -24,12 +24,12 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ## 文档导航
 
-- [安装说明文档](INSTALL.zh.md) ([English](INSTALL.md))
-- [使用说明文档](USAGE.zh.md) ([English](USAGE.md))
-- [配置说明文档](CONFIG.zh.md) ([English](CONFIG.md))
-- [更新说明文档](UPDATE.zh.md) ([English](UPDATE.md))
-- [卸载说明文档](UNINSTALL.zh.md) ([English](UNINSTALL.md))
-- [更新日志 (Changelog)](CHANGELOG.md)
+- [安装说明文档](INSTALL.zh.md) ([英文](INSTALL.md))
+- [使用说明文档](USAGE.zh.md) ([英文](USAGE.md))
+- [配置说明文档](CONFIG.zh.md) ([英文](CONFIG.md))
+- [更新说明文档](UPDATE.zh.md) ([英文](UPDATE.md))
+- [卸载说明文档](UNINSTALL.zh.md) ([英文](UNINSTALL.md))
+- [更新日志](CHANGELOG.zh.md) ([英文](CHANGELOG.md))
 
 ## 安装
 
@@ -160,7 +160,7 @@ pnpm test      # node --test（mock fetch）
 
 ## 更新说明
 
-见 [CHANGELOG.md](./CHANGELOG.md)（中英双语）与 [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) 页面。
+见 [更新日志](./CHANGELOG.zh.md) 与 [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) 页面。
 
 ## 许可证
 

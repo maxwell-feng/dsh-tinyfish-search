@@ -1,6 +1,6 @@
 # 卸载说明文档 (Uninstall Guide)
 
-[English](UNINSTALL.md) | 简体中文
+[英文](UNINSTALL.md) | 简体中文
 
 > 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。
 
