@@ -14,10 +14,14 @@
  *   Forbidden: bilingual labels, bilingual entries on one line, Chinese terms or
  *   product-name glosses in English prose (and the reverse).
  *
+ * Only files Git considers part of the repository are checked (tracked plus
+ * untracked non-ignored), so a developer's own ignored files are skipped.
+ *
  * Run: node scripts/check-docs-language.mjs
  * Exits 1 with `file:line` findings when a rule is broken.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { join, relative, extname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -75,7 +79,27 @@ function englishSentences(line) {
 }
 
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/')
-const files = walk(ROOT).sort()
+
+/**
+ * Files Git considers part of the repository: tracked, plus untracked but not
+ * ignored. A developer's own ignored file (for example a local AGENTS.md) is not a
+ * repository document and is not checked. Falls back to every walked file when Git
+ * is unavailable.
+ */
+function repositoryFiles(paths) {
+  try {
+    const listed = execFileSync(
+      'git', ['-C', ROOT, 'ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
+    )
+    const keep = new Set(listed.split('\0').filter(Boolean).map((p) => p.replace(/\\/g, '/')))
+    return paths.filter((p) => keep.has(rel(p)))
+  } catch {
+    return paths
+  }
+}
+
+const files = repositoryFiles(walk(ROOT).sort())
 
 // ---- language checks: documents ----
 for (const file of files) {
