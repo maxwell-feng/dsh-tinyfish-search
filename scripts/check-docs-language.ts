@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * check-docs-language.mjs — one language per file, enforced.
+ * check-docs-language.ts — one language per file, enforced.
  *
  * Bilingual documentation rule — one language per file, always in pairs:
  *   X.md         English only: no CJK anywhere, code fences included.
@@ -17,7 +17,7 @@
  * Only files Git considers part of the repository are checked (tracked plus
  * untracked non-ignored), so a developer's own ignored files are skipped.
  *
- * Run: node scripts/check-docs-language.mjs
+ * Run: node scripts/check-docs-language.ts
  * Exits 1 with `file:line` findings when a rule is broken.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
@@ -27,17 +27,30 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '..')
 
-/**
- * Per-file declarations.
- *   language: 'en' | 'zh' — declared for files whose name does not say it.
- *   pair: false            — no counterpart file is required.
- *   check: false           — exempt from the language scan (a file that must quote both languages).
- */
-const FILES = {
+/** How a document is declared when its own name does not say everything. */
+interface FileDeclaration {
+  /** Language for a file whose name does not carry `.zh.md`. */
+  language?: 'en' | 'zh'
+  /** `false` — no counterpart file is required. */
+  pair?: boolean
+  /** `false` — exempt from the language scan (a file that must quote both languages). */
+  check?: boolean
+}
+
+/** A single rule violation. */
+interface Finding {
+  file: string
+  line: number
+  message: string
+  snippet: string
+}
+
+/** Per-file declarations. */
+const FILES: Record<string, FileDeclaration> = {
   '.github/ISSUE_TEMPLATE/config.yml': { check: false },
 }
 /** Source files allowed to contain CJK, with the reason. Everything else under src/ must be English. */
-const SRC_CJK_ALLOW = {}
+const SRC_CJK_ALLOW: Record<string, string> = {}
 /** Directories never scanned. */
 const SKIP_DIRS = new Set(['node_modules', 'lib', 'dist', '.git', 'test', 'scripts', '.mimosa'])
 /** Text files scanned as English docs unless declared otherwise. */
@@ -48,11 +61,12 @@ const ENGLISH_RUN = /(?:\b[A-Za-z][A-Za-z'’-]{1,}\b[ \t]+){2,}\b[A-Za-z][A-Za-
 /** English function words: a run containing one is prose, not an identifier. */
 const FUNCTION_WORDS = new Set(['the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'and', 'or', 'not', 'no', 'with', 'for', 'from', 'this', 'that', 'these', 'those', 'it', 'its', 'as', 'at', 'in', 'on', 'to', 'of', 'by', 'since', 'after', 'before', 'against', 'than', 'then', 'when', 'while', 'if', 'else', 'but', 'all', 'any', 'both', 'each', 'more', 'most', 'other', 'some', 'such', 'only', 'own', 'same', 'so', 'too', 'very', 'can', 'will', 'would', 'should', 'must', 'may', 'might', 'do', 'does', 'did', 'done', 'have', 'has', 'had', 'remains', 'remain', 'required', 'verified', 'latest', 'below', 'above', 'via', 'per', 'into', 'over', 'under', 'about', 'across', 'without'])
 
-const findings = []
-const report = (file, line, message, snippet) =>
+const findings: Finding[] = []
+const report = (file: string, line: number, message: string, snippet: unknown): void => {
   findings.push({ file, line, message, snippet: String(snippet).trim().slice(0, 120) })
+}
 
-function walk(dir, out = []) {
+function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     if (SKIP_DIRS.has(entry)) continue
     const full = join(dir, entry)
@@ -63,14 +77,14 @@ function walk(dir, out = []) {
 }
 
 /** English sentence detector for Chinese documents. */
-function englishSentences(line) {
+function englishSentences(line: string): string[] {
   const stripped = line
     .replace(/`[^`]*`/g, ' ')
     .replace(/\[[^\]]*\]\([^)]*\)/g, ' ')
     .replace(/https?:\/\/\S+/g, ' ')
     .replace(/[“”][^“”]*[“”]/g, ' ')
     .replace(/"[^"]*"/g, ' ')
-  const hits = []
+  const hits: string[] = []
   for (const run of stripped.match(ENGLISH_RUN) ?? []) {
     const words = run.trim().split(/\s+/).map((w) => w.toLowerCase().replace(/[^a-z'’-]/g, ''))
     if (words.length >= 5 || words.some((w) => FUNCTION_WORDS.has(w))) hits.push(run.trim())
@@ -78,7 +92,7 @@ function englishSentences(line) {
   return hits
 }
 
-const rel = (p) => relative(ROOT, p).replace(/\\/g, '/')
+const rel = (p: string): string => relative(ROOT, p).replace(/\\/g, '/')
 
 /**
  * Files Git considers part of the repository: tracked, plus untracked but not
@@ -86,9 +100,9 @@ const rel = (p) => relative(ROOT, p).replace(/\\/g, '/')
  * repository document and is not checked. Falls back to every walked file when Git
  * is unavailable.
  */
-function repositoryFiles(paths) {
+function repositoryFiles(paths: string[]): string[] {
   try {
-    const listed = execFileSync(
+    const listed: string = execFileSync(
       'git', ['-C', ROOT, 'ls-files', '-z', '--cached', '--others', '--exclude-standard'],
       { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
     )
@@ -109,7 +123,7 @@ for (const file of files) {
   const ext = extname(file)
   if (!SCAN_EXT.has(ext) && path !== 'package.json') continue
   if (path === 'package.json') {
-    const pkg = JSON.parse(readFileSync(file, 'utf8'))
+    const pkg = JSON.parse(readFileSync(file, 'utf8')) as { description?: unknown }
     if (typeof pkg.description === 'string' && CJK.test(pkg.description)) {
       report(path, 1, 'package.json description must be English only', pkg.description)
     }
@@ -117,7 +131,7 @@ for (const file of files) {
   }
   const isZh = decl.language === 'zh' || path.endsWith('.zh.md')
   const lines = readFileSync(file, 'utf8').split(/\r?\n/)
-  let fence = null
+  let fence: number | null = null
   lines.forEach((line, i) => {
     const isFence = /^\s*(```+|~~~+)/.test(line)
     if (isFence) fence = fence === null ? 1 : null
@@ -153,13 +167,13 @@ for (const file of files) {
   }
   const zhPath = path.replace(/\.md$/, '.zh.md')
   if (!existsSync(join(ROOT, zhPath))) {
-    report(path, 1, `missing Chinese counterpart ${zhPath} (or declare the file in scripts/check-docs-language.mjs FILES)`, '')
+    report(path, 1, `missing Chinese counterpart ${zhPath} (or declare the file in scripts/check-docs-language.ts FILES)`, '')
     continue
   }
   if (path.startsWith('.github/')) continue // forms and config templates carry no switcher
-  const head = (p) => readFileSync(join(ROOT, p), 'utf8').split(/\r?\n/).slice(0, 10)
-  const enName = path.split('/').pop()
-  const zhName = zhPath.split('/').pop()
+  const head = (p: string): string[] => readFileSync(join(ROOT, p), 'utf8').split(/\r?\n/).slice(0, 10)
+  const enName = path.split('/').pop() ?? path
+  const zhName = zhPath.split('/').pop() ?? zhPath
   const enSwitcher = head(path).find((l) => /English\s*\|\s*\[Chinese\]\(/.test(l))
   const zhSwitcher = head(zhPath).find((l) => /\[英文\]\(/.test(l))
   if (!enSwitcher || !enSwitcher.includes(`(${zhName})`)) {
@@ -180,5 +194,5 @@ for (const f of findings) {
   console.error(`${f.file}:${f.line}  ${f.message}`)
   if (f.snippet) console.error(`    ${f.snippet}`)
 }
-console.error('\nRules: see the header of scripts/check-docs-language.mjs (FILES, SRC_CJK_ALLOW).')
+console.error('\nRules: see the header of scripts/check-docs-language.ts (FILES, SRC_CJK_ALLOW).')
 process.exit(1)

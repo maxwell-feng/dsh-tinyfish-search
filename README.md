@@ -53,7 +53,7 @@ outside the declared range, DSH refuses the row with a diagnostic naming the
 exact pair; to accept that risk explicitly, grant the exemption it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.11.0 <your-dsh-version>
+dsh plugin allow-version dsh-tinyfish-search@0.11.1 <your-dsh-version>
 ```
 
 ## Documentation
@@ -75,7 +75,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.11.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.11.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -169,6 +169,13 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
+Upgrading to 0.11.1 from ≤ 0.11.0 needs no manual steps: it changes no runtime
+code, no configuration and no tool surface. The repository holds TypeScript
+sources only — the bilingual-documents gate is now
+[`scripts/check-docs-language.ts`](./scripts/check-docs-language.ts), which Node
+runs directly by stripping the types — and this release corrects several
+documentation-ordering defects.
+
 Upgrading to 0.11.0 from ≤ 0.10.0 needs no manual steps, but it is a **harness
 floor raise**: the plugin now requires DeepSeek Harness `0.1.7-alpha.2` or newer
 and is verified on `0.1.7-rc.1`. On a `0.1.6` host DSH refuses the row (see
@@ -232,6 +239,16 @@ you had already overridden those rows yourself.
 pnpm install
 pnpm build     # tsc -> lib/
 pnpm test      # node --test (mocked fetch)
+pnpm typecheck # tsc --noEmit, src + test + scripts
+```
+
+The repository is TypeScript throughout; there is no JavaScript source to keep in
+sync. The bilingual-documents gate is
+[`scripts/check-docs-language.ts`](./scripts/check-docs-language.ts), which CI runs
+with bare Node (no dependencies installed) before the install step:
+
+```sh
+node scripts/check-docs-language.ts
 ```
 
 Publishing to npm runs through GitHub Actions with npm **Trusted Publishing** (OIDC) — see [`.github/workflows/publish.yml`](./.github/workflows/publish.yml) and the [npm docs](https://docs.npmjs.com/trusted-publishers/). Tag `vX.Y.Z` (or dispatch the workflow) to release; provenance is generated automatically.

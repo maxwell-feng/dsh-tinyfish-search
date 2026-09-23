@@ -1,6 +1,6 @@
 {
   "name": "dsh-tinyfish-search",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "TinyFish-backed web search provider for DeepSeek Harness (ctx.web): makes the built-in web_search tool run on the TinyFish Search API",
   "type": "module",
   "main": "lib/index.js",
