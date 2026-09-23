@@ -6,6 +6,30 @@
 
 ---
 
+## [0.11.1] - 2026-09-23
+
+### 文档与仓库工程化修补版本
+
+不改运行时逻辑、不改配置项、不改工具接口。
+
+**变更**
+
+- **仓库现只保留 TypeScript 源码**：双语文档闸门由 `scripts/check-docs-language.mjs` 迁至 `scripts/check-docs-language.ts`。Node ≥22.19 会剥离类型，因此该闸门依旧无需安装任何依赖即可运行，CI 中也仍在安装依赖之前执行。`tsconfig.json` 的 include 新增 `scripts/**/*.ts`，`pnpm run typecheck` 会一并检查该闸门。
+- 请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.11.1`。
+
+**修复**
+
+- **升级说明顺序错乱**：英文 README 把 0.8.1 的说明写了两遍（其中一遍位于 0.11.0 之前），且缺 0.8.0 的说明；中文 README 的 0.8.1 说明夹在 0.10.0 与 0.9.0 之间。两侧现均为严格由新到旧，且覆盖同一批版本。
+- **更新日志链接定义不完整**：英文缺 `0.1.9` / `0.1.8` / `0.1.7` 的定义；中文侧则完全没有链接定义块，导致每个 `[x.y.z]` 标题都渲染成字面方括号。两侧现均按降序为每个版本给出定义。
+- **重复分隔线与标题层级不一致**：移除中文更新日志中 5 处重复的 `---`；两侧现统一为每条发布一个副标题标题。
+
+**验证**
+
+- `pnpm run typecheck` 零错误（现覆盖 `scripts/`）、`pnpm run build` 干净、**22** 项单元测试在 DeepSeek Harness `0.1.7-rc.1` 上全部通过。
+- `node scripts/check-docs-language.ts` 通过；发现上述缺陷的文档审计已无剩余发现。
+
+---
+
 ## [0.11.0] - 2026-09-23
 
 ### 适配 DeepSeek Harness 0.1.7-rc.1：schema 驱动的易变配置
@@ -281,6 +305,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.11.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.1
 [0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
 [0.10.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.10.0
 [0.9.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.9.0

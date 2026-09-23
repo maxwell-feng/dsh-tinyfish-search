@@ -29,7 +29,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 DeepSeek Harness 0.1.7-rc.1 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载。本发行版声明的 peer 均实际满足，因此无需任何豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示授予豁免：
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.11.0 <你的 dsh 版本>
+dsh plugin allow-version dsh-tinyfish-search@0.11.1 <你的 dsh 版本>
 ```
 
 ## 文档导航
@@ -51,7 +51,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.11.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.11.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -140,6 +140,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
+从 ≤ 0.11.0 升级到 0.11.1 无需任何手工步骤：本版不改运行时逻辑、不改配置、不改工具接口。仓库只保留 TypeScript 源码——双语文档闸门现为 [`scripts/check-docs-language.ts`](./scripts/check-docs-language.ts)，由 Node 直接剥离类型运行——并修正了若干文档排序缺陷。
+
 从 ≤ 0.10.0 升级到 0.11.0 无需任何手工步骤，但这是一次**宿主基线抬升**：插件现在要求 DeepSeek Harness `0.1.7-alpha.2` 或更新，并已在 `0.1.7-rc.1` 上验证。在 `0.1.6` 宿主上 DSH 会拒绝该行（见[宿主兼容性闸门](#宿主兼容性闸门)）。配置迁移到 0.1.7 的易变 schema——字段、取值、默认值完全一致，只是编辑它们的表单换了实现。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.11.0`。
 
 从 ≤ 0.9.0 升级到 0.10.0 无需任何手工步骤：完成与 DeepSeek Harness `0.1.6-alpha.2` 的对齐（`@deepseek-ai/dsh-*` peer 现为 `^0.1.6-alpha.2`，Node `^22.19.0 || >=24.0.0`），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.10.0`。
@@ -166,6 +168,13 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 pnpm install
 pnpm build     # tsc -> lib/
 pnpm test      # node --test（mock fetch）
+pnpm typecheck # tsc --noEmit，覆盖 src + test + scripts
+```
+
+仓库全量使用 TypeScript，没有需要同步维护的 JavaScript 源码。双语文档闸门为 [`scripts/check-docs-language.ts`](./scripts/check-docs-language.ts)，CI 在安装依赖之前用裸 Node 直接运行它（无需任何依赖）：
+
+```sh
+node scripts/check-docs-language.ts
 ```
 
 发布到 npm 通过 GitHub Actions 的 npm **Trusted Publishing**（OIDC）完成——见 [`.github/workflows/publish.yml`](./.github/workflows/publish.yml) 与 [npm 文档](https://docs.npmjs.com/trusted-publishers/)。打 `vX.Y.Z` 标签（或手动触发工作流）即发布，构建溯源（provenance）自动生成。

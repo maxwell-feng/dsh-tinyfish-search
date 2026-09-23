@@ -4,6 +4,26 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.11.1] - 2026-09-23
+
+### Documentation and repository-tooling release — no runtime, configuration or tool-surface change
+
+**Changed**
+
+- **The repository now holds TypeScript sources only.** The bilingual-documents gate moved from `scripts/check-docs-language.mjs` to `scripts/check-docs-language.ts`. Node ≥22.19 strips the types, so the gate still runs with no dependencies installed and still gates CI before the install step. `scripts/**/*.ts` joined the `tsconfig.json` include list, so `pnpm run typecheck` covers the gate as well.
+- `USER_AGENT` bumped to `dsh-tinyfish-search/0.11.1`.
+
+**Fixed**
+
+- **Upgrade notes ran out of order.** The README carried the 0.8.1 note twice — one copy sitting above 0.11.0 — and had no 0.8.0 note; the Chinese README had the 0.8.1 note between 0.10.0 and 0.9.0. Both sides now run strictly newest-first, with the same releases covered.
+- **Changelog link references were incomplete.** English had no definition for 0.1.9 / 0.1.8 / 0.1.7; the Chinese side had no link-reference block at all, so every `[x.y.z]` heading rendered as a literal bracket. Both sides now define every release in descending order.
+- **Duplicated rules and mismatched heading levels.** Five duplicated `---` rules were removed from the Chinese changelog, and both sides now use one release-subtitle heading per release.
+
+**Verification**
+
+- `pnpm run typecheck` clean (now including `scripts/`), `pnpm run build` clean, and **22** unit tests passing against DeepSeek Harness `0.1.7-rc.1`.
+- `node scripts/check-docs-language.ts` green; the docs audit that found these defects reports no remaining findings.
+
 ## [0.11.0] - 2026-09-23
 
 ### DeepSeek Harness 0.1.7-rc.1 Alignment — schema-driven volatile configuration
@@ -245,6 +265,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.11.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.1
 [0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
 [0.10.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.10.0
 [0.9.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.9.0

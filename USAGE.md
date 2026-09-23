@@ -2,7 +2,7 @@
 
 English | [Chinese](USAGE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.7-rc.1** with `dsh-tinyfish-search` **0.11.0**. All wire outputs below were captured from the shipped `lib/` build.
+> Verified against DeepSeek Harness **0.1.7-rc.1** with `dsh-tinyfish-search` **0.11.1**. All wire outputs below were captured from the shipped `lib/` build.
 
 This document explains how searches flow through the plugin, which providers are involved, how credentials resolve, and what errors look like — with runnable examples.
 
