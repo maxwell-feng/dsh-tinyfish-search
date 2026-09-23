@@ -169,13 +169,6 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-Upgrading to 0.8.1 from ≤ 0.8.0 needs no manual steps: the settings section,
-patch rows, and credential reference are all carried by the bundle layer, and
-pnpm refreshes the package in place. It resolves all Dependabot security alerts
-for `js-yaml` (upgraded to `4.3.2`, fixing CVE-2026-84375 and related advisories),
-retaining the pure TypeScript architecture (zero JavaScript tracked), and the
-`USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
-
 Upgrading to 0.11.0 from ≤ 0.10.0 needs no manual steps, but it is a **harness
 floor raise**: the plugin now requires DeepSeek Harness `0.1.7-alpha.2` or newer
 and is verified on `0.1.7-rc.1`. On a `0.1.6` host DSH refuses the row (see
@@ -202,6 +195,12 @@ Upgrading to 0.8.1 from ≤ 0.8.0 needs no manual steps: resolved all Dependabot
 security alerts for `js-yaml` (CVE-2026-84375, GHSA-5p4m-2wfm-xmqj, CVE-2026-59869, CVE-2026-53550),
 retaining the pure TypeScript architecture (zero JavaScript tracked), and the
 `USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
+
+Upgrading to 0.8.0 from ≤ 0.7.0 needs no manual steps: the settings section,
+patch rows, and credential reference are all carried by the bundle layer, and
+pnpm refreshes the package in place. The plugin is now a pure TypeScript
+codebase (zero JavaScript tracked), and the `USER_AGENT` is bumped to
+`dsh-tinyfish-search/0.8.0`.
 
 Upgrading to 0.7.0 from ≤ 0.6.1 needs no manual steps: the settings section,
 patch rows, and credential reference are all carried by the bundle layer, and
