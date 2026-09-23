@@ -4,15 +4,32 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [0.11.0] - 2026-09-23
+
+**DeepSeek Harness 0.1.7-rc.1 Alignment — schema-driven volatile configuration**
 
 ### Changed
 
-- **Documentation normalized.** Every document is single-language — `X.md` English, `X.zh.md` Chinese — with complete pairs and switcher lines; the bilingual changelog was split so both sides cover all 23 releases.
+- **Harness alignment.** `devDependencies` are pinned to DeepSeek Harness `0.1.7-rc.1` (the latest release) and the plugin is verified against it. The `@deepseek-ai/dsh-*` peer ranges are `^0.1.7-alpha.2` — the release line that introduced volatile config — so the plugin stays installable on both `0.1.7-alpha.2` and `0.1.7-rc.1`; the two are source-identical for every package this plugin consumes. `engines.dsh` is `^0.1.7-alpha.2`, `engines.node` stays `^22.19.0 || >=24.0.0`, `@deepseek-ai/cordis` moves to `4.0.4`, and `@deepseek-ai/schemastery` moves to `3.18.4`.
+- **Configuration migrated to the 0.1.7 volatile schema.** Every field is declared `.volatile()`, so `apply` receives one live reference per field instead of a frozen value. The plugin no longer registers anything on `ctx.settings`: the Host discovers the exported `Config` schema as `entry.fiber.runtime.Config` and renders this entry's form itself, keyed by the profile row id. Removed `ctx.inject(['settings'])`, the `installSection` call, and the exported `TINYFISH_SETTINGS_NAMESPACE`; dropped the `@deepseek-ai/dsh-settings` dependency.
+- **One snapshot per search.** The provider is registered with a thunk that reads `.get()` for all five fields at the start of each search, so one search can never mix a `baseURL` read from before a committed edit with an `apiKeyEnv` read from after it. Provider registration itself is never replaced.
+- **`pnpm-workspace.yaml`** now exempts the exact `0.1.7-rc.1` package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
+- `USER_AGENT` bumped to `dsh-tinyfish-search/0.11.0`.
 
 ### Added
 
+- **Harness compatibility gate documented.** DeepSeek Harness 0.1.7-rc.1 verifies a plugin's `@deepseek-ai/dsh*` peers against the running runtime and refuses an incompatible row at load. This release declares peers it satisfies, so no exemption is needed; the README and the install and update guides document the refusal and its `dsh plugin allow-version` remedy.
+- A test asserting the schema yields one live volatile reference per field and carries every default the schema-driven form renders.
 - `scripts/check-docs-language.mjs` enforces documents, source strings and pairs locally and in CI, which runs it before installing dependencies.
+
+### Changed (documentation)
+
+- **Documentation normalized.** Every document is single-language — `X.md` English, `X.zh.md` Chinese — with complete pairs and switcher lines; the bilingual changelog was split so both sides cover every release.
+
+### Verification
+
+- `pnpm run typecheck` clean, `pnpm run build` clean, and **22** unit tests passing against `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.1`.
+- `node scripts/check-docs-language.mjs` green; `pnpm install --frozen-lockfile` passes the supply-chain gate.
 
 ## [0.10.0] - 2026-09-18
 
@@ -225,6 +242,11 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
+[0.10.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.10.0
+[0.9.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.9.0
+[0.8.3]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.3
+[0.8.2]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.2
 [0.8.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.1
 [0.8.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.0
 [0.7.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.7.0

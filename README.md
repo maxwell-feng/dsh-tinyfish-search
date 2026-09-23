@@ -29,16 +29,32 @@ registration for its agents. To scope the tools to one preset instead,
 override or remove the `tool-web` row in your profile's `cordis.patch.yml`
 and add `tool-web` to that preset's agent composition. Later layers (profile
 / home `cordis.patch.yml` / `--patch`) can still override both rows.
-Configuration is also exposed as a `dsh-tinyfish-search` settings section
-(Plugins settings page): a saved edit reaches the next search without a
-restart.
+
+Configuration is declared as a **volatile schema** (DeepSeek Harness 0.1.7+): the
+Host reads the `Config` schema this plugin exports and renders it as the form for
+the `dsh-tinyfish-search` row on the Plugins page. There is no plugin-side
+settings registration and no plugin-supplied browser half. A saved edit reaches
+the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.6-alpha.2` (latest release)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.7-rc.1` (latest release); the plugin declares `^0.1.7-alpha.2` peers, the release line that introduced volatile config
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
+
+### Harness compatibility gate
+
+DeepSeek Harness 0.1.7-rc.1 verifies a plugin's `@deepseek-ai/dsh*`
+`peerDependencies` against the running runtime **before** it admits the row, and
+refuses an incompatible plugin instead of loading it. This release declares
+peers it actually satisfies, so no exemption is needed. If you run a `dsh`
+outside the declared range, DSH refuses the row with a diagnostic naming the
+exact pair; to accept that risk explicitly, grant the exemption it prints:
+
+```sh
+dsh plugin allow-version dsh-tinyfish-search@0.11.0 <your-dsh-version>
+```
 
 ## Documentation
 
@@ -59,7 +75,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.10.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.11.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -159,6 +175,14 @@ pnpm refreshes the package in place. It resolves all Dependabot security alerts
 for `js-yaml` (upgraded to `4.3.2`, fixing CVE-2026-84375 and related advisories),
 retaining the pure TypeScript architecture (zero JavaScript tracked), and the
 `USER_AGENT` is bumped to `dsh-tinyfish-search/0.8.1`.
+
+Upgrading to 0.11.0 from ≤ 0.10.0 needs no manual steps, but it is a **harness
+floor raise**: the plugin now requires DeepSeek Harness `0.1.7-alpha.2` or newer
+and is verified on `0.1.7-rc.1`. On a `0.1.6` host DSH refuses the row (see
+[Harness compatibility gate](#harness-compatibility-gate)). Configuration moves
+to the 0.1.7 volatile schema — the same fields, the same values, the same
+defaults; only the form that edits them changed. `USER_AGENT` is bumped to
+`dsh-tinyfish-search/0.11.0`.
 
 Upgrading to 0.10.0 from ≤ 0.9.0 needs no manual steps: aligned with DeepSeek
 Harness `0.1.6-alpha.2` (`@deepseek-ai/dsh-*` peers now `^0.1.6-alpha.2`, Node

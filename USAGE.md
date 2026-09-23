@@ -2,7 +2,7 @@
 
 English | [Chinese](USAGE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.6-alpha.2** with `dsh-tinyfish-search` **0.10.0**. All wire outputs below were captured from the shipped `lib/` build.
+> Verified against DeepSeek Harness **0.1.7-rc.1** with `dsh-tinyfish-search` **0.11.0**. All wire outputs below were captured from the shipped `lib/` build.
 
 This document explains how searches flow through the plugin, which providers are involved, how credentials resolve, and what errors look like — with runnable examples.
 
@@ -21,7 +21,7 @@ Concretely, one search is one HTTP request (verified against the built output):
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.10.0
+user-agent: dsh-tinyfish-search/0.11.0
 accept: application/json
 ```
 
@@ -38,7 +38,7 @@ The bundle patch composes two rows that decide which backend answers:
 | `web` | Points the seam at this provider: `searchProvider: tinyfish` (`fetchProvider: http` restated) |
 | `tool-web` | Re-enables the host-level model-facing tools (`disabled: false`, `search: true`, `fetch: true`, timeouts restated) |
 
-The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`) and exposes its settings under the `dsh-tinyfish-search` namespace (`TINYFISH_SETTINGS_NAMESPACE`). `available()` is a cheap local check — key present (or resolvable) plus a parseable `baseURL` — and makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, never as “unavailable”.
+The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`); its configuration form is keyed by the profile row id `dsh-tinyfish-search` (DSH 0.1.7 derives the namespace from the row, so the plugin chooses none). `available()` is a cheap local check — key present (or resolvable) plus a parseable `baseURL` — and makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, never as “unavailable”.
 
 Per-preset scoping: the host `tool-web` row makes the tools visible to every agent preset on the profile. A preset mounting its own `tool-web` row shadows the global registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in the profile's `cordis.patch.yml` and add `tool-web` to that preset's agent composition.
 
@@ -53,7 +53,7 @@ The API key resolves in this order per search (first non-empty value wins):
 3. The launch environment: `launchEnvironmentOf(ctx).get(apiKeyEnv)`.
 4. `process.env[apiKeyEnv]` (covers standalone use outside the host).
 
-`apiKeyEnv` defaults to `TINYFISH_API_KEY` and carries the `credential-ref` role, so the settings UI offers the credential picker. A committed settings edit (new key, new `baseURL`, new targeting) reaches the next search without a restart.
+`apiKeyEnv` defaults to `TINYFISH_API_KEY` and carries the `credential-ref` role, so the rendered form shows the credential reference. A committed form edit (new key, new `baseURL`, new targeting) reaches the next search without a restart.
 
 Recommended setup — environment variable only, no YAML changes:
 

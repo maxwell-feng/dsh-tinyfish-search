@@ -13,14 +13,24 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 - 把 `results[]`（标题 / 摘要 / 链接 / 日期）归一化为缝接口的可移植来源结构
 - **每次搜索不消耗一次模型调用**——与 Anthropic 服务器工具方案不同，更快更省
 
-安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。同时补丁还会**重新启用宿主层 `tool-web` 行**（`disabled: false`，并重述 `search: true`、`fetch: true` 及基础超时值）：`dsh-web-app` bundle 自带该行的禁用（Web 应用本应按 agent 预设逐会话组合 web 工具），缺了这一行，干净安装到 web profile 后模型根本看不到 `web_search` 工具。**作用范围说明**：重启用宿主行会让工具对本 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）；自带 `tool-web` 行的预设仍会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖这两行。配置同时以 `dsh-tinyfish-search` 设置节暴露（Plugins 设置页）：保存的修改无需重启即对下一次搜索生效。
+安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。同时补丁还会**重新启用宿主层 `tool-web` 行**（`disabled: false`，并重述 `search: true`、`fetch: true` 及基础超时值）：`dsh-web-app` bundle 自带该行的禁用（Web 应用本应按 agent 预设逐会话组合 web 工具），缺了这一行，干净安装到 web profile 后模型根本看不到 `web_search` 工具。**作用范围说明**：重启用宿主行会让工具对本 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）；自带 `tool-web` 行的预设仍会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖这两行。
+
+配置以**易变（volatile）schema** 声明（DeepSeek Harness 0.1.7 起）：Host 读取本插件导出的 `Config` schema，并为 Plugins 页上的 `dsh-tinyfish-search` 行渲染配置表单。插件侧不再有设置注册，也不再需要自带浏览器半端。保存的修改无需重启即对下一次搜索生效。
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.6-alpha.2` 上全面验证
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.7-rc.1` 上全面验证；插件声明 `^0.1.7-alpha.2` peer，即引入易变配置的那条发布线
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
+
+### 宿主兼容性闸门
+
+DeepSeek Harness 0.1.7-rc.1 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载。本发行版声明的 peer 均实际满足，因此无需任何豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示授予豁免：
+
+```sh
+dsh plugin allow-version dsh-tinyfish-search@0.11.0 <你的 dsh 版本>
+```
 
 ## 文档导航
 
@@ -41,7 +51,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.10.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.11.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -129,6 +139,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # 或走 git，在改动进入 npm 前先行取用：
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+从 ≤ 0.10.0 升级到 0.11.0 无需任何手工步骤，但这是一次**宿主基线抬升**：插件现在要求 DeepSeek Harness `0.1.7-alpha.2` 或更新，并已在 `0.1.7-rc.1` 上验证。在 `0.1.6` 宿主上 DSH 会拒绝该行（见[宿主兼容性闸门](#宿主兼容性闸门)）。配置迁移到 0.1.7 的易变 schema——字段、取值、默认值完全一致，只是编辑它们的表单换了实现。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.11.0`。
 
 从 ≤ 0.9.0 升级到 0.10.0 无需任何手工步骤：完成与 DeepSeek Harness `0.1.6-alpha.2` 的对齐（`@deepseek-ai/dsh-*` peer 现为 `^0.1.6-alpha.2`，Node `^22.19.0 || >=24.0.0`），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.10.0`。
 

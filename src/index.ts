@@ -5,19 +5,13 @@
  */
 
 import type { Context } from "@deepseek-ai/cordis";
-import {
-  Config,
-  DEFAULT_API_KEY_ENV,
-  TINYFISH_DEFAULT_BASE_URL,
-  TINYFISH_PROVIDER_ID,
-  TINYFISH_SETTINGS_NAMESPACE,
-} from "./config.ts";
+import { Config, DEFAULT_API_KEY_ENV, TINYFISH_DEFAULT_BASE_URL, TINYFISH_PROVIDER_ID } from "./config.ts";
 import { resolveOptions } from "./options.ts";
 import { TinyFishSearchProvider } from "./provider.ts";
 import type { Config as PluginConfig } from "./types.ts";
 
-// Type-only: pulls the ctx.settings merge (SettingsProvider) into this program.
-import type {} from "@deepseek-ai/dsh-settings";
+// Type-only: pulls the ctx.web merge (WebService) into this program.
+import type {} from "@deepseek-ai/dsh-web";
 
 export const name = "dsh-tinyfish-search";
 
@@ -28,24 +22,24 @@ export {
   DEFAULT_API_KEY_ENV,
   TINYFISH_DEFAULT_BASE_URL,
   TINYFISH_PROVIDER_ID,
-  TINYFISH_SETTINGS_NAMESPACE,
+  USER_AGENT,
 } from "./config.ts";
 export { resolveOptions } from "./options.ts";
 export { TinyFishSearchProvider, mapTinyFishResponse } from "./provider.ts";
 export * from "./types.ts";
 
-/** Register the TinyFish search provider with `ctx.web`. */
+/**
+ * Register the TinyFish search provider with `ctx.web`.
+ *
+ * Every search reads the current config snapshot at its start, so a committed
+ * settings edit reaches the next search without re-registration.
+ */
 export function apply(ctx: Context, config: PluginConfig): void {
-  let current: () => PluginConfig = () => config;
-
-  ctx.inject(["settings"], (settingsCtx) => {
-    settingsCtx.settings.installSection(ctx, TINYFISH_SETTINGS_NAMESPACE, Config, config, {
-      setSource: (source) => {
-        current = source;
-      },
-      onChange: () => {},
-    });
-  });
-
-  ctx.web.registerSearchProvider(new TinyFishSearchProvider(() => resolveOptions(ctx, current())));
+  ctx.web.registerSearchProvider(new TinyFishSearchProvider(() => resolveOptions(ctx, {
+    apiKey: config.apiKey.get(),
+    apiKeyEnv: config.apiKeyEnv.get(),
+    baseURL: config.baseURL.get(),
+    location: config.location.get(),
+    language: config.language.get(),
+  })));
 }
