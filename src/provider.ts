@@ -12,12 +12,7 @@ import {
   USER_AGENT,
   nonEmpty,
 } from "./config.ts";
-import type {
-  Config,
-  TinyFishError,
-  TinyFishOptions,
-  TinyFishSearchResponse,
-} from "./types.ts";
+import type { TinyFishError, TinyFishOptions, TinyFishSearchResponse } from "./types.ts";
 
 /** Throw the provider's stable cancellation error when the caller already aborted. */
 function throwIfSearchAborted(signal?: AbortSignal): void {
@@ -104,40 +99,46 @@ export function mapTinyFishResponse(
   return { sources, truncated: false };
 }
 
+/** A programmatic snapshot that still needs its `apiKeyEnv` / `baseURL` defaults applied. */
+export interface TinyFishProviderSnapshot {
+  readonly apiKey?: string
+  readonly apiKeyEnv?: string
+  readonly baseURL?: string
+  readonly location?: string
+  readonly language?: string
+  readonly resolveApiKey?: undefined
+}
+
+/**
+ * Options accepted by programmatic construction: a finished
+ * {@link TinyFishOptions}, a snapshot object that still needs its defaults, or
+ * a thunk for the former. The plugin's own path always passes a thunk that
+ * rebuilds a finished `TinyFishOptions` from the current config snapshot.
+ */
+export type TinyFishProviderInput = (() => TinyFishOptions) | TinyFishOptions | TinyFishProviderSnapshot;
+
 export class TinyFishSearchProvider implements WebSearchProvider {
   readonly id = TINYFISH_PROVIDER_ID;
-  private readonly resolve: Config | (() => TinyFishOptions) | TinyFishOptions;
+  private readonly resolve: TinyFishProviderInput;
 
-  constructor(resolve: Config | (() => TinyFishOptions) | TinyFishOptions) {
+  constructor(resolve: TinyFishProviderInput) {
     this.resolve = resolve;
   }
 
   private opts(): TinyFishOptions {
-    if (typeof this.resolve === "function") return (this.resolve as () => TinyFishOptions)();
-    const c = this.resolve as Config | TinyFishOptions;
+    if (typeof this.resolve === "function") return this.resolve();
+    const o = this.resolve;
+    if (o.resolveApiKey !== undefined) return { ...o };
 
-    if ("baseURL" in c && "apiKeyEnv" in c && typeof (c as any).baseURL === "string") {
-      const o = c as TinyFishOptions;
-      if (o.resolveApiKey === undefined) {
-        const envName = o.apiKeyEnv ?? DEFAULT_API_KEY_ENV;
-        return {
-          ...o,
-          resolveApiKey: async () => (globalThis as any).process?.env?.[envName] ?? "",
-        };
-      }
-      return o;
-    }
-
-    const cfg = c as Config;
-    const envName = cfg.apiKeyEnv ?? DEFAULT_API_KEY_ENV;
+    const envName = o.apiKeyEnv ?? DEFAULT_API_KEY_ENV;
     return {
-      ...(cfg.apiKey !== undefined && cfg.apiKey.length > 0 ? { apiKey: cfg.apiKey } : {}),
+      ...(o.apiKey === undefined || o.apiKey.length === 0 ? {} : { apiKey: o.apiKey }),
       apiKeyEnv: envName,
-      baseURL: cfg.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
+      baseURL: o.baseURL ?? TINYFISH_DEFAULT_BASE_URL,
       resolveApiKey: async () => (globalThis as any).process?.env?.[envName] ?? "",
-      ...(nonEmpty(cfg.location) ? { location: cfg.location } : {}),
-      ...(nonEmpty(cfg.language) ? { language: cfg.language } : {}),
-    } as TinyFishOptions;
+      ...(nonEmpty(o.location) ? { location: o.location } : {}),
+      ...(nonEmpty(o.language) ? { language: o.language } : {}),
+    };
   }
 
   available(): boolean {

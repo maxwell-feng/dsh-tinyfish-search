@@ -6,15 +6,34 @@
 
 ---
 
-## [Unreleased]
+## [0.11.0] - 2026-09-23
 
-### 变更
+### 适配 DeepSeek Harness 0.1.7-rc.1：schema 驱动的易变配置
 
-- **双语文档规范化**：所有文档一文件一语言（`X.md` 英文、`X.zh.md` 中文），成对齐全、切换行统一；原本混排的双语更新日志已拆分，两份现覆盖全部 23 个版本。
+**变更**
 
-### 新增
+- **宿主对齐**：开发依赖锁定至 DeepSeek Harness `0.1.7-rc.1`（最新发行版），并已针对该版本完成验证。`@deepseek-ai/dsh-*` peer 区间为 `^0.1.7-alpha.2`——即引入易变配置的那条发布线——因此插件在 `0.1.7-alpha.2` 与 `0.1.7-rc.1` 上均可安装；对本插件消费的全部包而言，这两个版本的源码完全一致。`engines.dsh` 更新为 `^0.1.7-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`，`@deepseek-ai/cordis` 升至 `4.0.4`，`@deepseek-ai/schemastery` 升至 `3.18.4`。
+- **配置迁移至 0.1.7 的易变 schema**：每个字段都声明为 `.volatile()`，`apply` 收到的因此是逐字段的活引用而非冻结值。插件不再向 `ctx.settings` 注册任何内容：Host 以 `entry.fiber.runtime.Config` 读取本插件导出的 `Config` schema，并以 profile 行 id 为键自行渲染该条目的配置表单。移除了 `ctx.inject(['settings'])`、`installSection` 调用与导出常量 `TINYFISH_SETTINGS_NAMESPACE`，并去掉了 `@deepseek-ai/dsh-settings` 依赖。
+- **每次搜索一次快照**：提供方注册时传入一个 thunk，在每次搜索开始时对全部五个字段调用一次 `.get()`，因此单次搜索绝不会出现「保存前读到 `baseURL`、保存后读到 `apiKeyEnv`」的混读；提供方注册本身永不重建。
+- **`pnpm-workspace.yaml`**：为 `0.1.7-rc.1` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门——否则 DSH 持续发布的预发行版会被该闸门拦下。
+- 请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.11.0`。
 
+**新增**
+
+- **补充宿主兼容性闸门说明**：DeepSeek Harness 0.1.7-rc.1 会在加载前用运行时版本校验插件的 `@deepseek-ai/dsh*` peer 依赖，不兼容的行会被直接拒绝。本发行版声明的 peer 均实际满足，无需豁免；README 与安装、更新文档均写明了该拒绝行为及 `dsh plugin allow-version` 豁免方式。
+- 新增测试：断言 schema 为每个字段产出活引用，且携带 schema 驱动表单渲染所需的全部默认值。
 - `scripts/check-docs-language.mjs` 在本地与 CI 中检查文档、源码文案与配对（CI 在安装依赖前运行）。
+
+**文档变更**
+
+- **双语文档规范化**：所有文档一文件一语言（`X.md` 英文、`X.zh.md` 中文），成对齐全、切换行统一；原本混排的双语更新日志已拆分，两份现覆盖全部版本。
+
+**验证**
+
+- `pnpm run typecheck` 零错误，`pnpm run build` 干净通过，**22** 项单元测试在 `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.1` 上全量通过。
+- `node scripts/check-docs-language.mjs` 通过；`pnpm install --frozen-lockfile` 通过供应链策略校验。
+
+---
 
 ## [0.10.0] - 2026-09-18
 

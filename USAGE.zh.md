@@ -2,7 +2,7 @@
 
 [英文](USAGE.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.1.6-alpha.2** 上随 `dsh-tinyfish-search` **0.10.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
+> 已在 DeepSeek Harness **0.1.7-rc.1** 上随 `dsh-tinyfish-search` **0.11.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
 
 本文档说明搜索在本插件中的流转路径、涉及的提供方、凭据解析顺序与错误形态，并附可运行示例。
 
@@ -21,7 +21,7 @@ model → web_search → ctx.web → tinyfish → GET https://api.search.tinyfis
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.10.0
+user-agent: dsh-tinyfish-search/0.11.0
 accept: application/json
 ```
 
@@ -38,7 +38,7 @@ bundle 补丁组合了两行，决定哪个后端真正应答：
 | `web` | 把能力缝指向本提供方：`searchProvider: tinyfish`（并重述 `fetchProvider: http`） |
 | `tool-web` | 重新启用宿主层面向模型的工具（`disabled: false`、`search: true`、`fetch: true`，并重述超时值） |
 
-提供方以稳定 ID `tinyfish`（`TINYFISH_PROVIDER_ID`）注册，设置节命名空间为 `dsh-tinyfish-search`（`TINYFISH_SETTINGS_NAMESPACE`）。`available()` 是廉价的本地检查——密钥存在（或可解析）且 `baseURL` 可解析——不产生任何网络请求。带凭据解析器的提供方即使密钥尚未就绪也视为可用，因此缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错，而不会表现为“不可用”。
+提供方以稳定 ID `tinyfish`（`TINYFISH_PROVIDER_ID`）注册；配置表单以 profile 行 id `dsh-tinyfish-search` 为键（DSH 0.1.7 从行 id 推导命名空间，插件不自行选择）。`available()` 是廉价的本地检查——密钥存在（或可解析）且 `baseURL` 可解析——不产生任何网络请求。带凭据解析器的提供方即使密钥尚未就绪也视为可用，因此缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错，而不会表现为“不可用”。
 
 按预设限定范围：宿主 `tool-web` 行让工具对本 profile 上的每一个 agent 预设可见。自带 `tool-web` 行的预设会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。
 
@@ -53,7 +53,7 @@ bundle 补丁组合了两行，决定哪个后端真正应答：
 3. 启动环境：`launchEnvironmentOf(ctx).get(apiKeyEnv)`。
 4. `process.env[apiKeyEnv]`（覆盖宿主之外的独立使用场景）。
 
-`apiKeyEnv` 默认为 `TINYFISH_API_KEY`，携带 `credential-ref` 角色，设置界面会提供凭据选择器。已提交的设置修改（新密钥、新 `baseURL`、新定向参数）无需重启即对下一次搜索生效。
+`apiKeyEnv` 默认为 `TINYFISH_API_KEY`，携带 `credential-ref` 角色，渲染出的表单会显示凭据引用。已提交的表单修改（新密钥、新 `baseURL`、新定向参数）无需重启即对下一次搜索生效。
 
 推荐配置——只需环境变量，无需改动 YAML：
 
