@@ -45,9 +45,6 @@
 - **严格测试与文档**：21 项单元测试全量通过，TypeScript 类型检查零错误。全面刷新全套双语文档，写明适配 DeepSeek Harness `0.1.6-alpha.2`。
 
 ---
-
----
-
 ## [0.9.0] - 2026-09-16
 
 ### 适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包
@@ -58,9 +55,6 @@
 - `USER_AGENT` 升级为 `dsh-tinyfish-search/0.9.0`；21 项测试与类型检查全部通过。
 
 ---
-
----
-
 ## [0.8.3] - 2026-09-13
 
 ### 发行包资产优化
@@ -68,9 +62,6 @@
 - 优化 Release 资产附件结构，仅保留生产安装包（`dsh-tinyfish-search-0.8.3.tgz`），不再挂载多余的原始 markdown 文档。
 
 ---
-
----
-
 ## [0.8.2] - 2026-09-13
 
 ### 安全加固与生态同步
@@ -84,9 +75,6 @@
   - 自动化测试用例扩充至 21 项，全量验证通过。
 
 ---
-
----
-
 ## [0.8.1] - 2026-09-11
 
 ### 安全修复
@@ -97,9 +85,6 @@
 - 全套 20 项自动化测试验证通过。
 
 ---
-
----
-
 ## [0.8.0] - 2026-09-11
 
 - 架构现代化与 DeepSeek Harness 0.1.5-rc.2 兼容。
@@ -295,3 +280,28 @@
 **已知限制**
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
+
+[0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
+[0.10.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.10.0
+[0.9.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.9.0
+[0.8.3]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.3
+[0.8.2]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.2
+[0.8.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.1
+[0.8.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.8.0
+[0.7.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.7.0
+[0.6.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.6.1
+[0.5.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.5.0
+[0.4.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.4.0
+[0.3.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.3.0
+[0.2.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.1
+[0.2.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.0
+[0.1.9]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.9
+[0.1.8]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.8
+[0.1.7]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.7
+[0.1.6]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.6
+[0.1.5]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.5
+[0.1.4]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.4
+[0.1.3]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.3
+[0.1.2]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.2
+[0.1.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.1
+[0.1.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.0

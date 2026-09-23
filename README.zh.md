@@ -144,11 +144,11 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 
 从 ≤ 0.9.0 升级到 0.10.0 无需任何手工步骤：完成与 DeepSeek Harness `0.1.6-alpha.2` 的对齐（`@deepseek-ai/dsh-*` peer 现为 `^0.1.6-alpha.2`，Node `^22.19.0 || >=24.0.0`），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.10.0`。
 
-从 ≤ 0.8.0 升级到 0.8.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。该版本全面修复了 Dependabot 报告的 `js-yaml` 安全漏洞（升级至 `4.3.2`，修复 CVE-2026-84375 等漏洞），维持纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.1`。
-
 从 ≤ 0.8.3 升级到 0.9.0 无需任何手工步骤：完成与 DeepSeek Harness `0.1.6-alpha.1` 的对齐（`@deepseek-ai/dsh-*` peer 现为 `^0.1.6-alpha.1`，Node `^22.19.0 || >=24.0.0`），发布包现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`——各文档保留在本仓库中，不再随包安装进你的 profile。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.9.0`。
 
 从 ≤ 0.8.1 升级到 0.8.3 无需任何手工步骤：内置企业级 SSRF 深度网络安全防御，并在 DeepSeek Harness `0.1.5-rc.2` 上完成全量验证，`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.3`。
+
+从 ≤ 0.8.0 升级到 0.8.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。该版本全面修复了 Dependabot 报告的 `js-yaml` 安全漏洞（升级至 `4.3.2`，修复 CVE-2026-84375、GHSA-5p4m-2wfm-xmqj、CVE-2026-59869、CVE-2026-53550 等漏洞），维持纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.1`。
 
 从 ≤ 0.7.0 升级到 0.8.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。插件采用纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.0`。
 

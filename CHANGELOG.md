@@ -6,9 +6,9 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.11.0] - 2026-09-23
 
-**DeepSeek Harness 0.1.7-rc.1 Alignment — schema-driven volatile configuration**
+### DeepSeek Harness 0.1.7-rc.1 Alignment — schema-driven volatile configuration
 
-### Changed
+**Changed**
 
 - **Harness alignment.** `devDependencies` are pinned to DeepSeek Harness `0.1.7-rc.1` (the latest release) and the plugin is verified against it. The `@deepseek-ai/dsh-*` peer ranges are `^0.1.7-alpha.2` — the release line that introduced volatile config — so the plugin stays installable on both `0.1.7-alpha.2` and `0.1.7-rc.1`; the two are source-identical for every package this plugin consumes. `engines.dsh` is `^0.1.7-alpha.2`, `engines.node` stays `^22.19.0 || >=24.0.0`, `@deepseek-ai/cordis` moves to `4.0.4`, and `@deepseek-ai/schemastery` moves to `3.18.4`.
 - **Configuration migrated to the 0.1.7 volatile schema.** Every field is declared `.volatile()`, so `apply` receives one live reference per field instead of a frozen value. The plugin no longer registers anything on `ctx.settings`: the Host discovers the exported `Config` schema as `entry.fiber.runtime.Config` and renders this entry's form itself, keyed by the profile row id. Removed `ctx.inject(['settings'])`, the `installSection` call, and the exported `TINYFISH_SETTINGS_NAMESPACE`; dropped the `@deepseek-ai/dsh-settings` dependency.
@@ -16,24 +16,24 @@ All notable changes to this project are documented here. The format follows [Kee
 - **`pnpm-workspace.yaml`** now exempts the exact `0.1.7-rc.1` package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
 - `USER_AGENT` bumped to `dsh-tinyfish-search/0.11.0`.
 
-### Added
+**Added**
 
 - **Harness compatibility gate documented.** DeepSeek Harness 0.1.7-rc.1 verifies a plugin's `@deepseek-ai/dsh*` peers against the running runtime and refuses an incompatible row at load. This release declares peers it satisfies, so no exemption is needed; the README and the install and update guides document the refusal and its `dsh plugin allow-version` remedy.
 - A test asserting the schema yields one live volatile reference per field and carries every default the schema-driven form renders.
 - `scripts/check-docs-language.mjs` enforces documents, source strings and pairs locally and in CI, which runs it before installing dependencies.
 
-### Changed (documentation)
+**Changed (documentation)**
 
 - **Documentation normalized.** Every document is single-language — `X.md` English, `X.zh.md` Chinese — with complete pairs and switcher lines; the bilingual changelog was split so both sides cover every release.
 
-### Verification
+**Verification**
 
 - `pnpm run typecheck` clean, `pnpm run build` clean, and **22** unit tests passing against `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.1`.
 - `node scripts/check-docs-language.mjs` green; `pnpm install --frozen-lockfile` passes the supply-chain gate.
 
 ## [0.10.0] - 2026-09-18
 
-**DeepSeek Harness 0.1.6-alpha.2 Alignment**:
+### DeepSeek Harness 0.1.6-alpha.2 Alignment
 
 - **Harness compatibility**: `@deepseek-ai/dsh-*` peer ranges updated to `^0.1.6-alpha.2`. `devDependencies` bumped to `0.1.6-alpha.2`, `engines.dsh` updated to `^0.1.6-alpha.2`, and `engines.node` remains `^22.19.0 || >=24.0.0`.
 - **Seam audit**: Verified that all consumed seams (`ctx.web` search provider registration, `ctx.settings.installSection`, `ctx.credentials.resolve`, and `launchEnvironmentOf`) remain fully compatible with DSH `0.1.6-alpha.2`. SSRF defense policies (http/https only, rejection of localhost/loopback/private/reserved subnets) continue to protect all external requests.
@@ -42,7 +42,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.9.0] - 2026-09-16
 
-**DeepSeek Harness 0.1.6-alpha.1 Alignment & Lean Distribution**:
+### DeepSeek Harness 0.1.6-alpha.1 Alignment & Lean Distribution
 
 - **Harness compatibility**: `@deepseek-ai/dsh-*` peer ranges are now `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under SemVer prerelease rules, so a `0.1.6` host reported an unmet peer on install. `devDependencies` moved to the same set, `engines.dsh` is `^0.1.6-alpha.1`, and `engines.node` now follows the host range `^22.19.0 || >=24.0.0`.
 - **Seam audit**: every seam this plugin consumes — `ctx.web` (`registerSearchProvider`, `WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`), `ctx.settings.installSection`, `ctx.credentials.resolve`, and `launchEnvironmentOf` — is source-identical between `0.1.5-rc.2` and `0.1.6-alpha.1`, so no provider source changed and the SSRF defenses (http/https only, localhost/loopback/private/reserved rejection) carry over unchanged.
@@ -51,11 +51,14 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.8.3] - 2026-09-13
 
-- **Release Asset Packaging**: Streamlined release assets to ship exclusively the production tarball without redundant raw documentation files.
+### Release Asset Packaging
+
+- Streamlined release assets to ship exclusively the production tarball without redundant raw documentation files.
 
 ## [0.8.2] - 2026-09-13
 
-**Security & Ecosystem Synchronization**:
+### Security & Ecosystem Synchronization
+
 - **SSRF Defenses & Host Boundary Protection**:
   - Implemented strict protocol and host assertions in `src/provider.ts`: only `http:` and `https:` are permitted, and requests targeting `localhost`, loopback addresses (`127.0.0.0/8`, `::1`), RFC1918 private IP subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`), and reserved address spaces are strictly rejected.
 - **DeepSeek Harness 0.1.5-rc.2 Verification & Document Refresh**:
@@ -66,7 +69,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.8.1] - 2026-09-11
 
-**Security**
+### Security
 
 - **Resolved all Dependabot security alerts for `js-yaml`**:
   - Upgraded `js-yaml` devDependency from `4.1.1` to `4.3.2`.
@@ -256,6 +259,9 @@ Initial release
 [0.3.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.3.0
 [0.2.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.1
 [0.2.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.2.0
+[0.1.9]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.9
+[0.1.8]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.8
+[0.1.7]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.7
 [0.1.6]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.6
 [0.1.5]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.5
 [0.1.4]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.1.4
