@@ -6,25 +6,29 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.12.0] - 2026-09-24
 
-### DeepSeek Harness 0.1.7-rc.2 Alignment — plugin-development documentation refresh; no source change beyond `USER_AGENT`
+### DeepSeek Harness 0.1.7-rc.2 Alignment
+
+No runtime, configuration or tool-surface change: the plugin behaves exactly as 0.11.1.
 
 **Changed**
 
-- **Harness alignment.** `devDependencies` are pinned to DeepSeek Harness `0.1.7-rc.2`, the current release of the plugin-development documentation this plugin follows, and the plugin is verified against it. The `@deepseek-ai/dsh-*` peer ranges stay `^0.1.7-alpha.2` — the release line that introduced volatile config — so the plugin remains installable on every `0.1.7` prerelease from `0.1.7-alpha.2` through `0.1.7-rc.2`. `engines.dsh` stays `^0.1.7-alpha.2` and `engines.node` stays `^22.19.0 || >=24.0.0`.
-- **Seam audit against the 0.1.7-rc.2 plugin-development documentation.** Every seam this plugin consumes is source-identical between `0.1.7-rc.1` and `0.1.7-rc.2`: the `ctx.web` search-provider seam (`registerSearchProvider`, and the `WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError` vocabulary with its `WEB_PROVIDER_CREDENTIAL_MISSING`, `WEB_PROVIDER_ERROR` and `WEB_ABORTED` codes), `ctx.credentials.resolve`, the exported `Config` schema the Host discovers as `entry.fiber.runtime.Config` with its `.volatile()` fields, and `launchEnvironmentOf`. No plugin source changed apart from the `USER_AGENT` version constant.
-- **`pnpm-workspace.yaml`** now exempts the exact `0.1.7-rc.2` package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
-- `USER_AGENT` bumped to `dsh-tinyfish-search/0.12.0`.
+- **Harness alignment.** Development dependencies move to DeepSeek Harness 0.1.7-rc.2, and this release is verified against it.
+- **Peer ranges are unchanged.** They stay ^0.1.7-alpha.2, the release line that introduced volatile config, so the plugin still installs on every 0.1.7 prerelease from alpha.2 through rc.2. The harness engine range and the Node engine range are unchanged.
+- **Seam audit.** Every interface this plugin uses is identical in the rc.1 and rc.2 sources: the web search-provider seam, the credential resolver, the volatile configuration schema the Host reads, and the launch-environment lookup.
+- **Source change.** Exactly one line of plugin source moved: the `USER_AGENT` version constant.
+- **Supply-chain gate.** The workspace file now exempts the rc.2 packages from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
+- **Documentation.** The install, update, configuration, usage and uninstall guides carry the 0.12.0 banners and commands in both languages.
 
 **Fixed**
 
-- **Line endings were inconsistent across the documentation set.** The repository carried no `.gitattributes`, so on a Windows checkout (`core.autocrlf=true`) some guides were written back as CRLF while others stayed LF. `.gitattributes` now pins every text file to `eol=lf` — matching the sibling `dsh-kingdee` repository — and the working tree was renormalized. The committed blobs were already LF, so no published file changed.
-- **Historical changelog entries corrected.** The Chinese changelog carried duplicated category labels in the 0.1.7 – 0.7.0 entries, a 0.8.0 body reduced to a single line, and a 0.8.1 entry missing the CVE identifiers; the English 0.8.0 entry named the wrong `USER_AGENT` value and the 0.2.0 entry carried a doubled list marker. All are corrected, so both languages now cover every release at the same depth and each section carries one category label.
+- **Line endings.** The repository had no `.gitattributes`, so a Windows checkout wrote some files back as CRLF and left others as LF. Every text file is now pinned to LF, matching the sibling dsh-kingdee repository.
+- **Older changelog entries.** The Chinese list repeated category labels across eight releases, one release body had shrunk to a single line, and a security entry had lost its CVE identifiers. The English side named the wrong user-agent value in one release. All are corrected.
 
 **Verification**
 
-- `pnpm run typecheck` clean, `pnpm run build` clean, and **22** unit tests passing against `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.2`.
-- `pnpm install --frozen-lockfile` passes pnpm's supply-chain gate.
-- The declared DSH peers pass DeepSeek Harness's own `evaluatePluginCompatibility` against runtimes `0.1.7-rc.2`, `0.1.7-rc.1` and `0.1.7-alpha.2`: admitted, no exemption required. A `0.1.6` host is refused, as the install and update guides document.
+- Type check and build are clean, and all 22 unit tests pass against DeepSeek Harness 0.1.7-rc.2.
+- A frozen-lockfile install passes pnpm's supply-chain gate.
+- The declared peers pass the host's own compatibility check on rc.2, rc.1 and alpha.2: admitted, no exemption required. A 0.1.6 host is refused, as the install and update guides state.
 
 ## [0.11.1] - 2026-09-23
 
