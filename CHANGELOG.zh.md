@@ -8,25 +8,29 @@
 
 ## [0.12.0] - 2026-09-24
 
-### 适配 DeepSeek Harness 0.1.7-rc.2：跟随插件开发文档更新，源码仅改 `USER_AGENT` 版本常量
+### 适配 DeepSeek Harness 0.1.7-rc.2
+
+不改运行时逻辑、不改配置、不改工具接口：行为与 0.11.1 完全一致。
 
 **变更**
 
-- **宿主对齐**：开发依赖锁定至 DeepSeek Harness `0.1.7-rc.2`——即本插件所遵循的插件开发文档的当前发行版——并已针对该版本完成验证。`@deepseek-ai/dsh-*` peer 区间保持 `^0.1.7-alpha.2`（引入易变配置的那条发布线），因此插件在 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的每一个 `0.1.7` 预发行版上均可安装。`engines.dsh` 保持 `^0.1.7-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
-- **按 0.1.7-rc.2 插件开发文档逐缝核对**：本插件消费的全部接缝在 `0.1.7-rc.1` 与 `0.1.7-rc.2` 之间源码完全一致——包括 `ctx.web` 搜索提供方接缝（`registerSearchProvider`，以及 `WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError` 词表及其 `WEB_PROVIDER_CREDENTIAL_MISSING`、`WEB_PROVIDER_ERROR`、`WEB_ABORTED` 错误码）、`ctx.credentials.resolve`、由 Host 以 `entry.fiber.runtime.Config` 读取的导出 `Config` schema（含各 `.volatile()` 字段），以及 `launchEnvironmentOf`。除 `USER_AGENT` 版本常量外，本版不改动任何插件源码。
-- **`pnpm-workspace.yaml`**：改为对 `0.1.7-rc.2` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门——否则 DSH 持续发布的预发行版会被该闸门拦下。
-- 请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.12.0`。
+- **宿主对齐**：开发依赖升级到 DeepSeek Harness 0.1.7-rc.2，并已针对该版本完成验证。
+- **peer 区间不变**：仍为 ^0.1.7-alpha.2，即引入易变配置的那条发布线，因此插件在 0.1.7-alpha.2 至 0.1.7-rc.2 的每一个预发行版上仍可安装。宿主引擎区间与 Node 引擎区间均未改动。
+- **接缝核对**：本插件使用的全部接口在 rc.1 与 rc.2 源码中完全一致——web 搜索提供方接缝、凭据解析、Host 读取的易变配置 schema，以及启动环境查询。
+- **源码改动**：插件源码只有一处变动，即 `USER_AGENT` 版本常量。
+- **供应链闸门**：工作区文件现对 rc.2 的各包豁免 pnpm 的最小发布年龄闸门，否则 DSH 持续发布的预发行版会被拦下。
+- **文档**：安装、更新、配置、使用、卸载五份指南的中英双语版本均已更新为 0.12.0 的版本横幅与命令。
 
 **修复**
 
-- **文档集的行尾不一致。** 仓库缺少 `.gitattributes`，因此在 Windows 检出（`core.autocrlf=true`）下，部分文档被写回为 CRLF，另一部分仍是 LF。现新增 `.gitattributes`，把所有文本文件固定为 `eol=lf`（与姊妹仓库 `dsh-kingdee` 保持一致），并已重新规范化工作区。提交进索引的内容本来就是 LF，因此已发布的文件没有变化。
-- **历史更新日志条目已修正。** 中文侧 0.1.7 – 0.7.0 各条目存在重复分类标签，0.8.0 正文被压缩为一行，0.8.1 条目缺少 CVE 编号；英文侧 0.8.0 条目写错了 `USER_AGENT` 取值，0.2.0 条目多出一个列表符号。现全部修正：两侧对每个版本的覆盖深度一致，且每节只保留一组分类标签。
+- **行尾**：仓库原先没有 `.gitattributes`，Windows 检出会把部分文档写回 CRLF，另一部分仍是 LF。现全部固定为 LF，与姊妹仓库 dsh-kingdee 一致。
+- **旧版更新日志**：中文侧有八个版本重复了分类标签，一个版本正文只剩一行，一条安全条目丢失了 CVE 编号；英文侧有一个版本写错了 user-agent 取值。均已修正。
 
 **验证**
 
-- `pnpm run typecheck` 零错误、`pnpm run build` 干净、**22** 项单元测试在 `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.2` 上全部通过。
-- `pnpm install --frozen-lockfile` 通过 pnpm 的供应链策略校验。
-- 声明的 DSH peer 依赖经 DeepSeek Harness 自带的 `evaluatePluginCompatibility` 对运行时 `0.1.7-rc.2`、`0.1.7-rc.1`、`0.1.7-alpha.2` 校验均准入，无需豁免；`0.1.6` 宿主会被拒绝，与安装、更新文档所述一致。
+- 类型检查与构建均干净，22 项单元测试在 DeepSeek Harness 0.1.7-rc.2 上全部通过。
+- 冻结锁文件安装通过 pnpm 的供应链策略校验。
+- 声明的 peer 依赖经宿主自带的兼容性校验在 rc.2、rc.1、alpha.2 上均准入，无需豁免；0.1.6 宿主会被拒绝，与安装、更新文档一致。
 
 ---
 

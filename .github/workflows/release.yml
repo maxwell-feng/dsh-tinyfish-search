@@ -1,0 +1,42 @@
+name: Release
+
+# Creates the GitHub release for a version tag. The release body always carries
+# both languages: the English notes from docs/RELEASE.md followed by the Chinese
+# notes from docs/RELEASE.zh.md, each a complete document of its own.
+#
+# The npm side of a tag is handled separately by publish.yml.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Resolve tag
+        id: tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+      - name: Compose the bilingual release body
+        run: |
+          {
+            cat docs/RELEASE.md
+            printf '\n---\n\n'
+            cat docs/RELEASE.zh.md
+          } > "$RUNNER_TEMP/release-body.md"
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: dsh-tinyfish-search ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: false
+          body_path: ${{ runner.temp }}/release-body.md
+          # No documentation files are attached as release assets: the release
+          # carries its bilingual notes as the body only.
