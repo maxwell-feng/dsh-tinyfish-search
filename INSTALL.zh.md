@@ -11,6 +11,7 @@
 ## 1. 环境要求
 
 - DeepSeek Harness `dsh` CLI `0.1.7-alpha.2` 或更新（任意带 web 缝的 profile，如 `web`）——已在 `0.1.7-rc.2` 上验证
+- 宿主会在加载插件行之前，用运行时版本校验本插件的 `@deepseek-ai/dsh*` peer 依赖：`0.1.6` 宿主会被直接拒绝并打印确切的插件/运行时组合，只有 `dsh plugin allow-version` 才能覆盖该拒绝——见[宿主兼容性闸门](README.zh.md#宿主兼容性闸门)。
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 在任意钱包余额下免费）
 - 源码目录 / git 安装需要 pnpm `>=10`（它经 `prepare` 脚本从源码构建 `lib/`）

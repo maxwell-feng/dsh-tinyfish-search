@@ -48,7 +48,8 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
 ## 2. Upgrading to 0.12.0 from ≤ 0.11.1
 
 0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
-plugin-development documentation this plugin follows. No plugin source changed.
+plugin-development documentation this plugin follows. No plugin source changed except the
+`USER_AGENT` version constant.
 
 - **Dependency pin.** `devDependencies` move to `0.1.7-rc.2`. The `@deepseek-ai/dsh-*` peer
   ranges stay `^0.1.7-alpha.2` — the release line that introduced volatile config — so the
