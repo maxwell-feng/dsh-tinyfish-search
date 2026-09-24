@@ -4,6 +4,27 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.12.0] - 2026-09-24
+
+### DeepSeek Harness 0.1.7-rc.2 Alignment — plugin-development documentation refresh, no plugin-source change
+
+**Changed**
+
+- **Harness alignment.** `devDependencies` are pinned to DeepSeek Harness `0.1.7-rc.2`, the current release of the plugin-development documentation this plugin follows, and the plugin is verified against it. The `@deepseek-ai/dsh-*` peer ranges stay `^0.1.7-alpha.2` — the release line that introduced volatile config — so the plugin remains installable on every `0.1.7` prerelease from `0.1.7-alpha.2` through `0.1.7-rc.2`. `engines.dsh` stays `^0.1.7-alpha.2` and `engines.node` stays `^22.19.0 || >=24.0.0`.
+- **Seam audit against the 0.1.7-rc.2 plugin-development documentation.** Every seam this plugin consumes is source-identical between `0.1.7-rc.1` and `0.1.7-rc.2`: the `ctx.web` search-provider seam (`registerSearchProvider`, and the `WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError` vocabulary with its `WEB_PROVIDER_CREDENTIAL_MISSING`, `WEB_PROVIDER_ERROR` and `WEB_ABORTED` codes), `ctx.credentials.resolve`, the exported `Config` schema the Host discovers as `entry.fiber.runtime.Config` with its `.volatile()` fields, and `launchEnvironmentOf`. No plugin source changed apart from the `USER_AGENT` version constant.
+- **`pnpm-workspace.yaml`** now exempts the exact `0.1.7-rc.2` package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
+- `USER_AGENT` bumped to `dsh-tinyfish-search/0.12.0`.
+
+**Fixed**
+
+- **Line endings were inconsistent across the documentation set.** The repository carried no `.gitattributes`, so on a Windows checkout (`core.autocrlf=true`) some guides were written back as CRLF while others stayed LF. `.gitattributes` now pins every text file to `eol=lf` — matching the sibling `dsh-kingdee` repository — and the working tree was renormalized. The committed blobs were already LF, so no published file changed.
+
+**Verification**
+
+- `pnpm run typecheck` clean, `pnpm run build` clean, and **22** unit tests passing against `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.2`.
+- `pnpm install --frozen-lockfile` passes pnpm's supply-chain gate.
+- The declared DSH peers pass DeepSeek Harness's own `evaluatePluginCompatibility` against runtimes `0.1.7-rc.2`, `0.1.7-rc.1` and `0.1.7-alpha.2`: admitted, no exemption required. A `0.1.6` host is refused, as the install and update guides document.
+
 ## [0.11.1] - 2026-09-23
 
 ### Documentation and repository-tooling release — no runtime, configuration or tool-surface change
@@ -265,6 +286,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.12.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.12.0
 [0.11.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.1
 [0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
 [0.10.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.10.0
