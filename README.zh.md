@@ -19,17 +19,17 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.7-rc.1` 上全面验证；插件声明 `^0.1.7-alpha.2` peer，即引入易变配置的那条发布线
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.1.7-rc.2` 上全面验证；插件声明 `^0.1.7-alpha.2` peer，即引入易变配置的那条发布线
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
 
 ### 宿主兼容性闸门
 
-DeepSeek Harness 0.1.7-rc.1 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载。本发行版声明的 peer 均实际满足，因此无需任何豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示授予豁免：
+DeepSeek Harness 0.1.7-rc.2 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载。本发行版声明的 peer 均实际满足，因此无需任何豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示授予豁免：
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.11.1 <你的 dsh 版本>
+dsh plugin allow-version dsh-tinyfish-search@0.12.0 <你的 dsh 版本>
 ```
 
 ## 文档导航
@@ -51,7 +51,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.11.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -140,6 +140,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
+从 ≤ 0.11.1 升级到 0.12.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版——且除 `USER_AGENT` 版本常量外不改动任何插件源码。`@deepseek-ai/dsh-*` peer 保持 `^0.1.7-alpha.2`，因此插件在 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的每一个 `0.1.7` 预发行版上均可安装；所消费的全部接缝在 `0.1.7-rc.1` 与 `0.1.7-rc.2` 之间源码完全一致。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.12.0`。
+
 从 ≤ 0.11.0 升级到 0.11.1 无需任何手工步骤：本版不改运行时逻辑、不改配置、不改工具接口。仓库只保留 TypeScript 源码——双语文档闸门现为 [`scripts/check-docs-language.ts`](./scripts/check-docs-language.ts)，由 Node 直接剥离类型运行——并修正了若干文档排序缺陷。
 
 从 ≤ 0.10.0 升级到 0.11.0 无需任何手工步骤，但这是一次**宿主基线抬升**：插件现在要求 DeepSeek Harness `0.1.7-alpha.2` 或更新，并已在 `0.1.7-rc.1` 上验证。在 `0.1.6` 宿主上 DSH 会拒绝该行（见[宿主兼容性闸门](#宿主兼容性闸门)）。配置迁移到 0.1.7 的易变 schema——字段、取值、默认值完全一致，只是编辑它们的表单换了实现。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.11.0`。
@@ -181,7 +183,7 @@ node scripts/check-docs-language.ts
 
 ## 更新说明
 
-见 [更新日志](./CHANGELOG.zh.md) 与 [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) 页面。
+见 [更新日志](./CHANGELOG.zh.md)（中文）与 [CHANGELOG.md](./CHANGELOG.md)（英文），以及 [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) 页面。
 
 ## 许可证
 

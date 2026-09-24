@@ -108,7 +108,7 @@ test('the schema carries every default the schema-driven config surface renders'
   const parsed = Config({}) as PluginConfig
   assert.equal(parsed.apiKeyEnv.get(), 'TINYFISH_API_KEY')
   assert.equal(parsed.baseURL.get(), 'https://api.search.tinyfish.ai')
-  assert.equal(USER_AGENT, 'dsh-tinyfish-search/0.11.1')
+  assert.equal(USER_AGENT, 'dsh-tinyfish-search/0.12.0')
 })
 
 test('apply reads the config snapshot at operation time, not at registration', async () => {
