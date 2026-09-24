@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.12.0] - 2026-09-24
 
-### DeepSeek Harness 0.1.7-rc.2 Alignment — plugin-development documentation refresh, no plugin-source change
+### DeepSeek Harness 0.1.7-rc.2 Alignment — plugin-development documentation refresh; no source change beyond `USER_AGENT`
 
 **Changed**
 
@@ -18,6 +18,7 @@ All notable changes to this project are documented here. The format follows [Kee
 **Fixed**
 
 - **Line endings were inconsistent across the documentation set.** The repository carried no `.gitattributes`, so on a Windows checkout (`core.autocrlf=true`) some guides were written back as CRLF while others stayed LF. `.gitattributes` now pins every text file to `eol=lf` — matching the sibling `dsh-kingdee` repository — and the working tree was renormalized. The committed blobs were already LF, so no published file changed.
+- **Historical changelog entries corrected.** The Chinese changelog carried duplicated category labels in the 0.1.7 – 0.7.0 entries, a 0.8.0 body reduced to a single line, and a 0.8.1 entry missing the CVE identifiers; the English 0.8.0 entry named the wrong `USER_AGENT` value and the 0.2.0 entry carried a doubled list marker. All are corrected, so both languages now cover every release at the same depth and each section carries one category label.
 
 **Verification**
 
@@ -129,7 +130,7 @@ All notable changes to this project are documented here. The format follows [Kee
   - Converted the entire test suite into pure TypeScript (`test/apply.test.ts`, `test/patch.test.ts`, `test/provider.test.ts`), executed natively using Node `--experimental-strip-types`.
   - Configured modern `allowImportingTsExtensions` and `rewriteRelativeImportExtensions` with dual `tsconfig.json` (strip-types runtime) and `tsconfig.build.json` (distribution compilation).
   - Cleanly modularized responsibilities: `src/types.ts`, `src/config.ts`, `src/options.ts`, `src/provider.ts`, and `src/index.ts`.
-  - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.7.0`.
+  - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.8.0`.
   - Verified 100% test pass rate across all 20 tests.
 
 ## [0.7.0] - 2026-09-11
@@ -201,7 +202,7 @@ All notable changes to this project are documented here. The format follows [Kee
 ## [0.2.0] - 2026-09-03
 
 ### Fixed
-- - **Fix: the `tool-web` re-enable row now clears `disabled` explicitly (`disabled: false`).** The loader's id-patch merge is **per-key**: a config-only row restates `config` but leaves the `disabled: true` shipped by the `@deepseek-ai/dsh-web-app` bundle in place, so 0.1.9's re-enable row still left `web_search` unregistered. Verified with `dsh --profile web --dump-config`: the composed `tool-web` row now carries `disabled: false` and the model-facing `web_search` / `web_fetch` tools mount.
+- **Fix: the `tool-web` re-enable row now clears `disabled` explicitly (`disabled: false`).** The loader's id-patch merge is **per-key**: a config-only row restates `config` but leaves the `disabled: true` shipped by the `@deepseek-ai/dsh-web-app` bundle in place, so 0.1.9's re-enable row still left `web_search` unregistered. Verified with `dsh --profile web --dump-config`: the composed `tool-web` row now carries `disabled: false` and the model-facing `web_search` / `web_fetch` tools mount.
 
 ## [0.1.9] - 2026-09-03
 

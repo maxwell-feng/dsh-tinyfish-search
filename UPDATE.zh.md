@@ -49,7 +49,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
 
 ## 2. 从 ≤ 0.11.1 升级至 0.12.0 注意事项
 
-0.12.0 完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版不改动任何插件源码。
+0.12.0 完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
 
 - **依赖锁定。** 开发依赖升至 `0.1.7-rc.2`。`@deepseek-ai/dsh-*` peer 区间保持 `^0.1.7-alpha.2`——即引入易变配置的那条发布线——因此插件在 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的每一个 `0.1.7` 预发行版上均可安装。`engines.dsh` 保持 `^0.1.7-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
 - **逐缝核对。** `ctx.web` 搜索提供方接缝、`ctx.credentials.resolve`、由 Host 以 `entry.fiber.runtime.Config` 读取的导出易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.1.7-rc.1` 与 `0.1.7-rc.2` 之间源码完全一致，因此除 `USER_AGENT` 版本常量外 `src/` 未作改动，配置字段也没有任何迁移。

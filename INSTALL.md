@@ -11,6 +11,7 @@ This document covers the requirements, every install method, and how to verify t
 ## 1. Requirements
 
 - DeepSeek Harness `dsh` CLI at `0.1.7-alpha.2` or newer (any profile with the web seam, e.g. `web`) — verified on `0.1.7-rc.2`
+- The harness verifies this plugin's `@deepseek-ai/dsh*` peers against the running runtime before it admits the row. A `0.1.6` host is refused at load with the exact plugin/runtime pair, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free at any wallet balance)
 - pnpm `>=10` for source-checkout and git installs (it builds `lib/` from source via the `prepare` script)

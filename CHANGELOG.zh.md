@@ -8,7 +8,7 @@
 
 ## [0.12.0] - 2026-09-24
 
-### 适配 DeepSeek Harness 0.1.7-rc.2：跟随插件开发文档更新，不改插件源码
+### 适配 DeepSeek Harness 0.1.7-rc.2：跟随插件开发文档更新，源码仅改 `USER_AGENT` 版本常量
 
 **变更**
 
@@ -20,6 +20,7 @@
 **修复**
 
 - **文档集的行尾不一致。** 仓库缺少 `.gitattributes`，因此在 Windows 检出（`core.autocrlf=true`）下，部分文档被写回为 CRLF，另一部分仍是 LF。现新增 `.gitattributes`，把所有文本文件固定为 `eol=lf`（与姊妹仓库 `dsh-kingdee` 保持一致），并已重新规范化工作区。提交进索引的内容本来就是 LF，因此已发布的文件没有变化。
+- **历史更新日志条目已修正。** 中文侧 0.1.7 – 0.7.0 各条目存在重复分类标签，0.8.0 正文被压缩为一行，0.8.1 条目缺少 CVE 编号；英文侧 0.8.0 条目写错了 `USER_AGENT` 取值，0.2.0 条目多出一个列表符号。现全部修正：两侧对每个版本的覆盖深度一致，且每节只保留一组分类标签。
 
 **验证**
 
@@ -126,15 +127,26 @@
 
 ### 安全修复
 
-- 全面修复 Dependabot 报告的 `js-yaml` 漏洞（升级至 `4.3.2`，彻底解决 CVE-2026-84375 等 8 项安全告警）；
-- 纯 TypeScript 架构；
-- 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.1`；
-- 全套 20 项自动化测试验证通过。
+- **全面修复 Dependabot 报告的 `js-yaml` 安全告警**：
+  - 将 `js-yaml` 开发依赖由 `4.1.1` 升级至 `4.3.2`。
+  - 修复 CVE-2026-84375（GHSA-2883-xcg3-v3hh）、GHSA-5p4m-2wfm-xmqj（CVE-2026-59870）、CVE-2026-59869（GHSA-52cp-r559-cp3m）与 CVE-2026-53550（GHSA-h67p-54hq-rp68）。
+  - GitHub 上 8 项 Dependabot 漏洞告警已全部解决并关闭。
+  - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.1`。
+  - 重新编译并验证全部 20 项测试通过。
 
 ---
 ## [0.8.0] - 2026-09-11
 
-- 架构现代化与 DeepSeek Harness 0.1.5-rc.2 兼容。
+**变更**
+
+**纯 TypeScript 架构重构（零 JavaScript）**：
+  - 按照 DeepSeek Harness 官方插件开发规范，全量重构为纯 TypeScript 代码库。
+  - 从仓库跟踪与测试运行器中彻底移除所有遗留 `.mjs` / `.js` 文件。
+  - 将整套测试迁移为纯 TypeScript（`test/apply.test.ts`、`test/patch.test.ts`、`test/provider.test.ts`），由 Node `--experimental-strip-types` 原生执行。
+  - 配置现代化的 `allowImportingTsExtensions` 与 `rewriteRelativeImportExtensions`，并采用 `tsconfig.json`（剥离类型运行时）与 `tsconfig.build.json`（发布编译）双配置。
+  - 职责清晰拆分：`src/types.ts`、`src/config.ts`、`src/options.ts`、`src/provider.ts` 与 `src/index.ts`。
+  - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.0`。
+  - 验证全部 20 项测试 100% 通过。
 
 ---
 
@@ -142,10 +154,7 @@
 
 **变更**
 
-**模块化 TypeScript 架构重构**
-
-**变更**
-- **模块化 TypeScript 架构重构**：
+**模块化 TypeScript 架构重构**：
   - 严格按照官方 DeepSeek Harness 插件开发规范将单体代码重构为高内聚、模块化 TypeScript 架构。
   - 将公共类型独立拆分至 `src/types.ts`。
   - 将 Schemastery 校验逻辑与常量独立拆分至 `src/config.ts`。
@@ -161,7 +170,6 @@
 
 **兼容性**
 
-**兼容性**
 - **适配 DeepSeek Harness 0.1.5-rc.2 与清单规范现代化**：
   - 在 `package.json.dsh` 中显式声明 `manifestVersion: 1`，遵循最新的 `@deepseek-ai/dsh-package-manifest` 插件规范。
   - 在 `package.json.engines` 中声明兼容宿主范围 `"dsh": "^0.1.5-rc.2"`。
@@ -175,9 +183,6 @@
 
 **兼容性**
 
-**新增**
-
-**兼容性**
 - 已针对 deepseek-harness `0.1.5-rc.1`（最新发行版）验证：自 `0.1.5-alpha.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝（`credentialRef`）、启动环境缝（`launchEnvironmentOf`）以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 亦未变化。rc.1 的主要变更（`tool-web` 系统提示词的作用域感知）不涉及本插件消费的任何缝。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` / `@deepseek-ai/dsh-settings` `0.1.5-rc.1`；peer 区间现为 `^0.1.5-rc.1`；engines 现为 `node >=22`（与 harness 区间一致）；`USER_AGENT` 升至 `dsh-tinyfish-search/0.5.0`。全部测试（20 项）在新区间依赖下通过。
 
 **新增**
@@ -190,7 +195,6 @@
 
 **变更**
 
-**变更**
 - **适配最新版 DeepSeek Harness 0.1.5-alpha.1**：更新内部客户端标识 `USER_AGENT` 至 `dsh-tinyfish-search/0.4.0`，全面通过最新版 `dsh-web@0.1.5-alpha.1` 契约验证。
 - **补齐标准四文档体系**：新增独立的配置说明（`CONFIG.zh.md` / `CONFIG.md`）、更新升级说明（`UPDATE.zh.md` / `UPDATE.md`）和卸载说明（`UNINSTALL.zh.md` / `UNINSTALL.md`）。
 - **打包清单更新**：在 `package.json` 的 `files` 字段中正式纳入全部新说明文档，支持 npm 及离线 tarball 发布分发。
@@ -201,11 +205,6 @@
 
 **变更**
 
-**修复**
-
-**新增**
-
-**变更**
 - **为 `tool-web` 重启用行补充作用范围说明。** bundle 补丁有意重启用宿主层 `tool-web` 行（`@deepseek-ai/dsh-web-app` 自带该行禁用），因此 `web_search` / `web_fetch` 对组合了本 bundle 的 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）。自带 `tool-web` 行的预设仍会以自己的注册为它的 agent 遮蔽这个全局注册。README 与补丁头注释现说明该作用范围，以及改为单预设限定的方法（在 profile 的 `cordis.patch.yml` 中覆盖/移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合）。行的行为本身与 0.2.1 一致。
 - **新增可选配置字段 `location` 与 `language`**，作为 `location` / `language` 查询参数转发给 TinyFish Search API（地区定位 / 搜索语言）。留空或未设置时不发送，默认请求线格式与 0.2.1 完全一致。两者均渲染在设置卡片上，并与其他字段一样支持设置热更新。
 - **必需 peer 依赖声明回归诚实。** `@deepseek-ai/dsh-credentials` 与 `@deepseek-ai/dsh-launch-environment` 在模块加载时即被无条件导入，因此不再声明为 `optional`（可选 peer 解析失败同样会让 import 崩溃，原声明名不副实）。两者 peer 区间现为 `>=0.1.2-alpha.4`；`@deepseek-ai/dsh-web` 放宽为 `>=0.1.2-alpha.2`。所有 `dsh` profile 均已内置这三个包。
@@ -223,7 +222,6 @@
 
 **兼容性**
 
-**兼容性**
 - 已针对 deepseek-harness `0.1.3-alpha.1`（最新发行版）验证：自 `0.1.2-rc.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝、启动环境缝以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。0.1.3 的主要变更（环境代理支持、Session 持久化重构、文件附件）均不涉及本插件消费的任何缝。npm 上已发布的 `@deepseek-ai/dsh-*` 类型包仍为 `0.1.2-rc.1`（npm 上的最新版本）；由于缝源码未变，针对它们做类型检查与针对 `0.1.3-alpha.1` 源码等价。`USER_AGENT` 升至 `dsh-tinyfish-search/0.2.1`。全部测试通过。
 
 ---
@@ -239,9 +237,9 @@
 
 ### 修复
 
-**修复：bundle 补丁现重新启用 `tool-web` —— 缺失时 `web_search` 根本不会注册。** `@deepseek-ai/dsh-web-app` bundle 自带 `tool-web` **禁用**行（dsh-base 仅在 headless/server 组合中启用它）。searxng-web 的补丁自己重新启用了该行，而 dsh-tinyfish-search 的补丁没有 —— 干净安装到 web profile 后模型看不到 `web_search` 工具，TinyFish 提供方完全闲置（此前"能用"的设备是因为排障时在 profile 补丁里手工加了 `tool-web` 覆盖行）。现按 searxng-web 的方式补上该行（`search: true`、`fetch: true` 及基础超时值）。
+- **修复：bundle 补丁现重新启用 `tool-web` —— 缺失时 `web_search` 根本不会注册。** `@deepseek-ai/dsh-web-app` bundle 自带 `tool-web` **禁用**行（dsh-base 仅在 headless/server 组合中启用它）。searxng-web 的补丁自己重新启用了该行，而 dsh-tinyfish-search 的补丁没有 —— 干净安装到 web profile 后模型看不到 `web_search` 工具，TinyFish 提供方完全闲置（此前"能用"的设备是因为排障时在 profile 补丁里手工加了 `tool-web` 覆盖行）。现按 searxng-web 的方式补上该行（`search: true`、`fetch: true` 及基础超时值）。
 
-**按文档接入设置热更新** —— `apply` 现通过 `ctx.settings.installSection` 注册配置（命名空间 `dsh-tinyfish-search`），与 `web-search-deepseek` 完全一致：Plugins 设置卡片可渲染该节，保存的修改（如新的 `apiKeyEnv` 或 `baseURL`）无需重启即对下一次搜索生效。同时删除了无操作死代码及其误导性注释。
+- **按文档接入设置热更新** —— `apply` 现通过 `ctx.settings.installSection` 注册配置（命名空间 `dsh-tinyfish-search`），与 `web-search-deepseek` 完全一致：Plugins 设置卡片可渲染该节，保存的修改（如新的 `apiKeyEnv` 或 `baseURL`）无需重启即对下一次搜索生效。同时删除了无操作死代码及其误导性注释。
 
 ---
 
@@ -249,7 +247,6 @@
 
 **兼容性**
 
-**兼容性**
 - 已针对 deepseek-harness `0.1.2-rc.1`（最新 `master`）验证：自 `0.1.2-alpha.5` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-rc.1`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.8`。全部测试在新区间依赖下通过。
 
 ---
@@ -258,7 +255,6 @@
 
 **兼容性**
 
-**兼容性**
 - 已针对 deepseek-harness `0.1.2-alpha.5`（最新 `master`）验证：自 `0.1.2-alpha.4` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-alpha.5`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.7`。全部测试在新区间依赖下通过。
 
 ---
