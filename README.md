@@ -38,22 +38,26 @@ the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.1.7-rc.2` (latest release); the plugin declares `^0.1.7-alpha.2` peers, the release line that introduced volatile config
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.0-rc.1` (latest release); the plugin declares `>=0.1.7-alpha.2 <0.3.0` peers, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
 
 ### Harness compatibility gate
 
-DeepSeek Harness 0.1.7-rc.2 verifies a plugin's `@deepseek-ai/dsh*`
+DeepSeek Harness `0.2.0-rc.1` verifies a plugin's `@deepseek-ai/dsh*`
 `peerDependencies` against the running runtime **before** it admits the row, and
-refuses an incompatible plugin instead of loading it. This release declares
-peers it actually satisfies, so no exemption is needed. If you run a `dsh`
-outside the declared range, DSH refuses the row with a diagnostic naming the
-exact pair; to accept that risk explicitly, grant the exemption it prints:
+refuses an incompatible plugin instead of loading it; prereleases participate in
+range matching. This release declares `>=0.1.7-alpha.2 <0.3.0` peers it actually
+satisfies — on `0.2.0-rc.1` and on the whole `0.1.7` prerelease line — so no
+exemption is needed. Note that `0.12.0` declared `^0.1.7-alpha.2`, which excludes
+`0.2.x`, so the harness refuses `0.12.0` on `0.2.0-rc.1`: upgrade to `0.13.0`
+instead of granting an exemption. If you run a `dsh` outside the declared range,
+DSH refuses the row with a diagnostic naming the exact pair; to accept that risk
+explicitly, grant the exempted exact pair it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.12.0 <your-dsh-version>
+dsh plugin allow-version dsh-tinyfish-search@0.13.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## Documentation
@@ -75,7 +79,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.13.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -168,6 +172,17 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.13.0 from ≤ 0.12.0 needs no manual steps: it aligns the plugin
+with DeepSeek Harness `0.2.0-rc.1`, the current release of the plugin-development
+documentation this plugin follows, and changes no plugin source apart from the
+`USER_AGENT` version constant. The `@deepseek-ai/dsh-*` peers widen to
+`>=0.1.7-alpha.2 <0.3.0`, because `0.2.0-rc.1` enforces peer compatibility as a
+hard refusal and the previous `^0.1.7-alpha.2` range excludes `0.2.x` — that
+widening is what admits the plugin on `0.2.0-rc.1` while keeping every `0.1.7`
+prerelease admitted. Every consumed seam is source-identical between
+`0.1.7-rc.2` and `0.2.0-rc.1`, so no configuration field moved. `USER_AGENT` is
+bumped to `dsh-tinyfish-search/0.13.0`.
 
 Upgrading to 0.12.0 from ≤ 0.11.1 needs no manual steps: it aligns the plugin
 with DeepSeek Harness `0.1.7-rc.2`, the current release of the plugin-development

@@ -2,7 +2,7 @@
 
 English | [Chinese](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.1.7-rc.2** with `dsh-tinyfish-search` **0.12.0**.
+> Verified against DeepSeek Harness **0.2.0-rc.1** with `dsh-tinyfish-search` **0.13.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.12.0
+dsh plugin --profile web add dsh-tinyfish-search@0.13.0
 ```
 
 ### Upgrading via Git Checkout
@@ -40,12 +40,39 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.13.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.12.0 from ≤ 0.11.1
+## 2. Upgrading to 0.13.0 from ≤ 0.12.0
+
+0.13.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.1`, the current release of the
+plugin-development documentation this plugin follows. No plugin source changed except the
+`USER_AGENT` version constant.
+
+- **Dependency pin.** `devDependencies` move to `0.2.0-rc.1`. The `@deepseek-ai/dsh-*` peer
+  ranges widen to `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7`
+  prerelease line and on the `0.2.x` line, including `0.2.0-rc.1`. `engines.dsh` carries the
+  same range and `engines.node` stays `^22.19.0 || >=24.0.0`.
+- **Why the range had to widen.** DeepSeek Harness `0.2.0-rc.1` turned the compatibility gate
+  into a hard refusal: every `@deepseek-ai/dsh*` peer range must match the running runtime, and
+  prereleases participate in range matching. The previous `^0.1.7-alpha.2` range excludes
+  `0.2.x`, so **0.12.0 is refused on `0.2.0-rc.1`** — upgrading to 0.13.0 is what removes that
+  refusal. On a host older than `0.1.7-alpha.2` the row is still refused.
+- **Seam audit.** The `ctx.web` search-provider seam, `ctx.credentials.resolve`, the exported
+  volatile `Config` schema the Host reads as `entry.fiber.runtime.Config`, and
+  `launchEnvironmentOf` are source-identical between `0.1.7-rc.2` and `0.2.0-rc.1`, so nothing
+  in `src/` changed beyond the `USER_AGENT` version constant, and no configuration field moved.
+- **Supply-chain gate.** `pnpm-workspace.yaml` now exempts the exact `0.2.0-rc.1` package set
+  from pnpm's minimum-release-age gate.
+
+No action is required beyond updating the package: the configuration fields, their values and
+their defaults are unchanged, so an existing profile keeps working as it is.
+
+---
+
+## 3. Upgrading to 0.12.0 from ≤ 0.11.1
 
 0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -67,7 +94,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 3. Upgrading to 0.11.1 from 0.11.0
+## 4. Upgrading to 0.11.1 from 0.11.0
 
 0.11.1 changes no runtime code, no configuration and no tool surface: the plugin
 behaves exactly as 0.11.0. It is a documentation and tooling release.
@@ -84,7 +111,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 4. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
+## 5. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
 
 0.11.0 raises the harness floor to DeepSeek Harness `0.1.7-alpha.2` and is verified on `0.1.7-rc.1`.
 The `@deepseek-ai/dsh-*` peer ranges accept `^0.1.7-alpha.2` — the release line that introduced
@@ -105,7 +132,7 @@ defaults. SSRF defenses continue to protect requests.
 
 ---
 
-## 5. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
+## 6. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
 
 0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
@@ -115,7 +142,7 @@ Configuration fields remain 100% backward-compatible.
 
 ---
 
-## 6. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
+## 7. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
 0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
@@ -128,7 +155,7 @@ refreshes the package in place.
 
 ---
 
-## 7. Verification
+## 8. Verification
 
 Start the profile:
 
@@ -140,7 +167,7 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 
 ---
 
-## 8. Rollback
+## 9. Rollback
 
 To roll back to a previous version:
 

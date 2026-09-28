@@ -1,32 +1,27 @@
-# Release notes — v0.12.0
+# Release notes — v0.13.0
 
 English | [Chinese](RELEASE.zh.md)
 
-Release date: 2026-09-24
+Release date: 2026-09-28
 
-**dsh-tinyfish-search** 0.12.0 aligns the plugin with DeepSeek Harness 0.1.7-rc.2. No runtime code, no configuration and no tool surface changed, so the plugin behaves exactly as 0.11.1.
+**dsh-tinyfish-search** 0.13.0 aligns the plugin with DeepSeek Harness 0.2.0-rc.1. No runtime code, no configuration and no tool surface changed, so the plugin behaves exactly as 0.12.0 — except that it is now admitted by the peer-compatibility gate that 0.2.0-rc.1 enforces.
 
 ## Changed
 
-- **Harness alignment.** Development dependencies move to DeepSeek Harness 0.1.7-rc.2, and this release is verified against it.
-- **Peer ranges are unchanged.** They stay ^0.1.7-alpha.2, the release line that introduced volatile config, so the plugin still installs on every 0.1.7 prerelease from alpha.2 through rc.2. The harness engine range and the Node engine range are unchanged.
-- **Seam audit.** Every interface this plugin uses is identical in the rc.1 and rc.2 sources: the web search-provider seam, the credential resolver, the volatile configuration schema the Host reads, and the launch-environment lookup.
+- **Harness alignment.** Development dependencies move to DeepSeek Harness 0.2.0-rc.1, and this release is verified against it.
+- **Peer ranges widen to `>=0.1.7-alpha.2 <0.3.0`.** DeepSeek Harness 0.2.0-rc.1 verifies every `@deepseek-ai/dsh*` peer range against the running runtime before it admits a row, and prereleases participate in range matching. The previous `^0.1.7-alpha.2` range excludes `0.2.x`, so `0.12.0` is refused on `0.2.0-rc.1`; the wider range admits both the `0.2.x` line — including `0.2.0-rc.1` — and every `0.1.7` prerelease from `0.1.7-alpha.2` through `0.1.7-rc.2`. `engines.dsh` carries the same range; the Node engine range is unchanged.
+- **Seam audit.** Every interface this plugin uses is identical in the 0.1.7-rc.2 and 0.2.0-rc.1 sources: the web search-provider seam, the credential resolver, the volatile configuration schema the Host reads, and the launch-environment lookup.
 - **Source change.** Exactly one line of plugin source moved: the `USER_AGENT` version constant.
-- **Supply-chain gate.** The workspace file now exempts the rc.2 packages from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
-- **Documentation.** The install, update, configuration, usage and uninstall guides carry the 0.12.0 banners and commands in both languages.
-
-## Fixed
-
-- **Line endings.** The repository had no `.gitattributes`, so a Windows checkout wrote some files back as CRLF and left others as LF. Every text file is now pinned to LF, matching the sibling dsh-kingdee repository.
-- **Older changelog entries.** The Chinese list repeated category labels across eight releases, one release body had shrunk to a single line, and a security entry had lost its CVE identifiers. The English side named the wrong user-agent value in one release. All are corrected.
+- **Supply-chain gate.** The workspace file now exempts the 0.2.0-rc.1 package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases.
+- **Documentation.** The install, update, configuration, usage and uninstall guides carry the 0.13.0 banners and commands in both languages, and their compatibility-gate sections now state which plugin versions 0.2.0-rc.1 refuses.
 
 ## Upgrade
 
-Run `dsh plugin --profile web add dsh-tinyfish-search@0.12.0`, or let the profile track the latest release. No manual steps. See CHANGELOG.md for the full history.
+Run `dsh plugin --profile web add dsh-tinyfish-search@0.13.0`, or let the profile track the latest release. No manual steps: no configuration field, value or default changed. Users on DeepSeek Harness 0.2.0-rc.1 must move to 0.13.0 — `0.12.0` is refused there, and `dsh plugin allow-version` is only a risk-acknowledging override, not a compatibility fix. See CHANGELOG.md for the full history.
 
 ## Verification
 
-- Type check and build are clean, and all 22 unit tests pass against DeepSeek Harness 0.1.7-rc.2.
+- Type check and build are clean, and all 22 unit tests pass against DeepSeek Harness 0.2.0-rc.1 packages.
 - A frozen-lockfile install passes pnpm's supply-chain gate.
-- The declared peers pass the host's own compatibility check on rc.2, rc.1 and alpha.2: admitted, no exemption required. A 0.1.6 host is refused, as the install and update guides state.
-- The packed 0.12.0 tarball installs into a real 0.1.7-rc.2 profile and composes the dsh-tinyfish-search layer, patching the web and tool-web rows.
+- The harness's own published `evaluatePluginCompatibility` (`@deepseek-ai/dsh-app-boot@0.2.0-rc.1`) reports runtime `0.2.0-rc.1`, admits `dsh-tinyfish-search@0.13.0` on `0.2.0-rc.1`, `0.2.0`, `0.1.7-rc.2` and `0.1.7-alpha.2`, and refuses `dsh-tinyfish-search@0.12.0` on `0.2.0-rc.1` over its `^0.1.7-alpha.2` peers.
+- The packed 0.13.0 tarball carries the built `lib/`, `cordis.patch.yml` and `LICENSE`, and its manifest is the one that gate admits above.
