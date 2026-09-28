@@ -2,7 +2,7 @@
 
 English | [Chinese](INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.1.7-rc.2** with `dsh-tinyfish-search` **0.12.0**.
+> Verified against DeepSeek Harness **0.2.0-rc.1** with `dsh-tinyfish-search` **0.13.0**.
 
 This document covers the requirements, every install method, and how to verify the installation.
 
@@ -10,8 +10,8 @@ This document covers the requirements, every install method, and how to verify t
 
 ## 1. Requirements
 
-- DeepSeek Harness `dsh` CLI at `0.1.7-alpha.2` or newer (any profile with the web seam, e.g. `web`) — verified on `0.1.7-rc.2`
-- The harness verifies this plugin's `@deepseek-ai/dsh*` peers against the running runtime before it admits the row. A `0.1.6` host is refused at load with the exact plugin/runtime pair, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
+- DeepSeek Harness `dsh` CLI at `>=0.1.7-alpha.2 <0.3.0` (any profile with the web seam, e.g. `web`) — verified on `0.2.0-rc.1`
+- The harness verifies this plugin's `@deepseek-ai/dsh*` peers against the running runtime before it admits the row. This plugin declares `>=0.1.7-alpha.2 <0.3.0`, so `0.2.0-rc.1` (and the `0.2.x` line) and the whole `0.1.7` prerelease line are admitted. A runtime outside that range is refused at load with the exact plugin/runtime pair, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free at any wallet balance)
 - pnpm `>=10` for source-checkout and git installs (it builds `lib/` from source via the `prepare` script)
@@ -27,7 +27,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 or pin an exact version:
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.12.0
+dsh plugin --profile web add dsh-tinyfish-search@0.13.0
 ```
 
 ---
@@ -47,7 +47,7 @@ Pick up unreleased changes the same way before they reach npm — the command ab
 ## 4. Install from a tarball or source checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.12.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.13.0.tgz
 ```
 
 ```sh

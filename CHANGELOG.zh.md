@@ -6,6 +6,28 @@
 
 ---
 
+## [0.13.0] - 2026-09-28
+
+### 适配 DeepSeek Harness 0.2.0-rc.1：通过 peer 兼容性闸门
+
+不改运行时逻辑、不改配置、不改工具接口：行为与 0.12.0 完全一致。
+
+**变更**
+
+- **宿主对齐**：开发依赖升级到 DeepSeek Harness 0.2.0-rc.1，并已针对该版本完成验证。
+- **peer 区间放宽为 >=0.1.7-alpha.2 <0.3.0**：DeepSeek Harness 0.2.0-rc.1 会拒绝 `@deepseek-ai/dsh*` peer 区间与运行时版本不匹配的插件行，且预发行版参与区间匹配。原先的 `^0.1.7-alpha.2` 区间不含 `0.2.x`，因此 **0.12.0 在 0.2.0-rc.1 上会被拒绝**；放宽后的区间接纳 `0.2.x` 线（含 `0.2.0-rc.1`），并保持 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的整条 `0.1.7` 预发行线继续准入。`engines.dsh` 使用同一区间，`engines.node` 未改动。
+- **逐缝核对**：web 搜索提供方接缝、凭据解析、由 Host 以 `entry.fiber.runtime.Config` 读取的易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.1.7-rc.2` 与 `0.2.0-rc.1` 之间源码完全一致。
+- **源码改动**：插件源码只有一处变动，即 `USER_AGENT` 版本常量。
+- **供应链闸门**：`pnpm-workspace.yaml` 改为对 `0.2.0-rc.1` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门，否则 DSH 持续发布的预发行版会被拦下。
+- **文档**：安装、更新、配置、使用、卸载五份指南的中英双语版本均已更新为 0.13.0 的版本横幅与命令，其中的兼容性闸门章节也写明了 `0.2.0-rc.1` 会拒绝 `0.12.0`。
+
+**验证**
+
+- `pnpm run typecheck` 零错误、`pnpm run build` 干净，22 项单元测试在 DeepSeek Harness 0.2.0-rc.1 上全部通过。
+- 冻结锁文件安装通过 pnpm 的供应链策略校验。
+- 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.1`）实测：运行时版本为 `0.2.0-rc.1`，`0.13.0` 在 `0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.1` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
+- 实际打包的 0.13.0 压缩包含构建产物 `lib/`、`cordis.patch.yml` 与 `LICENSE`。
+
 ## [0.12.0] - 2026-09-24
 
 ### 适配 DeepSeek Harness 0.1.7-rc.2
@@ -328,6 +350,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.13.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.13.0
 [0.12.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.12.0
 [0.11.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.1
 [0.11.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.0
