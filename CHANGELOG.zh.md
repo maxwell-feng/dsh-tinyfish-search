@@ -6,6 +6,28 @@
 
 ---
 
+## [0.14.0] - 2026-09-29
+
+### 适配 DeepSeek Harness 0.2.0-rc.2：完成验证，且非强制升级
+
+不改运行时逻辑、不改配置、不改工具接口：行为与 0.13.0 完全一致。
+
+**变更**
+
+- **宿主对齐**：开发依赖升级到 DeepSeek Harness 0.2.0-rc.2，并已针对该版本完成验证。
+- **peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`**：由于 `0.13.0` 已声明这一放宽后的区间，**`0.13.0` 在 `0.2.0-rc.2` 上同样被准入**——0.14.0 是针对新运行时**重新验证**的版本，而非为解救不兼容版本而发。在 `0.2.0-rc.2` 上仍被拒绝的是窄区间的 `0.12.0`，其 `^0.1.7-alpha.2` peer 不含 `0.2.x`。`engines.dsh` 使用同一区间，`engines.node` 未改动。
+- **逐缝核对**：web 搜索提供方接缝、凭据解析、由 Host 以 `entry.fiber.runtime.Config` 读取的易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.2.0-rc.1` 与 `0.2.0-rc.2` 之间源码完全一致。`0.2.0-rc.2` 的增量均为新增——Cordis Inspect 诊断、`TypertGateway.hasLiveClient()`，以及定时提问——未触及本插件使用的任何接口。
+- **源码改动**：插件源码只有一处变动，即 `USER_AGENT` 版本常量。
+- **供应链闸门**：`pnpm-workspace.yaml` 改为对 `0.2.0-rc.2` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门，否则 DSH 持续发布的预发行版会被拦下。
+- **文档**：安装、更新、配置、使用、卸载五份指南的中英双语版本均已更新为 0.14.0 的版本横幅与命令。
+- **双语校对**：修正 5 处仅存在于中文版的缺陷，使中英重新对应——两处 README 升级说明（0.8.1 与 0.6.1）与英文版出现漂移；`CONFIG.zh.md` 的示例配置中 `location`/`language` 取值与多出的 `apiKey` 行与英文示例不一致；以及 `UPDATE.zh.md` 的两处：0.10.0 小节标题丢失了 `/ 0.8.x` 区间，升级后验证步骤丢失了 `web_search` 相关表述。全部 8 组文档对已重新核对小节顺序、编号、列表顺序与表格对齐，未再发现排序缺陷。
+
+**验证**
+
+- `pnpm run typecheck` 零错误、`pnpm run build` 干净，22 项单元测试在 DeepSeek Harness 0.2.0-rc.2 上全部通过。
+- 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.2`）实测：运行时版本为 `0.2.0-rc.2`，`0.14.0` 在 `0.2.0-rc.2`、`0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.2` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
+- `0.13.0` 以其未改动的 peer 区间在 `0.2.0-rc.2` 上被准入，印证本版并非强制升级。
+
 ## [0.13.0] - 2026-09-28
 
 ### 适配 DeepSeek Harness 0.2.0-rc.1：通过 peer 兼容性闸门
@@ -350,6 +372,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.14.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.14.0
 [0.13.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.13.0
 [0.12.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.12.0
 [0.11.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.11.1
