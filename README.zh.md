@@ -19,17 +19,17 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.2.0-rc.1` 上全面验证；插件声明 `>=0.1.7-alpha.2 <0.3.0` peer，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在最新版 `0.2.0-rc.2` 上全面验证；插件声明 `>=0.1.7-alpha.2 <0.3.0` peer，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - harness 凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）为必需 peer 依赖——所有 `dsh` profile 均已内置
 
 ### 宿主兼容性闸门
 
-DeepSeek Harness `0.2.0-rc.1` 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载，且预发行版参与区间匹配。本发行版声明 `>=0.1.7-alpha.2 <0.3.0`，在 `0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均实际满足，因此无需任何豁免。需注意：`0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 会在 `0.2.0-rc.1` 上拒绝 `0.12.0`——此时应升级到 `0.13.0`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示对确切版本对授予豁免：
+DeepSeek Harness `0.2.0-rc.2` 会在加载插件行**之前**，用正在运行的运行时版本校验插件的 `@deepseek-ai/dsh*` `peerDependencies`；不兼容的插件会被直接拒绝，而不是照常加载，且预发行版参与区间匹配。本发行版声明 `>=0.1.7-alpha.2 <0.3.0`，在 `0.2.0-rc.2`、`0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均实际满足，因此无需任何豁免。由于 `0.13.0` 已声明了这一放宽后的区间，它在 `0.2.0-rc.2` 上同样被准入。但窄区间的 `0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 在 `0.2.0-rc.2` 上仍会拒绝 `0.12.0`——此时应升级到 `0.14.0`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的插件/运行时组合；要显式接受该风险，请按提示对确切版本对授予豁免：
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.13.0 --dsh-version <你的 dsh 版本> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.14.0 --dsh-version <你的 dsh 版本> --accept-risk
 ```
 
 ## 文档导航
@@ -51,7 +51,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.13.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -140,6 +140,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
+从 ≤ 0.13.0 升级到 0.14.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.2.0-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版——且除 `USER_AGENT` 版本常量外不改动任何插件源码。`@deepseek-ai/dsh-*` peer 保持 `>=0.1.7-alpha.2 <0.3.0`，因此 `0.13.0` 在 `0.2.0-rc.2` 上本就被准入——本版并非强制升级，而是把 `devDependencies` 锁定到 `0.2.0-rc.2`，并针对它重新验证每一处消费的接缝。`0.2.0-rc.2` 的增量是纯新增的——Cordis Inspect 诊断、`TypertGateway.hasLiveClient()`，以及定时提问——均未触及本插件使用的任何接口。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.14.0`。
+
 从 ≤ 0.12.0 升级到 0.13.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.2.0-rc.1` 的对齐——即本插件所遵循的插件开发文档的当前发行版——且除 `USER_AGENT` 版本常量外不改动任何插件源码。`@deepseek-ai/dsh-*` peer 区间放宽为 `>=0.1.7-alpha.2 <0.3.0`：因为 `0.2.0-rc.1` 把 peer 兼容性做成了硬性拒绝，而原先的 `^0.1.7-alpha.2` 区间不含 `0.2.x`——正是这次放宽让插件在 `0.2.0-rc.1` 上通过准入，同时保持整条 `0.1.7` 预发行线仍可安装。所消费的全部接缝在 `0.1.7-rc.2` 与 `0.2.0-rc.1` 之间源码完全一致，配置字段没有任何迁移。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.13.0`。
 
 从 ≤ 0.11.1 升级到 0.12.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版——且除 `USER_AGENT` 版本常量外不改动任何插件源码。`@deepseek-ai/dsh-*` peer 保持 `^0.1.7-alpha.2`，因此插件在 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的每一个 `0.1.7` 预发行版上均可安装；所消费的全部接缝在 `0.1.7-rc.1` 与 `0.1.7-rc.2` 之间源码完全一致。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.12.0`。
@@ -154,13 +156,13 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 
 从 ≤ 0.8.1 升级到 0.8.3 无需任何手工步骤：内置企业级 SSRF 深度网络安全防御，并在 DeepSeek Harness `0.1.5-rc.2` 上完成全量验证，`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.3`。
 
-从 ≤ 0.8.0 升级到 0.8.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。该版本全面修复了 Dependabot 报告的 `js-yaml` 安全漏洞（升级至 `4.3.2`，修复 CVE-2026-84375、GHSA-5p4m-2wfm-xmqj、CVE-2026-59869、CVE-2026-53550 等漏洞），维持纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.1`。
+从 ≤ 0.8.0 升级到 0.8.1 无需任何手工步骤：全面修复了 Dependabot 报告的 `js-yaml` 安全漏洞（CVE-2026-84375、GHSA-5p4m-2wfm-xmqj、CVE-2026-59869、CVE-2026-53550），维持纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.1`。
 
 从 ≤ 0.7.0 升级到 0.8.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。插件采用纯 TypeScript 架构（零 JavaScript 残留），`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.8.0`。
 
 从 ≤ 0.6.1 升级到 0.7.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。插件代码遵循官方规范全面重构为模块化 TypeScript 架构，`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.7.0`。
 
-从 ≤ 0.5.0 升级到 0.6.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。可见的变化是元数据规范遵循最新 `@deepseek-ai/dsh-package-manifest`（`manifestVersion: 1`，宿主声明 `"dsh": "^0.1.5-rc.2"`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.6.1`）。
+从 ≤ 0.5.0 升级到 0.6.1 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。可见的变化是 manifest 声明（`manifestVersion: 1`、`@deepseek-ai/dsh-*` peer 现为 `^0.1.5-rc.2`、Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.6.1`）。
 
 从 ≤ 0.4.0 升级到 0.5.0 无需任何手工步骤：设置节、补丁行与凭据引用都随 bundle 层携带，pnpm 会原地刷新包。唯一可见的变化是 harness 基线（`@deepseek-ai/dsh-*` peer 现为 `^0.1.5-rc.1`，Node `>=22`）与 `USER_AGENT` 归属头（`dsh-tinyfish-search/0.5.0`）。
 

@@ -2,7 +2,7 @@
 
 [英文](CONFIG.md) | 简体中文
 
-> 已在 DeepSeek Harness **0.2.0-rc.1** 上随 `dsh-tinyfish-search` **0.13.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.0-rc.2** 上随 `dsh-tinyfish-search` **0.14.0** 完成全面验证。
 
 本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、配置值生效路径、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 
@@ -61,11 +61,10 @@ $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 ```yaml
 - id: dsh-tinyfish-search
   config:
-    # apiKey: "sk-tinyfish-xxx"                # 如需直接指定密钥（不推荐明文）
     apiKeyEnv: TINYFISH_API_KEY               # 环境变量名称
     baseURL: https://api.search.tinyfish.ai   # 默认 API 端点
-    location: CN                              # 定向为中国地区结果
-    language: zh                              # 优先返回中文结果
+    location: US                              # 定向为美国地区结果
+    language: en                              # 优先返回英文结果
 ```
 
 该行的 id 同时就是配置表单的寻址键，因此重命名该行的 profile 也会同时改变表单的命名空间。
