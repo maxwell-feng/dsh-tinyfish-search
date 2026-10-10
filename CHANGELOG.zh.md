@@ -19,7 +19,7 @@
 
 - **开发依赖对齐**：将 `@deepseek-ai/*` 开发依赖升级至 DeepSeek Harness 0.2.1-alpha.2，并已完成全量验证。
 - **兼容性区间保持稳定**：peer 依赖区间继续保持 `>=0.1.7-alpha.2 <0.3.0`，全面支持 `0.1.7`、`0.2.0` 以及 `0.2.1-alpha.2` 等版本。
-- **移除过时导出项**：从 `package.json` 的 `exports` 声明中移除了已废弃的 `"./package.json": "./package.json"`。
+- **清理废弃导出项**：从 `package.json` 的 `exports` 声明中移除已被规范废弃的 `./package.json` 自导出项。
 - **更新请求头标识**：将 `USER_AGENT` 标识更新为 `dsh-tinyfish-search/0.15.0`。
 - **规范化命令行选项**：更新各文档中的 CLI 命令，统一将 `--profile <name>` 参数置于 `add`、`remove`、`update` 等子命令之前。
 
