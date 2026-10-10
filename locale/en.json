@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "TinyFish Web Search",
+    "description": "TinyFish-backed web search provider for DeepSeek Harness (ctx.web). Seamlessly routes model web searches to the fast and privacy-friendly TinyFish Search API."
+  }
+}

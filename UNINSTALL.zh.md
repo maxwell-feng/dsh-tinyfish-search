@@ -1,8 +1,8 @@
-# 卸载说明文档 (Uninstall Guide)
+# 卸载指南
 
-[英文](UNINSTALL.md) | 简体中文
+[英文](UNINSTALL.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.0-rc.2** 上随 `dsh-tinyfish-search` **0.14.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.1-alpha.2** 上随 `dsh-tinyfish-search` **0.15.0** 完成全面验证。
 
 本文档指导如何从 DeepSeek Harness 的指定 Profile 中完整卸载 **dsh-tinyfish-search** 插件及其相关配置与密钥引用。
 
@@ -16,7 +16,7 @@
 dsh plugin --profile web remove dsh-tinyfish-search
 ```
 
-这会自动从 profile 的 `package.json` 依赖项中卸载该包，并从 `dsh.profile.bundles` 列表中注销其 patch 层。
+这会自动从 profile 的 `package.json` 依赖项中卸载该包，并从 `dsh.profile.bundles` 列表中注销其 patch 层。请注意 `--profile <name>` 需置于 `remove` 命令之前。
 
 ---
 

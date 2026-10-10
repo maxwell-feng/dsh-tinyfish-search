@@ -2,7 +2,7 @@
 
 English | [Chinese](UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.2.0-rc.2** with `dsh-tinyfish-search` **0.14.0**.
+> Verified against DeepSeek Harness **0.2.1-alpha.2** with `dsh-tinyfish-search` **0.15.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,8 +19,10 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.14.0
+dsh plugin --profile web add dsh-tinyfish-search@0.15.0
 ```
+
+> **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `update` and `add`.
 
 ### Upgrading via Git Checkout
 
@@ -40,12 +42,28 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.15.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.14.0 from ≤ 0.13.0
+## 2. Upgrading to 0.15.0 from ≤ 0.14.0
+
+0.15.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.2`, the latest release of the
+plugin-development documentation this plugin follows.
+
+- **Display metadata and icon.** Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.1-alpha.2 display conventions for Plugin Manager. `package.json` exports `./locale/*.json`, `./icon` and declares top-level `"icon": "./icon.svg"`.
+- **Self-contained prepare script.** Changed `"prepare"` in `package.json` to `"tsc -p tsconfig.build.json"` so git installs compile `lib/` cleanly without requiring a global `pnpm` binary on the host.
+- **Dependency pin.** `devDependencies` move to `0.2.1-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges stay `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.1-alpha.2`.
+- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.15.0`.
+- **CLI syntax normalization.** Documented commands now place `--profile <name>` before forwarded subcommands.
+
+No action is required beyond updating the package: the configuration fields, their values and
+their defaults are unchanged, so an existing profile keeps working as it is.
+
+---
+
+## 3. Upgrading to 0.14.0 from ≤ 0.13.0
 
 0.14.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -72,7 +90,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 3. Upgrading to 0.13.0 from ≤ 0.12.0
+## 4. Upgrading to 0.13.0 from ≤ 0.12.0
 
 0.13.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.1`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -99,7 +117,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 4. Upgrading to 0.12.0 from ≤ 0.11.1
+## 5. Upgrading to 0.12.0 from ≤ 0.11.1
 
 0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -121,7 +139,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 5. Upgrading to 0.11.1 from 0.11.0
+## 6. Upgrading to 0.11.1 from 0.11.0
 
 0.11.1 changes no runtime code, no configuration and no tool surface: the plugin
 behaves exactly as 0.11.0. It is a documentation and tooling release.
@@ -138,7 +156,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 6. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
+## 7. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
 
 0.11.0 raises the harness floor to DeepSeek Harness `0.1.7-alpha.2` and is verified on `0.1.7-rc.1`.
 The `@deepseek-ai/dsh-*` peer ranges accept `^0.1.7-alpha.2` — the release line that introduced
@@ -159,7 +177,7 @@ defaults. SSRF defenses continue to protect requests.
 
 ---
 
-## 7. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
+## 8. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
 
 0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
@@ -169,7 +187,7 @@ Configuration fields remain 100% backward-compatible.
 
 ---
 
-## 8. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
+## 9. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
 0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
@@ -182,7 +200,7 @@ refreshes the package in place.
 
 ---
 
-## 9. Verification
+## 10. Verification
 
 Start the profile:
 
@@ -194,10 +212,10 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 
 ---
 
-## 10. Rollback
+## 11. Rollback
 
 To roll back to a previous version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.4.0
+dsh plugin --profile web add dsh-tinyfish-search@0.14.0
 ```

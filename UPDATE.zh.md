@@ -1,8 +1,8 @@
-# 更新说明文档 (Update Guide)
+# 更新指南
 
-[英文](UPDATE.md) | 简体中文
+[英文](UPDATE.md) | 中文
 
-> 本版本已在 DeepSeek Harness **0.2.0-rc.2** 上随 `dsh-tinyfish-search` **0.14.0** 完成全面验证。
+> 本版本已在 DeepSeek Harness **0.2.1-alpha.2** 上随 `dsh-tinyfish-search` **0.15.0** 完成全面验证。
 
 本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
 
@@ -20,8 +20,10 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 或指定确切目标版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.14.0
+dsh plugin --profile web add dsh-tinyfish-search@0.15.0
 ```
+
+> **命令行语法提示**：根据 DeepSeek Harness 0.2.1-alpha.1 规范，`--profile <name>` 必须置于 `update`、`add` 等子命令之前。
 
 ### 从 Git 仓库升级
 如果你是通过 GitHub 仓库直接安装的，可拉取最新提交并重新构建：
@@ -42,12 +44,26 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### 从 Tarball 离线包升级
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.15.0.tgz
 ```
 
 ---
 
-## 2. 从 ≤ 0.13.0 升级至 0.14.0 注意事项
+## 2. 从 ≤ 0.14.0 升级至 0.15.0 注意事项
+
+0.15.0 完成与 DeepSeek Harness `0.2.1-alpha.2` 的对齐——即本插件所遵循的插件开发文档的最新发行版。
+
+- **展示元数据与专属图标。** 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.1-alpha.2 插件管理器展示规范。`package.json` 导出 `./locale/*.json` 与 `./icon`，并配置顶层 `"icon": "./icon.svg"`。
+- **自包含构建脚本。** 将 `package.json` 的 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
+- **依赖版本对齐。** 开发依赖升至 `0.2.1-alpha.2`。`@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
+- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
+- **命令行选项规范化。** 规范化文档中的 CLI 命令，将 `--profile <name>` 参数前置于被转发的子命令之前。
+
+除更新包之外无需任何操作：配置字段、取值与默认值均未改动，现有 profile 原样继续可用。
+
+---
+
+## 3. 从 ≤ 0.13.0 升级至 0.14.0 注意事项
 
 0.14.0 完成与 DeepSeek Harness `0.2.0-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
 
@@ -60,7 +76,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
 
 ---
 
-## 3. 从 ≤ 0.12.0 升级至 0.13.0 注意事项
+## 4. 从 ≤ 0.12.0 升级至 0.13.0 注意事项
 
 0.13.0 完成与 DeepSeek Harness `0.2.0-rc.1` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
 
@@ -73,7 +89,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
 
 ---
 
-## 4. 从 ≤ 0.11.1 升级至 0.12.0 注意事项
+## 5. 从 ≤ 0.11.1 升级至 0.12.0 注意事项
 
 0.12.0 完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
 
@@ -85,7 +101,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
 
 ---
 
-## 5. 从 0.11.0 升级至 0.11.1 注意事项
+## 6. 从 0.11.0 升级至 0.11.1 注意事项
 
 0.11.1 不改动运行时逻辑、不改配置、不改工具接口：行为与 0.11.0 完全一致，属于文档与工程化修补版本。
 
@@ -96,7 +112,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.14.0.tgz
 
 ---
 
-## 6. 从 0.10.0 / 0.9.x 升级至 0.11.0 注意事项
+## 7. 从 0.10.0 / 0.9.x 升级至 0.11.0 注意事项
 
 0.11.0 把宿主基线抬升到 DeepSeek Harness `0.1.7-alpha.2`，并已在 `0.1.7-rc.1` 上完成验证。`@deepseek-ai/dsh-*` peer 区间更新为 `^0.1.7-alpha.2`（即引入易变配置的那条发布线），开发依赖锁定至 `0.1.7-rc.1`，`engines.dsh` 更新为 `^0.1.7-alpha.2`。
 
@@ -108,19 +124,19 @@ DeepSeek Harness 0.1.7 以 schema 驱动的易变配置取代了旧的设置缝�
 
 ---
 
-## 7. 从 0.9.0 升级至 0.10.0 注意事项
+## 8. 从 0.9.0 升级至 0.10.0 注意事项
 
 0.10.0 完成与 DeepSeek Harness `0.1.6-alpha.2` 的对齐：`@deepseek-ai/dsh-*` peer 区间更新为 `^0.1.6-alpha.2`，开发依赖锁定至 `0.1.6-alpha.2`，`engines.dsh` 更新为 `^0.1.6-alpha.2`。本插件当时消费的全部扩展缝（`ctx.web`、`ctx.settings.installSection`、`ctx.credentials.resolve` 与 `launchEnvironmentOf`）在 `0.1.6-alpha.2` 下源码级兼容，SSRF 纵深防御机制完备运作。配置完全平滑兼容，原地升级无需任何手动修改。
 
 ---
 
-## 8. 从 0.8.3 / 0.8.x 升级至 0.9.0 注意事项
+## 9. 从 0.8.3 / 0.8.x 升级至 0.9.0 注意事项
 
 0.9.0 完成与 DeepSeek Harness `0.1.6-alpha.1` 的对齐：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`——旧的 `^0.1.5-rc.2` 按 SemVer 预发布规则并不满足 `0.1.6` 的预发布版本；`engines.dsh` 与 `engines.node` 跟随宿主（`^22.19.0 || >=24.0.0`）。本插件消费的全部缝（`ctx.web`、`ctx.settings.installSection`、`ctx.credentials`、`launchEnvironmentOf`）在两个 harness 版本之间源码完全一致，因此无需改动源码。发布包现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`：各文档保留在仓库中，不再随包安装进你的 profile。配置项完全兼容，pnpm 会原地刷新，无需任何手工调整。
 
 ---
 
-## 9. 升级后验证
+## 10. 升级后验证
 
 完成安装后，重启或直接启动该 profile：
 
@@ -132,10 +148,10 @@ dsh web
 
 ---
 
-## 10. 版本回滚方案
+## 11. 版本回滚方案
 
 若新版本与你的本地环境存在偶发冲突，可随时回退到上一稳定版本：
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.4.0
+dsh plugin --profile web add dsh-tinyfish-search@0.14.0
 ```

@@ -1,27 +1,29 @@
-# 发行说明 — v0.14.0
+# 发行说明 — v0.15.0
 
 [英文](RELEASE.md) | 中文
 
-发行日期：2026-09-29
+发行日期：2026-10-11
 
-**dsh-tinyfish-search** 0.14.0 完成与 DeepSeek Harness 0.2.0-rc.2 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版不改运行时逻辑、不改配置、不改工具接口，行为与 0.13.0 完全一致。这是一次**重新验证**版本，而非强制升级：由于 0.13.0 已声明了放宽后的 peer 区间，它在 0.2.0-rc.2 上同样被准入。
+**dsh-tinyfish-search** 0.15.0 完成与 DeepSeek Harness 0.2.1-alpha.2 的对齐——即本插件所遵循的插件开发文档的最新发行版。本版本封装了原生 `icon.svg` 矢量图标、中英双语展示资源清单（`locale/en.json`、`locale/zh.json`）、自包含的 prepare 构建脚本、纯 TypeScript 架构以及遵循最新规范的 `--profile <name>` 命令行选项排布。
+
+## 新增
+
+- **展示元数据与专属图标**：内置原生 `icon.svg` 矢量图标与中英双语展示资源（`locale/en.json`、`locale/zh.json`），符合 DSH 0.2.1-alpha.2 插件管理器展示规范。在 `package.json` 中配置顶层 `"icon": "./icon.svg"` 以及导出 `"./locale/*.json"` 与 `"./icon"`。
+- **自包含 prepare 构建脚本**：在 `package.json` 中将 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
 
 ## 变更
 
-- **宿主对齐**：开发依赖升级到 DeepSeek Harness 0.2.0-rc.2，并已针对该版本完成验证。
-- **peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`**：DeepSeek Harness 0.2.0-rc.2 会在接纳插件行之前，用正在运行的运行时版本校验每一条 `@deepseek-ai/dsh*` peer 区间，且预发行版参与区间匹配。0.14.0 声明的区间正是 0.13.0 已引入的那一个，因此 `0.13.0` 在 `0.2.0-rc.2` 上也被准入。在该宿主上仍被拒绝的是窄区间的 `0.12.0`，其 `^0.1.7-alpha.2` peer 不含 `0.2.x`。`engines.dsh` 使用同一区间，Node 引擎区间未改动。
-- **接缝核对**：本插件使用的全部接口在 0.2.0-rc.1 与 0.2.0-rc.2 源码中完全一致——web 搜索提供方接缝、凭据解析、Host 读取的易变配置 schema，以及启动环境查询。`0.2.0-rc.2` 的增量均为新增——Cordis Inspect 诊断、`TypertGateway.hasLiveClient()`，以及定时提问——未触及其中任何一项。
-- **源码改动**：插件源码只有一处变动，即 `USER_AGENT` 版本常量。
-- **供应链闸门**：工作区文件现对 0.2.0-rc.2 的包集合豁免 pnpm 的最小发布年龄闸门，否则 DSH 持续发布的预发行版会被拦下。
-- **文档**：安装、更新、配置、使用、卸载五份指南的中英双语版本均已更新为 0.14.0 的版本横幅与命令。
-- **双语校对**：修正 5 处仅存在于中文版的缺陷，并重新核对全部 8 组文档对的小节顺序、编号、列表顺序与表格对齐——未再发现排序缺陷。
+- **宿主对齐**：开发依赖升级至 DeepSeek Harness 0.2.1-alpha.2，并已针对该版本完成全量验证。
+- **peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`**：DeepSeek Harness 0.2.1-alpha.2 会在接纳插件行之前校验 peer 区间，整条 `0.1.7` 线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
+- **废弃导出清理**：从 `package.json` 的 `exports` 中移除了已过时的 `"./package.json": "./package.json"` 声明。
+- **请求头标识更新**：`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
+- **命令行选项位置规范**：全量更新中英双语指南中的命令，将 `--profile <name>` 参数前置于 `add`、`remove`、`update` 等子命令之前。
 
 ## 升级
 
-执行 `dsh plugin --profile web add dsh-tinyfish-search@0.14.0`，或让 profile 跟踪最新发行版即可。无需任何手工步骤：配置字段、取值与默认值均未改动。本版**并非强制升级**——`0.13.0` 在 DeepSeek Harness 0.2.0-rc.2 上本就可加载。仍停留在窄区间 `0.12.0` 的用户需要向前升级，因为该版本在 `0.2.0-rc.2` 上会被拒绝；`dsh plugin allow-version` 只是显式接受风险的覆盖手段，并非兼容性修复。完整历史见 CHANGELOG.zh.md。
+执行 `dsh plugin --profile web add dsh-tinyfish-search@0.15.0`，或让 profile 跟踪最新发行版即可。无需任何手工步骤：配置字段、取值与默认值均未改动。本版**并非强制升级**——`0.14.0` 与 `0.13.0` 在 DeepSeek Harness 0.2.1-alpha.2 上本就可加载。
 
 ## 验证
 
-- 类型检查与构建均干净，22 项单元测试在 DeepSeek Harness 0.2.0-rc.2 的各包上全部通过。
-- 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.2`）实测：运行时版本为 `0.2.0-rc.2`，`dsh-tinyfish-search@0.14.0` 在 `0.2.0-rc.2`、`0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `dsh-tinyfish-search@0.12.0` 因 `^0.1.7-alpha.2` peer 在 `0.2.0-rc.2` 上被拒绝。
-- `dsh-tinyfish-search@0.13.0` 以其随版发布的同一 peer 区间在 `0.2.0-rc.2` 上被准入——这正是「并非强制升级」这一结论的实测依据。
+- 类型检查与构建均干净，22 项单元测试在 DeepSeek Harness 0.2.1-alpha.2 的各包上全部通过。
+- `node scripts/check-docs-language.ts` 检查全部通过，零语言混淆或链接跳转错误。
