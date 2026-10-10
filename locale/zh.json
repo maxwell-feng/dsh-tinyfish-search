@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "TinyFish 网络搜索插件",
+    "description": "基于 TinyFish Search API 的 DeepSeek Harness 网络搜索提供方插件（接入 ctx.web 服务），为智能代理的内置网络搜索工具提供快速、安全、精准的实时联网检索能力。"
+  }
+}

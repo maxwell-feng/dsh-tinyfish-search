@@ -2,7 +2,7 @@
 
 English | [Chinese](UNINSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.2.0-rc.2** with `dsh-tinyfish-search` **0.14.0**.
+> Verified against DeepSeek Harness **0.2.1-alpha.2** with `dsh-tinyfish-search` **0.15.0**.
 
 This document explains how to completely uninstall `dsh-tinyfish-search` from a DeepSeek Harness profile and remove lingering configurations.
 
@@ -16,7 +16,7 @@ Run the following command to remove the package and its active patch layer from 
 dsh plugin --profile web remove dsh-tinyfish-search
 ```
 
-This removes the dependency from the profile's `package.json` and purges the bundle layer from `dsh.profile.bundles`.
+This removes the dependency from the profile's `package.json` and purges the bundle layer from `dsh.profile.bundles`. Note that `--profile <name>` must precede the `remove` subcommand.
 
 ---
 

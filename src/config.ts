@@ -10,7 +10,7 @@ export const TINYFISH_DEFAULT_BASE_URL = "https://api.search.tinyfish.ai";
 export const DEFAULT_API_KEY_ENV = "TINYFISH_API_KEY";
 
 /** Attribution header sent on every request. */
-export const USER_AGENT = "dsh-tinyfish-search/0.14.0";
+export const USER_AGENT = "dsh-tinyfish-search/0.15.0";
 
 /**
  * Plugin config schema. Every field is `.volatile()`, so a validated config
@@ -22,7 +22,7 @@ export const USER_AGENT = "dsh-tinyfish-search/0.14.0";
  * The exported schema is the source of truth for the parsed shape; the
  * `Config` interface in `types.ts` is the hand-written twin `apply` consumes.
  */
-export const Config = Schema.object({
+export const Config: Schema = Schema.object({
   apiKey: Schema.string().role("secret").volatile(),
   apiKeyEnv: Schema.string().role("credential-ref").default(DEFAULT_API_KEY_ENV).volatile(),
   baseURL: Schema.string().default(TINYFISH_DEFAULT_BASE_URL).volatile(),

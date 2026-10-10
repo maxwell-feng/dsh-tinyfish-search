@@ -1,8 +1,8 @@
-# 配置说明文档 (Configuration Guide)
+# 配置指南
 
-[英文](CONFIG.md) | 简体中文
+[英文](CONFIG.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.0-rc.2** 上随 `dsh-tinyfish-search` **0.14.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.1-alpha.2** 上随 `dsh-tinyfish-search` **0.15.0** 完成全面验证。
 
 本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、配置值生效路径、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 

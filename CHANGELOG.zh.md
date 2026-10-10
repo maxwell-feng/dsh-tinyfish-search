@@ -6,6 +6,30 @@
 
 ---
 
+## [0.15.0] - 2026-10-11
+
+### 适配 DeepSeek Harness 0.2.1-alpha.2 与插件展示元数据规范
+
+**新增**
+
+- **展示元数据与专属图标**：内置原生 `icon.svg` 矢量图标与中英双语展示资源（`locale/en.json`、`locale/zh.json`），符合 DSH 0.2.1-alpha.2 插件管理器展示规范。在 `package.json` 中配置顶层 `"icon": "./icon.svg"` 以及导出 `"./locale/*.json"` 与 `"./icon"`。
+- **自包含 prepare 构建脚本**：在 `package.json` 中将 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
+
+**变更**
+
+- **宿主对齐**：开发依赖升级至 DeepSeek Harness 0.2.1-alpha.2，并已针对该版本完成全量验证。
+- **peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`**：整条 `0.1.7` 线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
+- **废弃导出清理**：从 `package.json` 的 `exports` 中移除了已过时的 `"./package.json": "./package.json"` 声明。
+- **请求头标识更新**：`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
+- **命令行选项位置规范**：全量更新中英双语指南中的命令，将 `--profile <name>` 参数前置于 `add`、`remove`、`update` 等子命令之前。
+
+**验证**
+
+- `pnpm run typecheck` 零错误、`pnpm run build` 构建干净，22 项单元测试在 DeepSeek Harness 0.2.1-alpha.2 上全部通过。
+- `node scripts/check-docs-language.ts` 检查全部通过，零语言混淆或链接跳转错误。
+
+---
+
 ## [0.14.0] - 2026-09-29
 
 ### 适配 DeepSeek Harness 0.2.0-rc.2：完成验证，且非强制升级

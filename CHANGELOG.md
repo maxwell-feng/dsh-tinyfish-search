@@ -4,6 +4,28 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.15.0] - 2026-10-11
+
+### DeepSeek Harness 0.2.1-alpha.2 Alignment & Display Metadata Manifest Support
+
+**Added**
+
+- **Display metadata and icon.** Bundled native `icon.svg` vector artwork and bilingual display manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.1-alpha.2 display conventions for Plugin Manager. `package.json` exports `./locale/*.json`, `./icon` and declares top-level `"icon": "./icon.svg"`.
+- **Self-contained prepare script.** Changed `"prepare"` in `package.json` to `"tsc -p tsconfig.build.json"` so git installs compile `lib/` cleanly without requiring a global `pnpm` binary on the host.
+
+**Changed**
+
+- **Harness alignment.** Development dependencies move to DeepSeek Harness 0.2.1-alpha.2, and this release is verified against it.
+- **Peer ranges stay `>=0.1.7-alpha.2 <0.3.0`.** The plugin remains admitted across the entire `0.1.7` line and the `0.2.x` line (including `0.2.1-alpha.2`).
+- **Retired legacy export.** Removed deprecated `"./package.json": "./package.json"` export from `package.json`.
+- **User-Agent attribution.** `USER_AGENT` updated to `dsh-tinyfish-search/0.15.0`.
+- **CLI syntax normalization.** Documented commands now place `--profile <name>` before forwarded subcommands (`add`, `remove`, `update`).
+
+**Verification**
+
+- `pnpm run typecheck` clean, `pnpm run build` clean, and all 22 unit tests pass against DeepSeek Harness 0.2.1-alpha.2.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+
 ## [0.14.0] - 2026-09-29
 
 ### DeepSeek Harness 0.2.0-rc.2 Alignment — verified, not a forced upgrade

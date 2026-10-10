@@ -1,8 +1,8 @@
-# 使用说明文档 (Usage Guide)
+# 使用指南
 
-[英文](USAGE.md) | 简体中文
+[英文](USAGE.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.0-rc.2** 上随 `dsh-tinyfish-search` **0.14.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
+> 已在 DeepSeek Harness **0.2.1-alpha.2** 上随 `dsh-tinyfish-search` **0.15.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
 
 本文档说明搜索在本插件中的流转路径、涉及的提供方、凭据解析顺序与错误形态，并附可运行示例。
 
@@ -21,7 +21,7 @@ model → web_search → ctx.web → tinyfish → GET https://api.search.tinyfis
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.14.0
+user-agent: dsh-tinyfish-search/0.15.0
 accept: application/json
 ```
 
