@@ -149,7 +149,7 @@ Inside a session, call `web_search` and check that results carry TinyFish URLs/s
 
 After installation, no code changes required. In any session with the `web` profile:
 
-1. The model calls `web_search` as usual (e.g. “search for TinyFish docs”).
+1. The model calls `web_search` as usual (e.g. "search for TinyFish docs").
 2. The harness routes it through `ctx.web → tinyfish → https://api.search.tinyfish.ai`.
 3. Results appear as `WebSearchSource[]` (`url` / `title` / `snippet` / `publishedAt`) in the tool result.
 4. Check GUI: **Settings → Web Search** shows provider `tinyfish` and `available: true` when the API key is configured.

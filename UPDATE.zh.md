@@ -53,7 +53,7 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.15.0.tgz
 
 0.15.0 完成与 DeepSeek Harness `0.2.1-alpha.2` 的对齐——即本插件所遵循的插件开发文档的最新发行版。
 
-- **展示元数据与专属图标。** 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.1-alpha.2 插件管理器展示规范。`package.json` 导出 `./locale/*.json` 与 `./icon`，并配置顶层 `"icon": "./icon.svg"`。
+- **展示元数据与专属图标。** 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.1-alpha.2 插件管理器展示规范。`package.json` 导出 `./locale/*.json` 与 `./icon`，并在顶层声明 `icon` 字段（指向 `./icon.svg`）。
 - **自包含构建脚本。** 将 `package.json` 的 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
 - **依赖版本对齐。** 开发依赖升至 `0.2.1-alpha.2`。`@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
 - **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
