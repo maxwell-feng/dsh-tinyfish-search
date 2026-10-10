@@ -38,7 +38,7 @@ The bundle patch composes two rows that decide which backend answers:
 | `web` | Points the seam at this provider: `searchProvider: tinyfish` (`fetchProvider: http` restated) |
 | `tool-web` | Re-enables the host-level model-facing tools (`disabled: false`, `search: true`, `fetch: true`, timeouts restated) |
 
-The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`); its configuration form is keyed by the profile row id `dsh-tinyfish-search` (DSH 0.1.7 derives the namespace from the row, so the plugin chooses none). `available()` is a cheap local check — key present (or resolvable) plus a parseable `baseURL` — and makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, never as “unavailable”.
+The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`); its configuration form is keyed by the profile row id `dsh-tinyfish-search` (DSH 0.1.7 derives the namespace from the row, so the plugin chooses none). `available()` is a cheap local check — key present (or resolvable) plus a parseable `baseURL` — and makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, never as "unavailable".
 
 Per-preset scoping: the host `tool-web` row makes the tools visible to every agent preset on the profile. A preset mounting its own `tool-web` row shadows the global registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in the profile's `cordis.patch.yml` and add `tool-web` to that preset's agent composition.
 
