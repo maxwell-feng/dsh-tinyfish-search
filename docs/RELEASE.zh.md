@@ -8,16 +8,16 @@
 
 ## 新增
 
-- **展示元数据与专属图标**：内置原生 `icon.svg` 矢量图标与中英双语展示资源（`locale/en.json`、`locale/zh.json`），符合 DSH 0.2.1-alpha.2 插件管理器展示规范。在 `package.json` 中配置顶层 `"icon": "./icon.svg"` 以及导出 `"./locale/*.json"` 与 `"./icon"`。
-- **自包含 prepare 构建脚本**：在 `package.json` 中将 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
+- **展示元数据与专属图标**：内置原生 `icon.svg` 矢量图标与中英双语展示清单（`locale/en.json`、`locale/zh.json`），完全符合 DeepSeek Harness 0.2.1-alpha.2 插件管理器规范。在 `package.json` 中配置顶层属性 `"icon": "./icon.svg"` 并导出 `"./locale/*.json"` 与 `"./icon"`。
+- **自包含构建脚本**：将 `package.json` 中的 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
 
 ## 变更
 
-- **宿主对齐**：开发依赖升级至 DeepSeek Harness 0.2.1-alpha.2，并已针对该版本完成全量验证。
-- **peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`**：DeepSeek Harness 0.2.1-alpha.2 会在接纳插件行之前校验 peer 区间，整条 `0.1.7` 线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
-- **废弃导出清理**：从 `package.json` 的 `exports` 中移除了已过时的 `"./package.json": "./package.json"` 声明。
-- **请求头标识更新**：`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
-- **命令行选项位置规范**：全量更新中英双语指南中的命令，将 `--profile <name>` 参数前置于 `add`、`remove`、`update` 等子命令之前。
+- **开发依赖对齐**：将 `@deepseek-ai/*` 开发依赖升级至 DeepSeek Harness 0.2.1-alpha.2，并已完成全量验证。
+- **兼容性区间保持稳定**：peer 依赖区间继续保持 `>=0.1.7-alpha.2 <0.3.0`，全面支持 `0.1.7`、`0.2.0` 以及 `0.2.1-alpha.2` 等版本。
+- **移除过时导出项**：从 `package.json` 的 `exports` 声明中移除了已废弃的 `"./package.json": "./package.json"`。
+- **更新请求头标识**：将 `USER_AGENT` 标识更新为 `dsh-tinyfish-search/0.15.0`。
+- **规范化命令行选项**：更新各文档中的 CLI 命令，统一将 `--profile <name>` 参数置于 `add`、`remove`、`update` 等子命令之前。
 
 ## 升级
 
