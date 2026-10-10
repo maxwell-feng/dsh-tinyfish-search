@@ -13,11 +13,11 @@ Release date: 2026-10-11
 
 ## Changed
 
-- **Harness alignment.** Development dependencies move to DeepSeek Harness 0.2.1-alpha.2, and this release is verified against it.
-- **Peer ranges stay `>=0.1.7-alpha.2 <0.3.0`.** DeepSeek Harness 0.2.1-alpha.2 verifies every `@deepseek-ai/dsh*` peer range against the running runtime before it admits a row. The plugin remains admitted across the entire `0.1.7` line and the `0.2.x` line (including `0.2.1-alpha.2`).
-- **Retired legacy export.** Removed deprecated `"./package.json": "./package.json"` export from `package.json`.
-- **User-Agent attribution.** `USER_AGENT` updated to `dsh-tinyfish-search/0.15.0`.
-- **CLI syntax normalization.** Documented commands now place `--profile <name>` before forwarded subcommands (`add`, `remove`, `update`).
+- **Harness alignment.** Upgraded all development dependencies to DeepSeek Harness 0.2.1-alpha.2 and verified the entire test suite against it.
+- **Peer ranges compatibility.** Maintained peer dependencies range `>=0.1.7-alpha.2 <0.3.0`. The plugin is fully admitted on runtime versions 0.1.7, 0.2.0, and 0.2.1-alpha.2 without requiring manual exemptions.
+- **Cleaned legacy export.** Removed deprecated `./package.json` self-export from the exports map in `package.json`.
+- **User-Agent attribution.** Updated the `USER_AGENT` constant to `dsh-tinyfish-search/0.15.0`.
+- **CLI syntax documentation.** Updated all guides to place `--profile <name>` before forwarded subcommands such as `add`, `remove`, and `update`.
 
 ## Upgrade
 
