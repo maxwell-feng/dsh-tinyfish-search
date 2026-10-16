@@ -4,6 +4,24 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.16.0] - 2026-10-16
+
+### DeepSeek Harness 0.2.1-alpha.4 Alignment — verified, not a forced upgrade
+
+**Changed**
+
+- **Harness alignment.** Every `@deepseek-ai/dsh-*` devDependency moves from `0.2.1-alpha.2` to `0.2.1-alpha.4`, and the lockfile is regenerated against 0.2.1-alpha.4. `@deepseek-ai/cordis` stays `^4.0.4` and `@deepseek-ai/schemastery` stays `^3.18.4`.
+- **Supply-chain gate.** The workspace file exempts the 0.2.1-alpha.4 package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases. The previous exemption list also carried a duplicate `minimumReleaseAgeExclude` key whose stale `0.2.0-rc.2` entries made pnpm reject the regenerated lockfile; the list is now a single, lockfile-derived block.
+- **User-Agent attribution.** Updated the `USER_AGENT` constant to `dsh-tinyfish-search/0.16.0`.
+- **Peer ranges are unchanged.** They stay `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**: `dsh-tinyfish-search@0.15.0` is still admitted on DeepSeek Harness 0.2.1-alpha.4.
+- **Source change.** Beyond the `USER_AGENT` version string, none. The `ctx.web` search-provider contract (`registerSearchProvider`, `WebSearchProvider`, `WebSearchRequest`, `WebSearchResult`, `WebError`) is source-identical between 0.2.1-alpha.2 and 0.2.1-alpha.4, so no provider logic changed and no configuration field moved.
+
+**Verification**
+
+- `pnpm run typecheck` clean, `pnpm run build` clean, and all **22** unit tests pass against DeepSeek Harness 0.2.1-alpha.4.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+- Not verified: a live boot into a real 0.2.1-alpha.4 profile, and a live TinyFish API request (the suite stubs `fetch`).
+
 ## [0.15.0] - 2026-10-11
 
 ### DeepSeek Harness 0.2.1-alpha.2 Alignment & Display Metadata Manifest Support

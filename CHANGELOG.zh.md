@@ -6,6 +6,26 @@
 
 ---
 
+## [0.16.0] - 2026-10-16
+
+### 适配 DeepSeek Harness 0.2.1-alpha.4：完成验证，且非强制升级
+
+**变更**
+
+- **宿主对齐**：`@deepseek-ai/dsh-*` 的全部开发依赖由 `0.2.1-alpha.2` 升至 `0.2.1-alpha.4`，锁文件按 `0.2.1-alpha.4` 重新生成；`@deepseek-ai/cordis` 保持 `^4.0.4`、`@deepseek-ai/schemastery` 保持 `^3.18.4`。
+- **供应链闸门**：工作区文件现对 `0.2.1-alpha.4` 的各包豁免 pnpm 的最小发布年龄闸门 —— 否则 DSH 持续发布的预发行版会被拦下。此前的豁免名单还含有一个重复的 `minimumReleaseAgeExclude` 键，其过期的 `0.2.0-rc.2` 条目会让 pnpm 拒绝重新生成的锁文件；该名单现为单一且由锁文件推导的区块。
+- **更新请求头标识**：将 `USER_AGENT` 标识更新为 `dsh-tinyfish-search/0.16.0`。
+- **peer 区间不变**：仍为 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是**强制升级：`dsh-tinyfish-search@0.15.0` 在 DeepSeek Harness 0.2.1-alpha.4 上同样被准入。
+- **源码改动**：除 `USER_AGENT` 版本字符串外无改动。`ctx.web` 搜索提供方契约（`registerSearchProvider`、`WebSearchProvider`、`WebSearchRequest`、`WebSearchResult`、`WebError`）在 0.2.1-alpha.2 与 0.2.1-alpha.4 之间源码完全一致，因此提供方逻辑未变、配置字段也未迁移。
+
+**验证**
+
+- `pnpm run typecheck` 零错误、`pnpm run build` 构建干净，**22** 项单元测试在 DeepSeek Harness 0.2.1-alpha.4 上全部通过。
+- `node scripts/check-docs-language.ts` 检查全部通过，零发现。
+- 未验证项：在真实 `0.2.1-alpha.4` profile 中的实际启动；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
+
+---
+
 ## [0.15.0] - 2026-10-11
 
 ### 适配 DeepSeek Harness 0.2.1-alpha.2 与插件展示元数据规范
