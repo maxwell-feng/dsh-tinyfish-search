@@ -1,6 +1,6 @@
 # Install Guide
 
-English | [Chinese](INSTALL.zh.md)
+English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/INSTALL.zh.md)
 
 > Verified against DeepSeek Harness **0.2.1-rc.2** with `dsh-tinyfish-search` **0.17.0**.
 

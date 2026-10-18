@@ -1,6 +1,6 @@
 # 配置指南
 
-[英文](CONFIG.md) | 中文
+[英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.md) | 中文
 
 > 已在 DeepSeek Harness **0.2.1-rc.2** 上随 `dsh-tinyfish-search` **0.17.0** 完成全面验证。
 

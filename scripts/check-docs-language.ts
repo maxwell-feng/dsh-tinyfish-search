@@ -174,12 +174,25 @@ for (const file of files) {
   const head = (p: string): string[] => readFileSync(join(ROOT, p), 'utf8').split(/\r?\n/).slice(0, 10)
   const enName = path.split('/').pop() ?? path
   const zhName = zhPath.split('/').pop() ?? zhPath
+  // A switcher may point at the twin by relative name (correct on github.com) or
+  // by absolute repository URL (correct everywhere, including npm, which renders
+  // one README outside the repository tree). Both are accepted; the target must
+  // still name the twin.
+  const targets = (line: string): string[] => [...line.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1].trim())
+  const names = (lane: string): boolean => {
+    const t = targets(lane)
+    return t.some((u) => u === zhName || u.replace(/\\/g, '/').endsWith(`/${zhName}`))
+  }
+  const namesEn = (lane: string): boolean => {
+    const t = targets(lane)
+    return t.some((u) => u === enName || u.replace(/\\/g, '/').endsWith(`/${enName}`))
+  }
   const enSwitcher = head(path).find((l) => /English\s*\|\s*\[Chinese\]\(/.test(l))
   const zhSwitcher = head(zhPath).find((l) => /\[英文\]\(/.test(l))
-  if (!enSwitcher || !enSwitcher.includes(`(${zhName})`)) {
+  if (!enSwitcher || !names(enSwitcher)) {
     report(path, 1, `switcher line missing or malformed; expected "English | [Chinese](${zhName})"`, enSwitcher ?? '')
   }
-  if (!zhSwitcher || !zhSwitcher.includes(`(${enName})`)) {
+  if (!zhSwitcher || !namesEn(zhSwitcher)) {
     report(zhPath, 1, `switcher line missing or malformed; expected "[英文](${enName}) | 中文"`, zhSwitcher ?? '')
   }
 }

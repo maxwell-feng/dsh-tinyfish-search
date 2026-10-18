@@ -1,6 +1,6 @@
 # 更新指南
 
-[英文](UPDATE.md) | 中文
+[英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.md) | 中文
 
 > 本版本已在 DeepSeek Harness **0.2.1-rc.2** 上随 `dsh-tinyfish-search` **0.17.0** 完成全面验证。
 

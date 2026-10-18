@@ -1,6 +1,6 @@
-# 发行说明 — v0.17.0
+# 发行说明 — v0.17.1
 
-[英文](RELEASE.md) | 中文
+[英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/docs/RELEASE.md) | 中文
 
 发行日期：2026-10-18
 
