@@ -1,6 +1,6 @@
 # dsh-tinyfish-search
 
-[英文](README.md) | 中文
+[英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/README.md) | 中文
 
 > [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件，把内置 `web_search` 工具接到 [TinyFish Search API](https://docs.tinyfish.ai/search-api)。每次查询只需一次 GET，无模型调用——更快且免费（TinyFish Search 在任意钱包余额下免费）。
 

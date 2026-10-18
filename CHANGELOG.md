@@ -1,8 +1,24 @@
 # Changelog
 
-English | [Chinese](CHANGELOG.zh.md)
+English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
+
+## [0.17.1] - 2026-10-18
+
+### Documentation rendering fix — no runtime, configuration or tool-surface change
+
+**Fixed**
+
+- **The changelog rendered its version headings as literal brackets.** `CHANGELOG.md` and `CHANGELOG.zh.md` carried a link-reference block that stopped at `[0.14.0]`, so the `[0.17.0]`, `[0.16.0]` and `[0.15.0]` headings had no definition to resolve against. GitHub rendered them as the raw text `[0.17.0]` instead of a link, which read as scrambled text. The three missing definitions are added, and every heading in both files now resolves.
+- **The language switcher could not be followed from npm.** The npm registry picks `readmeFilename: README.zh.md` for this package — it sorts the `README*` candidates and takes the last — so npm shows the Chinese document. Its link back to the English README is a relative path that npm cannot resolve on `www.npmjs.com`, so it went nowhere. Every language switcher in both languages now uses an absolute `https://github.com/.../blob/main/...` URL, which resolves on GitHub, on npm, and in any other renderer.
+- **The bilingual-documents gate accepts both forms.** `scripts/check-docs-language.ts` required the switcher to be a bare relative filename. It now accepts a relative name or an absolute repository URL, still asserting that the target names the twin, so the gate keeps its guarantee without forcing the form that breaks on npm.
+
+**Verification**
+
+- `pnpm run typecheck` clean, and all **22** unit tests pass.
+- `node scripts/check-docs-language.ts` passing clean across all document pairs.
+- Every relative link in the repository resolves (106 checked, 0 broken); every language switcher was fetched and returns HTTP 200.
 
 ## [0.17.0] - 2026-10-18
 
@@ -399,6 +415,10 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
+[0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0
+[0.16.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.16.0
+[0.15.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.15.0
 [0.14.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.14.0
 [0.13.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.13.0
 [0.12.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.12.0

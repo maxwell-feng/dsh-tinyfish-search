@@ -1,8 +1,26 @@
 # 更新日志
 
-[英文](CHANGELOG.md) | 中文
+[英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CHANGELOG.md) | 中文
 
 本项目的所有重要版本演进记录均归档于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，并严格遵循 [语义化版本规范](https://semver.org/lang/zh-CN/)。
+
+---
+
+## [0.17.1] - 2026-10-18
+
+### 文档渲染修复 —— 不改运行时逻辑、不改配置项、不改工具接口
+
+**修复**
+
+- **更新日志的版本标题被渲染成了字面方括号。** `CHANGELOG.md` 与 `CHANGELOG.zh.md` 的链接引用块只写到 `[0.14.0]`，导致 `[0.17.0]`、`[0.16.0]`、`[0.15.0]` 三个标题没有可解析的定义，GitHub 把它们渲染为原始文本 `[0.17.0]` 而不是链接，读起来就是文字错乱。现补齐这三条定义，两个文件中的每个标题都能正确解析。
+- **语言切换链接在 npm 上无法跳转。** npm registry 为本包判定 `readmeFilename: README.zh.md`——它把 `README*` 候选文件排序后取最后一个——因此 npm 页面展示的是中文文档。其中的 `[英文](README.md)` 是相对路径，npm 在 `www.npmjs.com` 上无法解析，点击无效。现两种语言的切换链接一律改用绝对地址 `https://github.com/.../blob/main/...`，在 GitHub、npm 及其他任何渲染器中均可跳转。
+- **双语文档闸门同时接受两种写法。** `scripts/check-docs-language.ts` 原先要求切换链接必须是不带路径的相对文件名。现在相对文件名与绝对仓库 URL 都接受，但仍校验目标必须指向对应文件，因此闸门的保证不变，也不再强制使用那种在 npm 上失效的写法。
+
+**验证**
+
+- `pnpm run typecheck` 零错误，**22** 项单元测试全部通过。
+- `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
+- 仓库内每个相对链接均可解析（检查 106 个，失效 0 个）；每个语言切换链接均实测返回 HTTP 200。
 
 ---
 
@@ -442,6 +460,10 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
+[0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0
+[0.16.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.16.0
+[0.15.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.15.0
 [0.14.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.14.0
 [0.13.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.13.0
 [0.12.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.12.0

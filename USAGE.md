@@ -1,6 +1,6 @@
 # Usage Guide
 
-English | [Chinese](USAGE.zh.md)
+English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/USAGE.zh.md)
 
 > Verified against DeepSeek Harness **0.2.1-rc.2** with `dsh-tinyfish-search` **0.17.0**. All wire outputs below were captured from the shipped `lib/` build.
 
