@@ -6,6 +6,32 @@
 
 ---
 
+## [0.17.0] - 2026-10-18
+
+### 适配 DeepSeek Harness 0.2.1-rc.2：完成验证，且非强制升级
+
+**变更**
+
+- **宿主对齐**：`@deepseek-ai/dsh-*` 的全部开发依赖由 `0.2.1-alpha.4` 升至 `0.2.1-rc.2`，锁文件按 `0.2.1-rc.2` 重新生成；`@deepseek-ai/cordis` 升至 `^4.0.5`、`@deepseek-ai/schemastery` 升至 `^3.18.5`。
+- **供应链闸门**：工作区文件现对 `0.2.1-rc.2` 的各包豁免 pnpm 的最小发布年龄闸门 —— 否则 DSH 持续发布的预发行版会被拦下。该名单保持单一且由锁文件推导的区块。
+- **更新请求头标识**：将 `USER_AGENT` 标识更新为 `dsh-tinyfish-search/0.17.0`。
+- **区间不变**：`engines.dsh` 与 `@deepseek-ai/dsh-*` peer 仍为 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是**强制升级：`dsh-tinyfish-search@0.16.0` 在 DeepSeek Harness 0.2.1-rc.2 上同样被准入。
+- **源码改动**：除 `USER_AGENT` 版本字符串外无改动。`ctx.web` 搜索提供方契约（`registerSearchProvider`、`WebSearchProvider`、`WebSearchRequest`、`WebSearchResult`、`WebError`）在 0.2.1-alpha.4 与 0.2.1-rc.2 之间声明完全一致，因此提供方逻辑未变、配置字段也未迁移。
+
+**文档**
+
+- 全部双语文档的验证基线更新为 `0.2.1-rc.2` / 插件 `0.17.0`。
+- 重写「宿主兼容性闸门」一节：自 DSH `0.2.1-alpha.4` 起，包自有的 `engines.dsh` 区间单独决定准入，peer 在该项校验中被忽略（此前版本只读 peer）；两种规则都按 `includePrerelease` 语义匹配，拒绝记录的字段为 `requirements`。
+- 补齐中文版 README 缺失的 0.17.0 升级段落，使中英升级历史逐条对应。
+
+**验证**
+
+- `pnpm run typecheck` 零错误、`pnpm run build` 构建干净，**22** 项单元测试在 DeepSeek Harness 0.2.1-rc.2 上全部通过。
+- `node scripts/check-docs-language.ts` 检查全部通过，零发现。
+- 未验证项：在真实 `0.2.1-rc.2` profile 中的实际启动；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
+
+---
+
 ## [0.16.0] - 2026-10-16
 
 ### 适配 DeepSeek Harness 0.2.1-alpha.4：完成验证，且非强制升级
