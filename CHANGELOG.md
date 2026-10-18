@@ -4,6 +4,30 @@ English | [Chinese](CHANGELOG.zh.md)
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.17.0] - 2026-10-18
+
+### DeepSeek Harness 0.2.1-rc.2 Alignment — verified, not a forced upgrade
+
+**Changed**
+
+- **Harness alignment.** Every `@deepseek-ai/dsh-*` devDependency moves from `0.2.1-alpha.4` to `0.2.1-rc.2`, and the lockfile is regenerated against 0.2.1-rc.2. `@deepseek-ai/cordis` moves to `^4.0.5` and `@deepseek-ai/schemastery` to `^3.18.5`.
+- **Supply-chain gate.** The workspace file exempts the 0.2.1-rc.2 package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases. The list stays a single, lockfile-derived block.
+- **User-Agent attribution.** Updated the `USER_AGENT` constant to `dsh-tinyfish-search/0.17.0`.
+- **Ranges are unchanged.** `engines.dsh` and the `@deepseek-ai/dsh-*` peers stay `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**: `dsh-tinyfish-search@0.16.0` is still admitted on DeepSeek Harness 0.2.1-rc.2.
+- **Source change.** Beyond the `USER_AGENT` version string, none. The `ctx.web` search-provider contract (`registerSearchProvider`, `WebSearchProvider`, `WebSearchRequest`, `WebSearchResult`, `WebError`) is declaration-identical between 0.2.1-alpha.4 and 0.2.1-rc.2, so no provider logic changed and no configuration field moved.
+
+**Documentation**
+
+- The bilingual docs' verification baseline is now `0.2.1-rc.2` / plugin `0.17.0`.
+- Rewrote the "Harness compatibility gate" section: since DSH `0.2.1-alpha.4`, a package's own `engines.dsh` range decides admission alone and the peers are ignored for that check (earlier releases read the peers only). Both rules match with prerelease semantics, and a refusal record reports `requirements`.
+- Added the 0.17.0 upgrade paragraph the Chinese README was missing, so both languages list the same upgrade history.
+
+**Verification**
+
+- `pnpm run typecheck` clean, `pnpm run build` clean, and all **22** unit tests pass against DeepSeek Harness 0.2.1-rc.2.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+- Not verified: a live boot into a real 0.2.1-rc.2 profile, and a live TinyFish API request (the suite stubs `fetch`).
+
 ## [0.16.0] - 2026-10-16
 
 ### DeepSeek Harness 0.2.1-alpha.4 Alignment — verified, not a forced upgrade
