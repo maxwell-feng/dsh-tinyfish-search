@@ -2,7 +2,7 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.1-rc.2** 上随 `dsh-tinyfish-search` **0.17.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.2-alpha.2** 上随 `dsh-tinyfish-search` **0.18.0** 完成全面验证。
 
 本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、配置值生效路径、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 
@@ -92,3 +92,17 @@ $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 4. `process.env[apiKeyEnv]`（覆盖宿主之外的独立使用场景）。
 
 只要存在解析器，提供方即视为 `available`，即使密钥尚未存储——缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错并点名所配置的变量。示例与完整错误表见[使用说明](USAGE.zh.md)。
+
+---
+
+## 7. 就绪判定（`ready()`）
+
+DeepSeek Harness 0.2.2-alpha.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员，`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由返回 `false` 的模型步既不声明也不派发该工具。`tinyfish` 提供方按第 6 节所述的同一套链路解析，并报告是否解到了密钥：
+
+- 存在字面量 `apiKey` 时立即就绪；否则运行一次第 6 节的解析器。
+- 解析出非空值即就绪，其余情况——包括空字符串——均不就绪。
+- 凭据存储读取时抛错则回答 `false`，因为同一次读取也会让搜索失败，而不是让搜索找到密钥。
+- 该检查只涉及配置：它从不访问 TinyFish，也从不向服务校验密钥，因此「有值但错误」的密钥同样算作就绪。
+- TinyFish 对所有模型路由使用同一把密钥，因此 `llmProvider` 参数从不会改变答案；它仅为符合契约而接收。
+
+它与 `available()` 的可观察差别在于：`available()` 决定缝在操作执行时能否选中本提供方，而 `ready()` 决定模型是否被提供该工具。没有可用凭据时，`available()` 仍返回 `true`（解析器存在），而 `ready()` 返回 `false`，于是工具被收起，而不是先出现再让每次调用失败。

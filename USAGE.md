@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/USAGE.zh.md)
 
-> Verified against DeepSeek Harness **0.2.1-rc.2** with `dsh-tinyfish-search` **0.17.0**. All wire outputs below were captured from the shipped `lib/` build.
+> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.0**. All wire outputs below were captured from the shipped `lib/` build.
 
 This document explains how searches flow through the plugin, which providers are involved, how credentials resolve, and what errors look like — with runnable examples.
 
@@ -21,7 +21,7 @@ Concretely, one search is one HTTP request (verified against the built output):
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.17.0
+user-agent: dsh-tinyfish-search/0.18.0
 accept: application/json
 ```
 
@@ -39,6 +39,8 @@ The bundle patch composes two rows that decide which backend answers:
 | `tool-web` | Re-enables the host-level model-facing tools (`disabled: false`, `search: true`, `fetch: true`, timeouts restated) |
 
 The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`); its configuration form is keyed by the profile row id `dsh-tinyfish-search` (DSH 0.1.7 derives the namespace from the row, so the plugin chooses none). `available()` is a cheap local check — key present (or resolvable) plus a parseable `baseURL` — and makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, never as "unavailable".
+
+Since DeepSeek Harness 0.2.2 the provider also implements `ready(llmProvider)`, which answers whether a search for a model request on that chat route has a credential to send. `dsh-tool-web` uses it as the activation condition of `web_search`, so with no usable credential the model step is not offered the tool at all — the missing key never turns into a failed call. Like `available()`, it is configuration only and contacts nothing; unlike `available()`, it resolves the key and answers `false` when nothing comes back. TinyFish uses one key on every model route, so `llmProvider` never changes the answer.
 
 Per-preset scoping: the host `tool-web` row makes the tools visible to every agent preset on the profile. A preset mounting its own `tool-web` row shadows the global registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in the profile's `cordis.patch.yml` and add `tool-web` to that preset's agent composition.
 
@@ -114,7 +116,7 @@ console.log(JSON.stringify(out, null, 2))
 }
 ```
 
-The duplicate URL is dropped; the second item adds nothing new.
+The duplicate URL is dropped; the second item adds nothing new. Note what the mapping deliberately does not carry: TinyFish returns no long-form summary and no generated answer, so neither `WebSearchSource.summary` nor `WebSearchResult.content` is filled. Both are optional on the seam because not every provider returns them; inventing a value would make the seam lie.
 
 ### 4.3 Geo / language targeting
 
@@ -144,3 +146,5 @@ dsh-tinyfish-search has no API key for "TINYFISH_API_KEY"; set the environment v
 ```
 
 A malformed TinyFish response (non-array `results`, items without a string `url`) degrades to zero sources rather than throwing.
+
+`WEB_PROVIDER_CREDENTIAL_MISSING` is what a *dispatched* search raises. Through the normal model path you will usually not see it for a missing key, because `ready()` withholds the tool first — see section 2.

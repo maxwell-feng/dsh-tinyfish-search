@@ -2,7 +2,7 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/INSTALL.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.1-rc.2** 上随 `dsh-tinyfish-search` **0.17.0** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.2-alpha.2** 上随 `dsh-tinyfish-search` **0.18.0** 完成全面验证。
 
 本文档覆盖环境要求、全部安装方式与安装验证方法。
 
@@ -10,8 +10,8 @@
 
 ## 1. 环境要求
 
-- DeepSeek Harness `dsh` CLI `>=0.1.7-alpha.2 <0.3.0`（任意带 web 缝的 profile，如 `web`）——已在 `0.2.1-rc.2` 上验证
-- 宿主会在加载插件行之前，用运行时版本校验本插件的 `@deepseek-ai/dsh*` peer 依赖；本插件的声明区间为 `>=0.1.7-alpha.2 <0.3.0`，因此 `0.2.1-rc.2`（以及 `0.2.x`）与整条 `0.1.7` 预发行线都通过。区间之外的宿主会被直接拒绝并打印确切的插件/运行时组合，只有 `dsh plugin allow-version` 才能覆盖该拒绝——见[宿主兼容性闸门](README.zh.md#宿主兼容性闸门)。
+- DeepSeek Harness `dsh` CLI `>=0.1.7-alpha.2 <0.3.0`（任意带 web 缝的 profile，如 `web`）——已在 `0.2.2-alpha.2` 上验证
+- 宿主会在准入插件行之前，用运行时版本校验本插件声明的运行时要求。自 DSH `0.2.1-alpha.4` 起，包自有的 `engines.dsh` 区间单独决定准入，`@deepseek-ai/dsh*` 的 peer 依赖在该判断中被忽略；只有缺少 `engines.dsh` 时才回退到这些 peer。两者都按 `includePrerelease` 语义匹配，因此预发行版运行时也参与比较。本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，因此 `0.2.2-alpha.2`（以及 `0.2.x` 线）与整条 `0.1.7` 预发行线都通过。区间之外的宿主会在加载时被直接拒绝并点明确切的要求，只有 `dsh plugin allow-version` 才能覆盖该拒绝——见[宿主兼容性闸门](README.zh.md#宿主兼容性闸门)。
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 在任意钱包余额下免费）
 - 源码目录 / git 安装需要 pnpm `>=10`（它经 `prepare` 脚本从源码构建 `lib/`）
@@ -27,7 +27,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 或锁定确切版本：
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.17.0
+dsh plugin --profile web add dsh-tinyfish-search@0.18.0
 ```
 
 > **命令行语法说明**：根据 DeepSeek Harness 0.2.1-alpha.1 规范，`--profile <name>` 必须置于 `add` 等子命令之前。
@@ -49,7 +49,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ## 4. 从 tarball 或源码目录安装
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.17.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.18.0.tgz
 ```
 
 ```sh
@@ -88,4 +88,4 @@ dsh --profile web --dump-config | grep tinyfish   # 层已加载
 
 然后启动会话，提问一个需要实时信息的问题（如“今天东京天气如何？”），确认模型调用了 `web_search` 且结果带 TinyFish 的链接/摘要。GUI 的「网页搜索」设置卡片在密钥配置好后显示提供方 `tinyfish` 与 `available: true`。
 
-若缺密钥，首次搜索会以 `WEB_PROVIDER_CREDENTIAL_MISSING` 失败并点名所配置的变量名——见[使用说明](USAGE.zh.md)错误表。
+若缺密钥，模型侧根本不会被提供 `web_search` 工具：从 DeepSeek Harness 0.2.2 起，插件通过 `WebSearchProvider.ready()` 上报就绪状态，工具层据此收起该工具，而不是派发一个无法认证的调用。若搜索在无密钥的情况下仍然执行——即绕过该闸门的程序化调用方——会以 `WEB_PROVIDER_CREDENTIAL_MISSING` 失败并点名所配置的变量名。见[使用说明](USAGE.zh.md)错误表。

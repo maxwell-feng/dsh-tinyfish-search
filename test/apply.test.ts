@@ -108,7 +108,7 @@ test('the schema carries every default the schema-driven config surface renders'
   const parsed = Config({}) as PluginConfig
   assert.equal(parsed.apiKeyEnv.get(), 'TINYFISH_API_KEY')
   assert.equal(parsed.baseURL.get(), 'https://api.search.tinyfish.ai')
-  assert.equal(USER_AGENT, 'dsh-tinyfish-search/0.17.1')
+  assert.equal(USER_AGENT, 'dsh-tinyfish-search/0.18.0')
 })
 
 test('apply reads the config snapshot at operation time, not at registration', async () => {
@@ -209,6 +209,36 @@ test('the credentials answer wins over the ambient environment', async () => {
     assert.equal(seenKey, 'mock-token-123')
   } finally {
     restore()
+  }
+})
+
+test('the registered provider answers ready() from configuration alone', async () => {
+  const previousKey = process.env.TINYFISH_API_KEY
+  delete process.env.TINYFISH_API_KEY
+  try {
+    {
+      const { web } = await mount({ config: { [keyField]: sampleVal } })
+      assert.equal(typeof web.registered[0].ready, 'function', 'ready() is part of the 0.2.2 provider contract')
+      assert.equal(await web.registered[0].ready(undefined), true, 'a literal key is a credential')
+      assert.equal(await web.registered[0].ready('deepseek'), true, 'TinyFish readiness ignores the model route')
+    }
+    {
+      const { web } = await mount({ credentials: null, config: {} })
+      const restore = captureFetch(() => {
+        throw new Error('ready() must not fetch')
+      })
+      try {
+        assert.equal(await web.registered[0].ready(undefined), false, 'no credential anywhere means not ready')
+      } finally {
+        restore()
+      }
+    }
+    {
+      const { web } = await mount({ credentials: 'mock-token-123', config: {} })
+      assert.equal(await web.registered[0].ready(undefined), true, 'a stored credential makes it ready')
+    }
+  } finally {
+    if (previousKey !== undefined) process.env.TINYFISH_API_KEY = previousKey
   }
 })
 

@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.zh.md)
 
-> Verified against DeepSeek Harness **0.2.1-rc.2** with `dsh-tinyfish-search` **0.17.0**.
+> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.0**.
 
 This document describes all configuration options, schema validation rules, how a value reaches a search, SSRF security defenses, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
 
@@ -92,3 +92,17 @@ Each search resolves the API key from the first non-empty source (verified again
 4. `process.env[apiKeyEnv]` (covers standalone use outside the host).
 
 The provider counts as `available` while a resolver exists, even before the key is stored — a missing key then surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) for examples and the full error table.
+
+---
+
+## 7. Readiness (`ready()`)
+
+DeepSeek Harness 0.2.2-alpha.2 added an optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`, and `dsh-tool-web` makes it the activation condition of `web_search`: a model step whose route answers `false` neither declares nor dispatches the tool. The `tinyfish` provider implements it by resolving the same chain listed in section 6 and reporting whether it found a key:
+
+- A literal `apiKey` is ready immediately; otherwise the resolver from section 6 runs once.
+- A non-empty resolved value means ready; nothing else does, including an empty string.
+- A credential store that throws while being read answers `false`, because the search would fail on that same read instead of finding a key.
+- The check is configuration only — it never contacts TinyFish and never validates the key against the service, so a wrong-but-present key still counts as ready.
+- TinyFish authenticates every model route with the same key, so the `llmProvider` argument never changes the answer; it is accepted for contract conformance only.
+
+The observable difference from `available()`: `available()` decides whether the seam can select this provider during an operation, while `ready()` decides whether the model is offered the tool at all. With no usable credential, `available()` still returns `true` (a resolver exists) but `ready()` returns `false`, so the tool is withheld instead of appearing and failing on every call.
