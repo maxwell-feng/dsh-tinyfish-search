@@ -6,6 +6,40 @@
 
 ---
 
+## [0.18.0] - 2026-10-28
+
+### 适配 DeepSeek Harness 0.2.2-alpha.2：提供方如今可以上报就绪状态
+
+**新增**
+
+- **`WebSearchProvider.ready()`。** DeepSeek Harness 0.2.2-alpha.2 为两套 web 提供方契约各新增了一个可选的 `ready(llmProvider): Promise<boolean>`；`dsh-tool-web` 把它当作激活条件，在声明或派发 `web_search` 之前读取它。`tinyfish` 提供方现已实现该成员：只在本地检查配置，绝不发起网络请求。存在 `apiKey` 字面量，或 `resolveApiKey` 能解出非空值，即为就绪；其余情况——包括凭据存储读取失败——均为未就绪。TinyFish 对所有模型路由使用同一把密钥，因此路由标识从不会改变答案，该参数仅为符合契约而接收。用户可见的行为变化：没有可用凭据时，模型侧不再出现 `web_search` 工具，而不是先出现该工具、再让每次调用都以 `WEB_PROVIDER_CREDENTIAL_MISSING` 失败。
+- **两项单元测试**覆盖就绪判定：其一断言字面密钥、解析函数、空解析与解析抛错四种情形，且桩替换的 `fetch` 一旦被调用就会让测试失败；其二断言挂载后的插件所注册的提供方仅凭配置即可回答 `ready()`，分别覆盖有、无凭据缝两种情况。
+
+**变更**
+
+- **宿主对齐。** `@deepseek-ai/dsh-*` 的全部开发依赖由 `0.2.1-rc.2` 升至 `0.2.2-alpha.2`，锁文件按 `0.2.2-alpha.2` 重新生成；`@deepseek-ai/cordis` 升至 `~4.0.6-alpha.1`，`@deepseek-ai/schemastery` 依赖升至 `~3.18.6-alpha.1`。
+- **peer 区间放宽。** `@deepseek-ai/cordis` peer 改为 `^4.0.4 || ^4.0.6-alpha.1`，因此仍带着 cordis 4.0.4 或 4.0.5 的宿主与带 `4.0.6-alpha.1` 的宿主一样可以准入本插件。`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是**强制升级。
+- **供应链闸门。** 工作区文件现对 `0.2.2-alpha.2` 的各包豁免 pnpm 的最小发布年龄闸门——否则 DSH 持续发布的预发行版会被拦下。该名单保持单一且由锁文件推导的区块。
+- **更新请求头标识。** 将 `USER_AGENT` 常量更新为 `dsh-tinyfish-search/0.18.0`。
+- **源码改动。** 仅有 `ready()` 与 `USER_AGENT` 版本字符串。`available()`、`search()`、响应映射、错误映射与全部配置字段均未改动。
+
+**明确不做**
+
+- **不新增 `summary` 与 `content` 透传。** 缝上新出现了一个可选的 `WebSearchSource.summary`，而 `WebSearchResult.content` 本就存在，但两者之所以可选，正是因为并非每个提供方都会返回它们，上游契约更写明适配器不得凭空发明。TinyFish Search API 返回 `position`、`site_name`、`title`、`url`、`snippet`、`date`，其他 `domain_type` 下还有少量类型专属字段，但没有长摘要，也没有生成式答案；`src/types.ts` 中同样没有对应字段。因此本版不做任何映射，也不让缝说谎。
+
+**文档**
+
+- 全部双语文档的验证基线更新为 `0.2.2-alpha.2` / 插件 `0.18.0`。
+- README、CONFIG、INSTALL、UPDATE、USAGE、UNINSTALL、CHANGELOG 与 `docs/RELEASE.md` 均按两种语言同步更新，两侧描述同一套就绪行为与同一套升级步骤。
+
+**验证**
+
+- `npx tsc -p tsconfig.json --noEmit` 零错误、`npm run build` 构建干净，**24** 项单元测试在 DeepSeek Harness 0.2.2-alpha.2 上全部通过。
+- `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
+- 未验证项：在真实 `0.2.2-alpha.2` profile 中的实际启动并端到端触发就绪闸门；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
+
+---
+
 ## [0.17.1] - 2026-10-18
 
 ### 文档渲染修复 —— 不改运行时逻辑、不改配置项、不改工具接口
@@ -181,7 +215,7 @@
 
 - **升级说明顺序错乱**：英文 README 把 0.8.1 的说明写了两遍（其中一遍位于 0.11.0 之前），且缺 0.8.0 的说明；中文 README 的 0.8.1 说明夹在 0.10.0 与 0.9.0 之间。两侧现均为严格由新到旧，且覆盖同一批版本。
 - **更新日志链接定义不完整**：英文缺 `0.1.9` / `0.1.8` / `0.1.7` 的定义；中文侧则完全没有链接定义块，导致每个 `[x.y.z]` 标题都渲染成字面方括号。两侧现均按降序为每个版本给出定义。
-- **重复分隔线与标题层级不一致**：移除中文更新日志中 5 处重复的 `---`；两侧现统一为每条发布一个副标题标题。
+- **重复分隔线与标题层级不一致**：移除中文更新日志中 5 处重复的 `---`；两侧现统一为每条发布一个副标题。
 
 **验证**
 
@@ -460,6 +494,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
 [0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0
 [0.16.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.16.0

@@ -4,6 +4,38 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.18.0] - 2026-10-28
+
+### DeepSeek Harness 0.2.2-alpha.2 Alignment — providers can now report readiness
+
+**Added**
+
+- **`WebSearchProvider.ready()`.** DeepSeek Harness 0.2.2-alpha.2 added an optional `ready(llmProvider): Promise<boolean>` member to both web provider contracts; it is the activation condition `dsh-tool-web` reads before it declares or dispatches `web_search`. The `tinyfish` provider now implements it: configuration is inspected locally and no network request is made. A literal `apiKey`, or a `resolveApiKey` thunk that yields a non-empty value, means ready; anything else — including a credential store that cannot be read — means not ready. TinyFish authenticates every model route with the same key, so the route id never changes the answer, and the argument is accepted for contract conformance only. The user-visible effect: when no usable credential exists, the model step no longer sees a `web_search` tool at all, instead of the tool appearing and every call failing with `WEB_PROVIDER_CREDENTIAL_MISSING`.
+- **Two unit tests** cover readiness: one asserts the literal-key, resolver, empty-resolver and throwing-resolver cases while a stubbed `fetch` fails the test if it is ever called; the other asserts the mounted plugin's registered provider answers `ready()` from configuration alone, with and without a credential seam.
+
+**Changed**
+
+- **Harness alignment.** Every `@deepseek-ai/dsh-*` devDependency moves from `0.2.1-rc.2` to `0.2.2-alpha.2`, and the lockfile is regenerated against 0.2.2-alpha.2. `@deepseek-ai/cordis` moves to `~4.0.6-alpha.1` and the `@deepseek-ai/schemastery` dependency to `~3.18.6-alpha.1`.
+- **Peer range widened.** The `@deepseek-ai/cordis` peer becomes `^4.0.4 || ^4.0.6-alpha.1`, so a host still carrying cordis 4.0.4 or 4.0.5 admits the plugin alongside one on `4.0.6-alpha.1`. `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**.
+- **Supply-chain gate.** The workspace file exempts the 0.2.2-alpha.2 package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases. The list stays a single, lockfile-derived block.
+- **User-Agent attribution.** Updated the `USER_AGENT` constant to `dsh-tinyfish-search/0.18.0`.
+- **Source change.** Only `ready()` and the `USER_AGENT` version string. `available()`, `search()`, response mapping, error mapping, and every configuration field are untouched.
+
+**Deliberately not done**
+
+- **No `summary` or `content` pass-through.** The seam gained an optional `WebSearchSource.summary` and already carried an optional `WebSearchResult.content`, but both are optional precisely because not every provider returns them, and the upstream contract says an adapter must not invent them. The TinyFish Search API returns `position`, `site_name`, `title`, `url`, `snippet`, `date` and, for other `domain_type` values, a few type-specific extras — no long-form summary and no generated answer — and `src/types.ts` carries no such field. Nothing is mapped, so the seam is not made to lie.
+
+**Documentation**
+
+- The bilingual docs' verification baseline is now `0.2.2-alpha.2` / plugin `0.18.0`.
+- README, CONFIG, INSTALL, UPDATE, USAGE, UNINSTALL, CHANGELOG and `docs/RELEASE.md` updated in both languages, each side describing the same readiness behavior and the same upgrade steps.
+
+**Verification**
+
+- `npx tsc -p tsconfig.json --noEmit` clean, `npm run build` clean, and all **24** unit tests pass against DeepSeek Harness 0.2.2-alpha.2.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+- Not verified: a live boot into a real 0.2.2-alpha.2 profile with the readiness gate exercised end to end, and a live TinyFish API request (the suite stubs `fetch`).
+
 ## [0.17.1] - 2026-10-18
 
 ### Documentation rendering fix — no runtime, configuration or tool-surface change
@@ -415,6 +447,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
 [0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0
 [0.16.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.16.0

@@ -2,7 +2,7 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/USAGE.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.1-rc.2** 上随 `dsh-tinyfish-search` **0.17.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
+> 已在 DeepSeek Harness **0.2.2-alpha.2** 上随 `dsh-tinyfish-search` **0.18.0** 完成全面验证。下文所有线路输出均取自已构建的 `lib/` 产物实测。
 
 本文档说明搜索在本插件中的流转路径、涉及的提供方、凭据解析顺序与错误形态，并附可运行示例。
 
@@ -21,7 +21,7 @@ model → web_search → ctx.web → tinyfish → GET https://api.search.tinyfis
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.17.0
+user-agent: dsh-tinyfish-search/0.18.0
 accept: application/json
 ```
 
@@ -39,6 +39,8 @@ bundle 补丁组合了两行，决定哪个后端真正应答：
 | `tool-web` | 重新启用宿主层面向模型的工具（`disabled: false`、`search: true`、`fetch: true`，并重述超时值） |
 
 提供方以稳定 ID `tinyfish`（`TINYFISH_PROVIDER_ID`）注册；配置表单以 profile 行 id `dsh-tinyfish-search` 为键（DSH 0.1.7 从行 id 推导命名空间，插件不自行选择）。`available()` 是廉价的本地检查——密钥存在（或可解析）且 `baseURL` 可解析——不产生任何网络请求。带凭据解析器的提供方即使密钥尚未就绪也视为可用，因此缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错，而不会表现为“不可用”。
+
+从 DeepSeek Harness 0.2.2 起，提供方还实现了 `ready(llmProvider)`，用于回答「针对该聊天路由的模型请求而发起的搜索，有没有凭据可发」。`dsh-tool-web` 把它当作 `web_search` 的激活条件，因此没有可用凭据时，模型步根本不会被提供该工具——缺密钥不再变成一次失败的调用。与 `available()` 一样，它只涉及配置、不访问任何服务；不同之处在于它真的去解析密钥，解不到就回答 `false`。TinyFish 在所有模型路由上使用同一把密钥，因此 `llmProvider` 从不会改变答案。
 
 按预设限定范围：宿主 `tool-web` 行让工具对本 profile 上的每一个 agent 预设可见。自带 `tool-web` 行的预设会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。
 
@@ -114,7 +116,7 @@ console.log(JSON.stringify(out, null, 2))
 }
 ```
 
-重复 URL 被丢弃；第二条没有带来任何新信息。
+重复 URL 被丢弃；第二条没有带来任何新信息。请注意映射刻意不做的事：TinyFish 不返回长摘要，也不返回生成式答案，因此既不为 `WebSearchSource.summary` 也不为 `WebSearchResult.content` 填值。两者在缝上是可选的，正因为并非每个提供方都会返回它们；凭空编造会让缝说谎。
 
 ### 4.3 地区 / 语言定向
 
@@ -144,3 +146,5 @@ dsh-tinyfish-search has no API key for "TINYFISH_API_KEY"; set the environment v
 ```
 
 TinyFish 畸形响应（非数组 `results`、缺字符串 `url` 的条目）退化为零来源，不抛异常。
+
+`WEB_PROVIDER_CREDENTIAL_MISSING` 是**已派发**的搜索所抛的错误。走常规模型路径时，缺密钥通常轮不到它——`ready()` 会先收起工具，详见第 2 节。

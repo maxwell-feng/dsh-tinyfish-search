@@ -11,8 +11,9 @@ DeepSeek Harness's built-in `web_search` tool normally runs through the DeepSeek
 - Stable provider id: `tinyfish`
 - Every `web_search` call becomes `GET https://api.search.tinyfish.ai?query=...` with the `X-API-Key` header
 - `results[]` (title / snippet / url / date) are normalized into the seam's portable source shape
+- Reports provider readiness through `WebSearchProvider.ready()` (DeepSeek Harness 0.2.2+): the harness asks it before it declares `web_search`, so a profile with no usable TinyFish credential simply shows no `web_search` tool instead of a tool whose every call fails
 - No LLM turn consumed per search — unlike the Anthropic server-tool approach
-- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.1-rc.2 display conventions for Plugin Manager
+- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.2-alpha.2 display conventions for Plugin Manager
 - Pure TypeScript architecture across sources, scripts, and build configurations
 
 Installing the bundle **takes over the built-in `web_search` automatically**: the
@@ -40,7 +41,7 @@ the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.1-rc.2` (latest release); the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.2-alpha.2` (latest release); the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
@@ -59,18 +60,18 @@ runtimes participate in the comparison, and a refusal record reports
 `requirements` rather than `peers`.
 
 This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, and that range
-holds on `0.2.1-rc.2`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and on the whole `0.1.7`
-prerelease line — so no exemption is needed. Because `0.14.0` and `0.13.0`
-already declared that widened range in `engines.dsh` as well, they remain
-admitted on `0.2.1-rc.2` too. The narrow-range `0.12.0`, however, declared
-`^0.1.7-alpha.2`, which excludes `0.2.x`, so the harness still refuses `0.12.0`
-on `0.2.x`: upgrade to `0.17.0` instead of granting an exemption. If you run a
-`dsh` outside the declared range, DSH refuses the row with a diagnostic naming
-the exact requirement pair; to accept that risk explicitly, grant the exempted
-exact pair it prints:
+holds on `0.2.2-alpha.2`, on `0.2.1-rc.2`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and
+on the whole `0.1.7` prerelease line — so no exemption is needed. Because
+`0.14.0` and `0.13.0` already declared that widened range in `engines.dsh` as
+well, they remain admitted on `0.2.2-alpha.2` too. The narrow-range `0.12.0`,
+however, declared `^0.1.7-alpha.2`, which excludes `0.2.x`, so the harness still
+refuses `0.12.0` on `0.2.x`: upgrade to `0.18.0` instead of granting an
+exemption. If you run a `dsh` outside the declared range, DSH refuses the row
+with a diagnostic naming the exact requirement pair; to accept that risk
+explicitly, grant the exempted exact pair it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.17.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.18.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## Documentation
@@ -92,7 +93,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.17.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.18.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -163,7 +164,11 @@ After installation, no code changes required. In any session with the `web` prof
 3. Results appear as `WebSearchSource[]` (`url` / `title` / `snippet` / `publishedAt`) in the tool result.
 4. Check GUI: **Settings → Web Search** shows provider `tinyfish` and `available: true` when the API key is configured.
 
+Availability, readiness and failure are three different signals. `available()` is a cheap local check the seam uses to pick a provider while an operation runs. `ready()` answers whether a search for a model request on a given chat route has a credential to send, and `dsh-tool-web` uses it as the activation condition of `web_search` — no usable credential, no tool. A search that still runs without a key (for example a programmatic caller that bypasses the gate) fails with `WEB_PROVIDER_CREDENTIAL_MISSING` rather than reaching TinyFish unauthenticated.
+
 Abort and error semantics follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key, `WEB_ABORTED` on cancellation, `WEB_PROVIDER_ERROR` otherwise.
+
+TinyFish returns no long-form summary and no generated answer, so the plugin fills neither `WebSearchSource.summary` nor `WebSearchResult.content`: both are optional on the seam because not every provider returns them, and inventing a value would make the seam lie.
 
 See the [Usage Guide](USAGE.md) for providers, credential configuration, worked examples, and the error table.
 
@@ -187,6 +192,17 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.18.0 from ≤ 0.17.1 needs no manual steps: it aligns the plugin
+with DeepSeek Harness `0.2.2-alpha.2` and adds the `ready()` member the new
+`ctx.web` contract introduced. It moves the pinned `@deepseek-ai/dsh-*`
+devDependencies and the lockfile to `0.2.2-alpha.2`, lifts `@deepseek-ai/cordis`
+to `~4.0.6-alpha.1`, widens the cordis peer to `^4.0.4 || ^4.0.6-alpha.1` so
+hosts on 4.0.4 and 4.0.5 stay admitted, moves `@deepseek-ai/schemastery` to
+`~3.18.6-alpha.1`, refreshes the workspace supply-chain exemption to that
+package set, and bumps `USER_AGENT` to `dsh-tinyfish-search/0.18.0`. `engines.dsh`
+remains `>=0.1.7-alpha.2 <0.3.0`, and no search, mapping or configuration logic
+changed.
 
 Upgrading to 0.17.0 from ≤ 0.16.0 needs no manual steps: it aligns the plugin
 with DeepSeek Harness `0.2.1-rc.2`, the latest release of the

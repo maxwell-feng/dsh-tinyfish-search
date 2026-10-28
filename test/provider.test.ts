@@ -76,6 +76,39 @@ test('search() maps items, dedupes by url, honors maxResults, sets X-API-Key', a
   }
 })
 
+test('ready() checks configuration only and never calls the network', async () => {
+  const restore = stubFetch(async () => {
+    throw new Error('ready() must not fetch')
+  })
+  const options = (resolveApiKey: () => Promise<string | undefined>) => ({
+    resolveApiKey,
+    apiKeyEnv: 'TINYFISH_API_KEY',
+    baseURL: 'https://api.search.tinyfish.ai',
+  })
+  try {
+    const oldKey = process.env.TINYFISH_API_KEY
+    delete process.env.TINYFISH_API_KEY
+    try {
+      assert.equal(await new TinyFishSearchProvider({ [keyField]: sampleKey }).ready(undefined), true)
+      assert.equal(await new TinyFishSearchProvider({ [keyField]: sampleKey }).ready('deepseek'), true)
+      assert.equal(await new TinyFishSearchProvider({}).ready(undefined), false)
+      assert.equal(await new TinyFishSearchProvider(options(async () => sampleKey)).ready('deepseek'), true)
+      assert.equal(await new TinyFishSearchProvider(options(async () => undefined)).ready(undefined), false)
+      assert.equal(await new TinyFishSearchProvider(options(async () => '')).ready(undefined), false)
+      assert.equal(
+        await new TinyFishSearchProvider(options(async () => {
+          throw new Error('unreadable credential store')
+        })).ready(undefined),
+        false,
+      )
+    } finally {
+      if (oldKey !== undefined) process.env.TINYFISH_API_KEY = oldKey
+    }
+  } finally {
+    restore()
+  }
+})
+
 test('search() caps to maxResults at request layer', async () => {
   const restore = stubFetch(async () => fakeResponse(200, {
     results: [1, 2, 3, 4].map((n) => item({ title: `R${n}`, url: `https://r${n}.test` })),

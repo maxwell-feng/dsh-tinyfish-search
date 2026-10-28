@@ -147,6 +147,28 @@ export class TinyFishSearchProvider implements WebSearchProvider {
     return hasKey && URL.canParse(o.baseURL);
   }
 
+  /**
+   * Whether a search made for a model request on `llmProvider` has a credential
+   * to send. TinyFish uses one key for every model route, so the route id never
+   * changes the answer. Configuration only — the credential planes are read
+   * locally and no network request is made. A credential store that cannot be
+   * read answers false, because the search would fail on that read instead of
+   * finding a key.
+   * @param _llmProvider - the provider route of the model request, unused here.
+   * @returns false when the next search could not authenticate.
+   */
+  async ready(_llmProvider: string | undefined): Promise<boolean> {
+    const o = this.opts();
+    if (o.apiKey !== undefined && o.apiKey.length > 0) return true;
+    if (o.resolveApiKey === undefined) return false;
+    try {
+      const value = await o.resolveApiKey();
+      return value !== undefined && value.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
   async search(request: WebSearchRequest, signal?: AbortSignal): Promise<WebSearchResult> {
     const o = this.opts();
     const literal = o.apiKey;
