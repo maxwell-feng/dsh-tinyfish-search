@@ -4,6 +4,23 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.18.1] - 2026-10-30
+
+### Documentation correction — the "latest release" claim no longer held
+
+**Fixed**
+
+- **The Requirements entry named a stale release.** It described `0.2.2-alpha.2` as the harness's "latest release", which stopped being true when `0.2.1-rc.5` shipped on 2026-10-30. The two are not successive releases on one line: `0.2.2-alpha.2` belongs to the `alpha` line and `0.2.1-rc.5` is a maintenance release cut from the older `0.2.1` line. The entry now states which line carries `WebSearchProvider.ready()` — `0.2.2-alpha.2` — and that the `0.2.1-rc.*` line predates it, so a profile on that line runs this plugin without the readiness gate. Both languages were corrected together.
+
+**Unchanged**
+
+- **No code, dependency or lockfile change.** `package.json` dependencies, `src/`, `test/` and every behavioural contract are identical to 0.18.0; only the two README Requirements entries differ.
+
+**Verification**
+
+- `node scripts/check-docs-language.ts` clean with zero findings across all pairs.
+- `npx tsc -p tsconfig.json --noEmit` clean; `npm run build` clean; all **24** unit tests pass.
+
 ## [0.18.0] - 2026-10-28
 
 ### DeepSeek Harness 0.2.2-alpha.2 Alignment — providers can now report readiness
@@ -447,6 +464,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
 [0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0

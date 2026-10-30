@@ -6,6 +6,23 @@
 
 ---
 
+## [0.18.1] - 2026-10-30
+
+### 文档更正 —— 「最新发行版」这一表述已不成立
+
+**修复**
+
+- **Requirements 一栏写明了过时的发行版。** 该处把 `0.2.2-alpha.2` 描述为 harness 的「最新发行版」，而 `0.2.1-rc.5` 于 2026-10-30 发布后这句话即告失效。二者并非同一条线上的相邻版本：`0.2.2-alpha.2` 属于 `alpha` 线，`0.2.1-rc.5` 则是从更早的 `0.2.1` 线切出的维护版。该栏现已改为指明哪条线携带 `WebSearchProvider.ready()`——即 `0.2.2-alpha.2`，并说明 `0.2.1-rc.*` 线早于该契约，因此停留在该线上的 profile 运行本插件时不启用就绪闸门。中英两侧同时更正。
+
+**未改动**
+
+- **代码、依赖与锁文件均无改动。** `package.json` 依赖、`src/`、`test/` 与全部行为契约与 0.18.0 完全一致；仅两处 README 的 Requirements 条目不同。
+
+**验证**
+
+- `node scripts/check-docs-language.ts` 通过，全部双语对零发现。
+- `npx tsc -p tsconfig.json --noEmit` 零错误；`npm run build` 构建干净；**24** 项单元测试全部通过。
+
 ## [0.18.0] - 2026-10-28
 
 ### 适配 DeepSeek Harness 0.2.2-alpha.2：提供方如今可以上报就绪状态
@@ -494,6 +511,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
 [0.17.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.0

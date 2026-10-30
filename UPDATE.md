@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.0**.
+> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.1**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.18.0
+dsh plugin --profile web add dsh-tinyfish-search@0.18.1
 ```
 
 > **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `update` and `add`.
@@ -42,12 +42,33 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.18.0 from ≤ 0.17.1
+## 2. Upgrading to 0.18.1 from ≤ 0.18.0
+
+0.18.1 corrects a documentation statement and changes nothing else. `package.json`
+dependencies, `src/`, `test/` and every behavioural contract are identical to
+0.18.0.
+
+- **What was wrong.** The Requirements entry called DeepSeek Harness
+  `0.2.2-alpha.2` the "latest release". When `0.2.1-rc.5` shipped on 2026-10-30
+  that sentence became false. The two are not successive releases on one line:
+  `0.2.2-alpha.2` belongs to the `alpha` line, while `0.2.1-rc.5` is a
+  maintenance release cut from the older `0.2.1` line.
+- **Why it matters to you.** Only the `0.2.2-alpha.2` line carries
+  `WebSearchProvider.ready()`. On a `0.2.1-rc.*` profile the plugin still loads
+  and searches normally, but the readiness gate is unavailable, so the harness
+  cannot withhold `web_search` when the TinyFish credential is missing.
+- **Steps.** Update the package; there is nothing else to do. Configuration
+  fields, values and defaults are untouched, and 0.18.0 loads correctly on every
+  admitted harness version already.
+
+---
+
+## 3. Upgrading to 0.18.0 from ≤ 0.17.1
 
 0.18.0 aligns the plugin with DeepSeek Harness `0.2.2-alpha.2` and adds the
 `ready()` member the new `ctx.web` provider contract introduced.
@@ -62,7 +83,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 3. Upgrading to 0.17.0 from ≤ 0.16.0
+## 4. Upgrading to 0.17.0 from ≤ 0.16.0
 
 0.17.0 aligns the plugin with DeepSeek Harness `0.2.1-rc.2`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -76,7 +97,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 4. Upgrading to 0.16.0 from ≤ 0.15.0
+## 5. Upgrading to 0.16.0 from ≤ 0.15.0
 
 0.16.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.4`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -90,7 +111,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 5. Upgrading to 0.15.0 from ≤ 0.14.0
+## 6. Upgrading to 0.15.0 from ≤ 0.14.0
 
 0.15.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.2`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -106,7 +127,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 6. Upgrading to 0.14.0 from ≤ 0.13.0
+## 7. Upgrading to 0.14.0 from ≤ 0.13.0
 
 0.14.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -133,7 +154,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 7. Upgrading to 0.13.0 from ≤ 0.12.0
+## 8. Upgrading to 0.13.0 from ≤ 0.12.0
 
 0.13.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.1`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -160,7 +181,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 8. Upgrading to 0.12.0 from ≤ 0.11.1
+## 9. Upgrading to 0.12.0 from ≤ 0.11.1
 
 0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -182,7 +203,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 9. Upgrading to 0.11.1 from 0.11.0
+## 10. Upgrading to 0.11.1 from 0.11.0
 
 0.11.1 changes no runtime code, no configuration and no tool surface: the plugin
 behaves exactly as 0.11.0. It is a documentation and tooling release.
@@ -199,7 +220,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 10. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
+## 11. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
 
 0.11.0 raises the harness floor to DeepSeek Harness `0.1.7-alpha.2` and is verified on `0.1.7-rc.1`.
 The `@deepseek-ai/dsh-*` peer ranges accept `^0.1.7-alpha.2` — the release line that introduced
@@ -220,7 +241,7 @@ defaults. SSRF defenses continue to protect requests.
 
 ---
 
-## 11. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
+## 12. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
 
 0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
@@ -230,7 +251,7 @@ Configuration fields remain 100% backward-compatible.
 
 ---
 
-## 12. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
+## 13. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
 0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
@@ -243,7 +264,7 @@ refreshes the package in place.
 
 ---
 
-## 13. Verification
+## 14. Verification
 
 Start the profile:
 
@@ -255,7 +276,7 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 
 ---
 
-## 14. Rollback
+## 15. Rollback
 
 To roll back to a previous version:
 
