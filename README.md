@@ -41,7 +41,7 @@ the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.2-alpha.2` (latest release); the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.2-alpha.2`, the current `alpha` line and the one that carries `WebSearchProvider.ready()`; the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted, including the `0.2.1-rc.*` maintenance line, which predates `ready()` and therefore runs the plugin without the readiness gate
 - Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
@@ -65,13 +65,13 @@ on the whole `0.1.7` prerelease line — so no exemption is needed. Because
 `0.14.0` and `0.13.0` already declared that widened range in `engines.dsh` as
 well, they remain admitted on `0.2.2-alpha.2` too. The narrow-range `0.12.0`,
 however, declared `^0.1.7-alpha.2`, which excludes `0.2.x`, so the harness still
-refuses `0.12.0` on `0.2.x`: upgrade to `0.18.0` instead of granting an
+refuses `0.12.0` on `0.2.x`: upgrade to `0.18.1` instead of granting an
 exemption. If you run a `dsh` outside the declared range, DSH refuses the row
 with a diagnostic naming the exact requirement pair; to accept that risk
 explicitly, grant the exempted exact pair it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.18.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.18.1 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## Documentation
@@ -93,7 +93,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -192,6 +192,10 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.18.1 from ≤ 0.18.0 needs no manual steps: it corrects the
+Requirements entry above and changes nothing else — no dependency, source, test
+or behavioural contract differs from 0.18.0.
 
 Upgrading to 0.18.0 from ≤ 0.17.1 needs no manual steps: it aligns the plugin
 with DeepSeek Harness `0.2.2-alpha.2` and adds the `ready()` member the new

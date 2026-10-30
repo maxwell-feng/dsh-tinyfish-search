@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.0**.
+> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.1**.
 
 This document describes all configuration options, schema validation rules, how a value reaches a search, SSRF security defenses, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
 

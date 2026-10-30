@@ -22,7 +22,7 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在 `0.2.2-alpha.2`（最新发行版）上验证；插件声明 `engines.dsh` 为 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——已在 `0.2.2-alpha.2` 上验证，该线是当前 `alpha` 线，也是携带 `WebSearchProvider.ready()` 的那条线；插件声明 `engines.dsh` 为 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入，其中 `0.2.1-rc.*` 维护线早于 `ready()`，在该线上运行本插件时不启用就绪闸门
 - Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - 宿主的凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）是必需的 peer 依赖——每个 `dsh` profile 都已自带
@@ -31,10 +31,10 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 DeepSeek Harness 会在准入插件行**之前**，用宿主声明的运行时要求校验正在运行的运行时版本，不兼容的插件会被直接拒绝，而不是照常加载。**从 `0.2.1-alpha.4` 起，判定规则有所变化：** 包自身声明了 `engines.dsh` 区间时，就只按该区间判定，兼容性判断完全忽略 `@deepseek-ai/dsh*` 的 `peerDependencies`；只有在缺少 `engines.dsh` 时才回退到逐条检查这些 peer。两者都按预发行规则匹配（`semver.satisfies(runtime, range, { includePrerelease: true })`），因此预发行版运行时也参与区间比较，拒绝记录中报告的字段是 `requirements` 而非 `peers`。
 
-本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，该区间在 `0.2.2-alpha.2`、`0.2.1-rc.2`、`0.2.0-rc.2`、`0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均成立，因此无需任何豁免。`0.14.0` 与 `0.13.0` 的 `engines.dsh` 也已声明同一放宽区间，所以它们在 `0.2.2-alpha.2` 上同样被准入。但窄区间的 `0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 在 `0.2.x` 上仍会拒绝 `0.12.0`——此时应升级到 `0.18.0`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的要求对；要显式接受该风险，请按提示对确切要求对授予豁免：
+本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，该区间在 `0.2.2-alpha.2`、`0.2.1-rc.2`、`0.2.0-rc.2`、`0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均成立，因此无需任何豁免。`0.14.0` 与 `0.13.0` 的 `engines.dsh` 也已声明同一放宽区间，所以它们在 `0.2.2-alpha.2` 上同样被准入。但窄区间的 `0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 在 `0.2.x` 上仍会拒绝 `0.12.0`——此时应升级到 `0.18.1`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的要求对；要显式接受该风险，请按提示对确切要求对授予豁免：
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.18.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.18.1 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## 文档导航
@@ -56,7 +56,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -150,6 +150,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # 或走 git，在改动进入 npm 前先行取用：
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+从 ≤ 0.18.0 升级到 0.18.1 无需任何手工步骤：本版只更正上方 Requirements 一栏，其余一概未动——依赖、源码、测试与全部行为契约与 0.18.0 完全一致。
 
 从 ≤ 0.17.1 升级到 0.18.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.2.2-alpha.2` 的对齐，并新增了新 `ctx.web` 契约引入的 `ready()` 成员。锁定的 `@deepseek-ai/dsh-*` 开发依赖与锁文件均移至 `0.2.2-alpha.2`，`@deepseek-ai/cordis` 升至 `~4.0.6-alpha.1`，cordis peer 放宽为 `^4.0.4 || ^4.0.6-alpha.1`（因此仍停留在 4.0.4 与 4.0.5 的宿主同样被准入），`@deepseek-ai/schemastery` 移至 `~3.18.6-alpha.1`，工作区供应链豁免清单刷新为该包集合，`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.18.0`。`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，搜索、映射与配置逻辑均未改动。
 
