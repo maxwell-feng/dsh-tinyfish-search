@@ -1,5 +1,7 @@
 # dsh-tinyfish-search
 
+> This project is maintained with the assistance of dsh-superagent.
+
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/README.zh.md)
 
 > [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin that backs the built-in `web_search` tool with the [TinyFish Search API](https://docs.tinyfish.ai/search-api). One GET per query, no model call — fast and free (TinyFish Search is free at any wallet balance).
