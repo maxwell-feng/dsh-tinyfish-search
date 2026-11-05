@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.1**.
+> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0**.
 
 This document describes all configuration options, schema validation rules, how a value reaches a search, SSRF security defenses, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
 
@@ -97,7 +97,7 @@ The provider counts as `available` while a resolver exists, even before the key 
 
 ## 7. Readiness (`ready()`)
 
-DeepSeek Harness 0.2.2-alpha.2 added an optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`, and `dsh-tool-web` makes it the activation condition of `web_search`: a model step whose route answers `false` neither declares nor dispatches the tool. The `tinyfish` provider implements it by resolving the same chain listed in section 6 and reporting whether it found a key:
+DeepSeek Harness 0.2.2 added an optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`, and `dsh-tool-web` makes it the activation condition of `web_search`: a model step whose route answers `false` neither declares nor dispatches the tool. The contract is unchanged in `0.2.2-rc.1`, so the readiness gate this plugin implements still applies on that baseline. The `tinyfish` provider resolves the same chain listed in section 6 and reports whether it found a key:
 
 - A literal `apiKey` is ready immediately; otherwise the resolver from section 6 runs once.
 - A non-empty resolved value means ready; nothing else does, including an empty string.

@@ -15,7 +15,7 @@ DeepSeek Harness's built-in `web_search` tool normally runs through the DeepSeek
 - `results[]` (title / snippet / url / date) are normalized into the seam's portable source shape
 - Reports provider readiness through `WebSearchProvider.ready()` (DeepSeek Harness 0.2.2+): the harness asks it before it declares `web_search`, so a profile with no usable TinyFish credential simply shows no `web_search` tool instead of a tool whose every call fails
 - No LLM turn consumed per search — unlike the Anthropic server-tool approach
-- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.2-alpha.2 display conventions for Plugin Manager
+- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.2-rc.1 display conventions for Plugin Manager
 - Pure TypeScript architecture across sources, scripts, and build configurations
 
 Installing the bundle **takes over the built-in `web_search` automatically**: the
@@ -43,8 +43,8 @@ the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — verified on `0.2.2-alpha.2`, the current `alpha` line and the one that carries `WebSearchProvider.ready()`; the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted, including the `0.2.1-rc.*` maintenance line, which predates `ready()` and therefore runs the plugin without the readiness gate
-- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — the build baseline is `0.2.2-rc.1` (released 2026-11-04 on the npm `next` tag) and the plugin is also verified on `0.2.1-rc.5` (npm `latest`, the desktop runtime); `0.2.2` carries `WebSearchProvider.ready()` while the `0.2.1-rc.*` maintenance line predates it, so a profile on that line runs the plugin without the readiness gate; the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
+- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range) — on a `0.2.2-rc.1` host the effective floor is Node 24.9, because that host raises its own minimum to 24.9 and refuses to run below it; this plugin's `engines.node` is unchanged
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
 
@@ -62,18 +62,18 @@ runtimes participate in the comparison, and a refusal record reports
 `requirements` rather than `peers`.
 
 This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, and that range
-holds on `0.2.2-alpha.2`, on `0.2.1-rc.2`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and
+holds on `0.2.2-rc.1`, on `0.2.1-rc.5`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and
 on the whole `0.1.7` prerelease line — so no exemption is needed. Because
 `0.14.0` and `0.13.0` already declared that widened range in `engines.dsh` as
-well, they remain admitted on `0.2.2-alpha.2` too. The narrow-range `0.12.0`,
+well, they remain admitted on `0.2.2-rc.1` too. The narrow-range `0.12.0`,
 however, declared `^0.1.7-alpha.2`, which excludes `0.2.x`, so the harness still
-refuses `0.12.0` on `0.2.x`: upgrade to `0.18.1` instead of granting an
+refuses `0.12.0` on `0.2.x`: upgrade to `0.19.0` instead of granting an
 exemption. If you run a `dsh` outside the declared range, DSH refuses the row
 with a diagnostic naming the exact requirement pair; to accept that risk
 explicitly, grant the exempted exact pair it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.18.1 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.19.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## Documentation
@@ -95,7 +95,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -194,6 +194,28 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.19.0 from ≤ 0.18.1 needs no manual steps: it aligns the plugin
+with DeepSeek Harness `0.2.2-rc.1` and removes a stale dependency override. It
+moves the pinned `@deepseek-ai/dsh-*` devDependencies and the lockfile to
+`0.2.2-rc.1`, lifts `@deepseek-ai/cordis` to `~4.1.0`, moves the
+`@deepseek-ai/schemastery` dependency to `~3.19.0`, refreshes the workspace
+supply-chain exemption to that package set, and bumps `USER_AGENT` to
+`dsh-tinyfish-search/0.19.0`. The `@deepseek-ai/cordis` peer stays
+`^4.0.4 || ^4.0.6-alpha.1` — `^4.0.4` already covers 4.1.0, so no range change
+is needed — and `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`. The one real defect
+this release fixes: `pnpm-workspace.yaml` had carried a stale
+`overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1` entry since the first
+release on 2026-08-30. Against cordis 4.1.0, which declares
+`@deepseek-ai/cosmokit: ~1.9.0`, that override pinned the tree to a version the
+declaration excludes; 0.19.0 deletes it and the lockfile now resolves cosmokit
+1.9.0 as cordis declares. cosmokit 1.8.7-alpha.1 and 1.9.0 are byte-identical
+apart from `package.json`, so no runtime failure ever surfaced, but the
+declaration and the resolved tree disagreed — that is what this release
+corrects. Note the host floor: `0.2.2-rc.1` raises its own minimum Node.js to
+**24.9**, so on that host the effective Node requirement is 24.9+ even though
+this plugin's `engines.node` still reads `^22.19.0 || >=24.0.0`. No search,
+mapping or configuration logic changed.
 
 Upgrading to 0.18.1 from ≤ 0.18.0 needs no manual steps: it corrects the
 Requirements entry above and changes nothing else — no dependency, source, test

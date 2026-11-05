@@ -10,7 +10,7 @@ export const TINYFISH_DEFAULT_BASE_URL = "https://api.search.tinyfish.ai";
 export const DEFAULT_API_KEY_ENV = "TINYFISH_API_KEY";
 
 /** Attribution header sent on every request. */
-export const USER_AGENT = "dsh-tinyfish-search/0.18.1";
+export const USER_AGENT = "dsh-tinyfish-search/0.19.0";
 
 /**
  * Plugin config schema. Every field is `.volatile()`, so a validated config

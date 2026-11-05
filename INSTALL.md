@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.1**.
+> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0** — typecheck clean, build clean and all **24** unit tests pass on both `0.2.2-rc.1` and `0.2.1-rc.5`.
 
 This document covers the requirements, every install method, and how to verify the installation.
 
@@ -10,9 +10,9 @@ This document covers the requirements, every install method, and how to verify t
 
 ## 1. Requirements
 
-- DeepSeek Harness `dsh` CLI at `>=0.1.7-alpha.2 <0.3.0` (any profile with the web seam, e.g. `web`) — verified on `0.2.2-alpha.2`
-- The harness verifies the plugin's declared runtime requirement against the running runtime before it admits the row. Since DSH `0.2.1-alpha.4`, an own `engines.dsh` range decides alone and the `@deepseek-ai/dsh*` peers are ignored for that judgement; the peers are only a fallback when `engines.dsh` is absent. Both are matched with `includePrerelease`, so prerelease runtimes participate. This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, so `0.2.2-alpha.2` (and the `0.2.x` line) and the whole `0.1.7` prerelease line are admitted. A runtime outside that range is refused at load with the exact requirement named, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
-- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range)
+- DeepSeek Harness `dsh` CLI at `>=0.1.7-alpha.2 <0.3.0` (any profile with the web seam, e.g. `web`) — build baseline `0.2.2-rc.1` (released 2026-11-04 on the npm `next` tag), also verified on `0.2.1-rc.5` (npm `latest`, the desktop runtime)
+- The harness verifies the plugin's declared runtime requirement against the running runtime before it admits the row. Since DSH `0.2.1-alpha.4`, an own `engines.dsh` range decides alone and the `@deepseek-ai/dsh*` peers are ignored for that judgement; the peers are only a fallback when `engines.dsh` is absent. Both are matched with `includePrerelease`, so prerelease runtimes participate. This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, so `0.2.2-rc.1` (and the `0.2.x` line) and the whole `0.1.7` prerelease line are admitted. A runtime outside that range is refused at load with the exact requirement named, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
+- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range). On a `0.2.2-rc.1` host the effective floor is **Node 24.9**: that release raises the host's own minimum to 24.9, so the stricter host rule decides while this plugin's `engines.node` stays as declared.
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free at any wallet balance)
 - pnpm `>=10` for source-checkout and git installs (it builds `lib/` from source via the `prepare` script)
 
@@ -27,7 +27,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 or pin an exact version:
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.18.1
+dsh plugin --profile web add dsh-tinyfish-search@0.19.0
 ```
 
 > **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `add`.
@@ -49,7 +49,7 @@ Pick up unreleased changes the same way before they reach npm — the command ab
 ## 4. Install from a tarball or source checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
 ```
 
 ```sh

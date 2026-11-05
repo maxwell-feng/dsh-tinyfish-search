@@ -4,6 +4,35 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.19.0] - 2026-11-05
+
+### DeepSeek Harness 0.2.2-rc.1 Alignment — stale cosmokit override removed
+
+**Changed**
+
+- **Harness alignment.** Every `@deepseek-ai/dsh-*` devDependency moves from `0.2.2-alpha.2` to `0.2.2-rc.1`, and the lockfile is regenerated against 0.2.2-rc.1. `@deepseek-ai/cordis` moves from `~4.0.6-alpha.1` to `~4.1.0` and the `@deepseek-ai/schemastery` dependency from `~3.18.6-alpha.1` to `~3.19.0`.
+- **Double-line verification.** The build baseline is `0.2.2-rc.1` (released 2026-11-04 on the npm `next` tag) and the plugin is also verified on `0.2.1-rc.5` (npm `latest`, the desktop runtime). Both lines report typecheck clean, build clean and all **24** unit tests passing.
+- **Peer ranges unchanged.** The `@deepseek-ai/cordis` peer stays `^4.0.4 || ^4.0.6-alpha.1`: `^4.0.4` already covers `4.1.0`, so the declaration does not exclude the new line and needs no widening. `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**.
+- **Supply-chain gate.** The workspace file exempts the 0.2.2-rc.1 package set from pnpm's minimum-release-age gate, which otherwise rejects DSH's continuously published prereleases. The list stays a single, lockfile-derived block.
+- **User-Agent attribution.** Updated the `USER_AGENT` constant to `dsh-tinyfish-search/0.19.0`.
+- **Source change.** Only the `USER_AGENT` version string and its assertion in `test/apply.test.ts`. `src/`, `scripts/`, `locale/`, `.github/`, `cordis.patch.yml` and `tsconfig*.json` are otherwise untouched.
+
+**Fixed**
+
+- **A stale `@deepseek-ai/cosmokit` override contradicted cordis's declaration.** `pnpm-workspace.yaml` had carried `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1` since the first release on 2026-08-30. Cordis `4.1.0` declares `@deepseek-ai/cosmokit: ~1.9.0`, so that override forced the dependency tree onto a revision the declaration excludes — the declaration and the resolved tree disagreed. 0.19.0 deletes the override, and the lockfile now resolves cosmokit `1.9.0` as cordis declares. cosmokit `1.8.7-alpha.1` and `1.9.0` are byte-identical apart from their `package.json`, which is why no runtime failure ever surfaced; the inconsistency was latent, not benign, and it is corrected here.
+
+**Documentation**
+
+- The bilingual docs' verification baseline is now `0.2.2-rc.1` / plugin `0.19.0`, with `0.2.1-rc.5` recorded as the second line.
+- The Node floor is stated where it now bites: `0.2.2-rc.1` raises the harness's own minimum Node.js to **24.9**, so on that host the effective requirement is Node 24.9+ even though this plugin's `engines.node` stays `^22.19.0 || >=24.0.0`. The plugin range is not changed.
+- `WebSearchProvider.ready()` and its activation contract are unchanged between `0.2.2-alpha.2` and `0.2.2-rc.1`, so the readiness gate continues to apply and no documentation described otherwise.
+
+**Verification**
+
+- `npx tsc -p tsconfig.json --noEmit` clean, `npm run build` clean, and all **24** unit tests pass against DeepSeek Harness 0.2.2-rc.1 and again against 0.2.1-rc.5.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+- Not verified: a live boot into a real 0.2.2-rc.1 profile with the readiness gate exercised end to end, and a live TinyFish API request (the suite stubs `fetch`).
+
 ## [0.18.1] - 2026-10-30
 
 ### Documentation correction — the "latest release" claim no longer held
@@ -464,6 +493,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
 [0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1

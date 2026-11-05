@@ -6,6 +6,37 @@
 
 ---
 
+## [0.19.0] - 2026-11-05
+
+### 适配 DeepSeek Harness 0.2.2-rc.1：删除陈旧的 cosmokit override
+
+**变更**
+
+- **宿主对齐。** `@deepseek-ai/dsh-*` 的全部开发依赖由 `0.2.2-alpha.2` 升至 `0.2.2-rc.1`，锁文件按 0.2.2-rc.1 重新生成；`@deepseek-ai/cordis` 由 `~4.0.6-alpha.1` 升至 `~4.1.0`，`@deepseek-ai/schemastery` 依赖由 `~3.18.6-alpha.1` 升至 `~3.19.0`。
+- **双线验证。** 构建基线为 `0.2.2-rc.1`（2026-11-04 发布于 npm 的 `next` 标签），并另在 `0.2.1-rc.5`（npm `latest` 标签、桌面版运行时）上验证通过。两条线均报告 typecheck 零错误、build 干净、**24** 项单元测试全部通过。
+- **peer 区间不变。** `@deepseek-ai/cordis` peer 保持 `^4.0.4 || ^4.0.6-alpha.1`：`^4.0.4` 本就覆盖 `4.1.0`，该声明并未排除新线，因此无需放宽。`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是**强制升级。
+- **供应链闸门。** 工作区文件现对 0.2.2-rc.1 的各包豁免 pnpm 的最小发布年龄闸门——否则 DSH 持续发布的预发行版会被拦下。该名单保持单一且由锁文件推导的区块。
+- **更新请求头标识。** 将 `USER_AGENT` 常量更新为 `dsh-tinyfish-search/0.19.0`。
+- **源码改动。** 仅有 `USER_AGENT` 版本字符串，以及 `test/apply.test.ts` 中对应的断言。`src/`、`scripts/`、`locale/`、`.github/`、`cordis.patch.yml` 与 `tsconfig*.json` 其余部分均未改动。
+
+**修复**
+
+- **一条陈旧的 `@deepseek-ai/cosmokit` override 与 cordis 的声明相冲突。** `pnpm-workspace.yaml` 自 2026-08-30 首版起就带着 `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1`。cordis `4.1.0` 声明要求 `@deepseek-ai/cosmokit: ~1.9.0`，因此这条 override 把依赖树强行钉在声明所排除的版本上——依赖声明与实际解析不一致。0.19.0 删除了该 override，锁文件现按 cordis 的声明解析 cosmokit `1.9.0`。cosmokit `1.8.7-alpha.1` 与 `1.9.0` 除各自的 `package.json` 外字节完全相同，这正是历史上从未引发运行时故障的原因；该不一致是潜在缺陷而非无害差异，本次升级予以修正。
+
+**文档**
+
+- 全部双语文档的验证基线更新为 `0.2.2-rc.1` / 插件 `0.19.0`，并记录 `0.2.1-rc.5` 作为第二条验证线。
+- 在真正会产生影响之处写明 Node 门槛：`0.2.2-rc.1` 把 harness 自身的最低 Node.js 提升到 **24.9**，因此在该宿主上实际要求 Node 24.9+，尽管本插件的 `engines.node` 仍为 `^22.19.0 || >=24.0.0`。插件声明的区间未作改动。
+- `WebSearchProvider.ready()` 及其激活契约在 `0.2.2-alpha.2` 与 `0.2.2-rc.1` 之间未变，就绪闸门继续有效，文档中不存在与之相反的描述。
+
+**验证**
+
+- `npx tsc -p tsconfig.json --noEmit` 零错误、`npm run build` 构建干净，**24** 项单元测试在 DeepSeek Harness 0.2.2-rc.1 上全部通过，并在 0.2.1-rc.5 上复测通过。
+- `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
+- 未验证项：在真实 `0.2.2-rc.1` profile 中的实际启动并端到端触发就绪闸门；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
+
+---
+
 ## [0.18.1] - 2026-10-30
 
 ### 文档更正 —— 「最新发行版」这一表述已不成立
@@ -22,6 +53,8 @@
 
 - `node scripts/check-docs-language.ts` 通过，全部双语对零发现。
 - `npx tsc -p tsconfig.json --noEmit` 零错误；`npm run build` 构建干净；**24** 项单元测试全部通过。
+
+---
 
 ## [0.18.0] - 2026-10-28
 
@@ -167,6 +200,8 @@
 - 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.2`）实测：运行时版本为 `0.2.0-rc.2`，`0.14.0` 在 `0.2.0-rc.2`、`0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.2` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
 - `0.13.0` 以其未改动的 peer 区间在 `0.2.0-rc.2` 上被准入，印证本版并非强制升级。
 
+---
+
 ## [0.13.0] - 2026-09-28
 
 ### 适配 DeepSeek Harness 0.2.0-rc.1：通过 peer 兼容性闸门
@@ -188,6 +223,8 @@
 - 冻结锁文件安装通过 pnpm 的供应链策略校验。
 - 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.1`）实测：运行时版本为 `0.2.0-rc.1`，`0.13.0` 在 `0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.1` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
 - 实际打包的 0.13.0 压缩包含构建产物 `lib/`、`cordis.patch.yml` 与 `LICENSE`。
+
+---
 
 ## [0.12.0] - 2026-09-24
 
@@ -511,6 +548,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
 [0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
 [0.17.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.17.1
