@@ -2,7 +2,7 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-alpha.2** with `dsh-tinyfish-search` **0.18.1**.
+> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0**.
 
 This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
 
@@ -19,7 +19,7 @@ dsh plugin --profile web update dsh-tinyfish-search@latest
 or pin to a specific version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.18.1
+dsh plugin --profile web add dsh-tinyfish-search@0.19.0
 ```
 
 > **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `update` and `add`.
@@ -42,12 +42,56 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ### Upgrading via Tarball
 
 ```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
 ```
 
 ---
 
-## 2. Upgrading to 0.18.1 from ≤ 0.18.0
+## 2. Upgrading to 0.19.0 from ≤ 0.18.1
+
+0.19.0 aligns the plugin with DeepSeek Harness `0.2.2-rc.1` and deletes a stale
+dependency override. No plugin logic changed: the only source edit is the
+`USER_AGENT` version string, plus its assertion in `test/apply.test.ts`. `src/`,
+`scripts/`, `locale/`, `.github/`, `cordis.patch.yml` and `tsconfig*.json` are
+otherwise identical to 0.18.1.
+
+- **Dependency pin.** `devDependencies` move to `0.2.2-rc.1`, and the lockfile is
+  regenerated against it. `@deepseek-ai/cordis` moves to `~4.1.0` and the
+  `@deepseek-ai/schemastery` dependency to `~3.19.0`.
+- **Peer ranges unchanged.** The cordis peer stays
+  `^4.0.4 || ^4.0.6-alpha.1`: `^4.0.4` already covers `4.1.0`, so the declaration
+  needs no widening. `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this
+  release is **not a mandatory upgrade**.
+- **Stale cosmokit override removed.** `pnpm-workspace.yaml` had carried
+  `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1` since the first release on
+  2026-08-30. Cordis `4.1.0` declares `@deepseek-ai/cosmokit: ~1.9.0`, so that
+  override pinned the tree to a revision the declaration excludes. 0.19.0
+  deletes the override and the lockfile resolves cosmokit `1.9.0` as cordis
+  declares. cosmokit `1.8.7-alpha.1` and `1.9.0` are byte-identical apart from
+  their `package.json`, so no runtime failure ever surfaced — but the
+  declaration and the resolved tree disagreed, and that is what this upgrade
+  corrects.
+- **Supply-chain exemption rebuilt.** The workspace file exempts the
+  `0.2.2-rc.1` package set from pnpm's minimum-release-age gate. The list stays a
+  single lockfile-derived block.
+- **User-Agent attribution.** `USER_AGENT` is bumped to
+  `dsh-tinyfish-search/0.19.0`.
+- **Node floor on the new host.** `0.2.2-rc.1` raises the harness's own minimum
+  Node.js to **24.9**, so on that host the effective requirement is Node 24.9+
+  even though this plugin's `engines.node` still reads
+  `^22.19.0 || >=24.0.0`. Nothing in the plugin changes; the stricter host rule
+  simply applies.
+- **Behavior.** No change. `WebSearchProvider.ready()` and its activation
+  contract are unchanged in `0.2.2-rc.1`, so the readiness gate keeps working
+  exactly as in 0.18.1. `available()`, `search()`, response mapping, error
+  mapping and every configuration field are untouched.
+
+Nothing beyond updating the package is needed, and this is not a mandatory
+upgrade: `0.18.1` already loads on `0.2.2-rc.1`.
+
+---
+
+## 3. Upgrading to 0.18.1 from ≤ 0.18.0
 
 0.18.1 corrects a documentation statement and changes nothing else. `package.json`
 dependencies, `src/`, `test/` and every behavioural contract are identical to
@@ -68,7 +112,7 @@ dependencies, `src/`, `test/` and every behavioural contract are identical to
 
 ---
 
-## 3. Upgrading to 0.18.0 from ≤ 0.17.1
+## 4. Upgrading to 0.18.0 from ≤ 0.17.1
 
 0.18.0 aligns the plugin with DeepSeek Harness `0.2.2-alpha.2` and adds the
 `ready()` member the new `ctx.web` provider contract introduced.
@@ -83,7 +127,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 4. Upgrading to 0.17.0 from ≤ 0.16.0
+## 5. Upgrading to 0.17.0 from ≤ 0.16.0
 
 0.17.0 aligns the plugin with DeepSeek Harness `0.2.1-rc.2`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -97,7 +141,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 5. Upgrading to 0.16.0 from ≤ 0.15.0
+## 6. Upgrading to 0.16.0 from ≤ 0.15.0
 
 0.16.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.4`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -111,7 +155,7 @@ Nothing beyond updating the package is needed: the plugin keeps working in an ex
 
 ---
 
-## 6. Upgrading to 0.15.0 from ≤ 0.14.0
+## 7. Upgrading to 0.15.0 from ≤ 0.14.0
 
 0.15.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.2`, the latest release of the
 plugin-development documentation this plugin follows.
@@ -127,7 +171,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 7. Upgrading to 0.14.0 from ≤ 0.13.0
+## 8. Upgrading to 0.14.0 from ≤ 0.13.0
 
 0.14.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -154,7 +198,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 8. Upgrading to 0.13.0 from ≤ 0.12.0
+## 9. Upgrading to 0.13.0 from ≤ 0.12.0
 
 0.13.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.1`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -181,7 +225,7 @@ their defaults are unchanged, so an existing profile keeps working as it is.
 
 ---
 
-## 9. Upgrading to 0.12.0 from ≤ 0.11.1
+## 10. Upgrading to 0.12.0 from ≤ 0.11.1
 
 0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
 plugin-development documentation this plugin follows. No plugin source changed except the
@@ -203,7 +247,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 10. Upgrading to 0.11.1 from 0.11.0
+## 11. Upgrading to 0.11.1 from 0.11.0
 
 0.11.1 changes no runtime code, no configuration and no tool surface: the plugin
 behaves exactly as 0.11.0. It is a documentation and tooling release.
@@ -220,7 +264,7 @@ No action is required beyond updating the package.
 
 ---
 
-## 11. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
+## 12. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
 
 0.11.0 raises the harness floor to DeepSeek Harness `0.1.7-alpha.2` and is verified on `0.1.7-rc.1`.
 The `@deepseek-ai/dsh-*` peer ranges accept `^0.1.7-alpha.2` — the release line that introduced
@@ -241,7 +285,7 @@ defaults. SSRF defenses continue to protect requests.
 
 ---
 
-## 12. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
+## 13. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
 
 0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
@@ -251,7 +295,7 @@ Configuration fields remain 100% backward-compatible.
 
 ---
 
-## 13. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
+## 14. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
 
 0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
 accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
@@ -264,7 +308,7 @@ refreshes the package in place.
 
 ---
 
-## 14. Verification
+## 15. Verification
 
 Start the profile:
 
@@ -276,10 +320,10 @@ Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"
 
 ---
 
-## 15. Rollback
+## 16. Rollback
 
 To roll back to a previous version:
 
 ```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.14.0
+dsh plugin --profile web add dsh-tinyfish-search@0.18.1
 ```

@@ -2,7 +2,7 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/INSTALL.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.2-alpha.2** 上随 `dsh-tinyfish-search` **0.18.1** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.2-rc.1** 上随 `dsh-tinyfish-search` **0.19.0** 完成全面验证——typecheck 零错误、build 干净，**24** 项单元测试在 `0.2.2-rc.1` 与 `0.2.1-rc.5` 两条线上均全部通过。
 
 本文档覆盖环境要求、全部安装方式与安装验证方法。
 
@@ -10,9 +10,9 @@
 
 ## 1. 环境要求
 
-- DeepSeek Harness `dsh` CLI `>=0.1.7-alpha.2 <0.3.0`（任意带 web 缝的 profile，如 `web`）——已在 `0.2.2-alpha.2` 上验证
-- 宿主会在准入插件行之前，用运行时版本校验本插件声明的运行时要求。自 DSH `0.2.1-alpha.4` 起，包自有的 `engines.dsh` 区间单独决定准入，`@deepseek-ai/dsh*` 的 peer 依赖在该判断中被忽略；只有缺少 `engines.dsh` 时才回退到这些 peer。两者都按 `includePrerelease` 语义匹配，因此预发行版运行时也参与比较。本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，因此 `0.2.2-alpha.2`（以及 `0.2.x` 线）与整条 `0.1.7` 预发行线都通过。区间之外的宿主会在加载时被直接拒绝并点明确切的要求，只有 `dsh plugin allow-version` 才能覆盖该拒绝——见[宿主兼容性闸门](README.zh.md#宿主兼容性闸门)。
-- Node.js `^22.19.0 || >=24.0.0`（与 harness 引擎区间一致）
+- DeepSeek Harness `dsh` CLI `>=0.1.7-alpha.2 <0.3.0`（任意带 web 缝的 profile，如 `web`）——构建基线 `0.2.2-rc.1`（2026-11-04 发布于 npm 的 `next` 标签），另在 `0.2.1-rc.5`（npm `latest` 标签、桌面版运行时）上验证通过
+- 宿主会在准入插件行之前，用运行时版本校验本插件声明的运行时要求。自 DSH `0.2.1-alpha.4` 起，包自有的 `engines.dsh` 区间单独决定准入，`@deepseek-ai/dsh*` 的 peer 依赖在该判断中被忽略；只有缺少 `engines.dsh` 时才回退到这些 peer。两者都按 `includePrerelease` 语义匹配，因此预发行版运行时也参与比较。本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，因此 `0.2.2-rc.1`（以及 `0.2.x` 线）与整条 `0.1.7` 预发行线都通过。区间之外的宿主会在加载时被直接拒绝并点明确切的要求，只有 `dsh plugin allow-version` 才能覆盖该拒绝——见[宿主兼容性闸门](README.zh.md#宿主兼容性闸门)。
+- Node.js `^22.19.0 || >=24.0.0`（与 harness 引擎区间一致）。在 `0.2.2-rc.1` 宿主上实际门槛为 **Node 24.9**：该发行版把宿主自身的最低要求提高到 24.9，因此由更严格的宿主规则决定，而本插件的 `engines.node` 保持声明值不变。
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 在任意钱包余额下免费）
 - 源码目录 / git 安装需要 pnpm `>=10`（它经 `prepare` 脚本从源码构建 `lib/`）
 
@@ -27,7 +27,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 或锁定确切版本：
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.18.1
+dsh plugin --profile web add dsh-tinyfish-search@0.19.0
 ```
 
 > **命令行语法说明**：根据 DeepSeek Harness 0.2.1-alpha.1 规范，`--profile <name>` 必须置于 `add` 等子命令之前。
@@ -49,7 +49,7 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ## 4. 从 tarball 或源码目录安装
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.18.1.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
 ```
 
 ```sh

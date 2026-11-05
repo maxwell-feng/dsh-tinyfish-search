@@ -2,7 +2,7 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.2-alpha.2** 上随 `dsh-tinyfish-search` **0.18.1** 完成全面验证。
+> 已在 DeepSeek Harness **0.2.2-rc.1** 上随 `dsh-tinyfish-search` **0.19.0** 完成全面验证。
 
 本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、配置值生效路径、SSRF 安全防御、环境变量覆盖及加载层配置方法。
 
@@ -97,7 +97,7 @@ $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 
 ## 7. 就绪判定（`ready()`）
 
-DeepSeek Harness 0.2.2-alpha.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员，`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由返回 `false` 的模型步既不声明也不派发该工具。`tinyfish` 提供方按第 6 节所述的同一套链路解析，并报告是否解到了密钥：
+DeepSeek Harness 0.2.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员，`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由返回 `false` 的模型步既不声明也不派发该工具。该契约在 `0.2.2-rc.1` 中保持不变，因此本插件实现的就绪闸门在该基线上仍然有效。`tinyfish` 提供方按第 6 节所述的同一套链路解析，并报告是否解到了密钥：
 
 - 存在字面量 `apiKey` 时立即就绪；否则运行一次第 6 节的解析器。
 - 解析出非空值即就绪，其余情况——包括空字符串——均不就绪。
