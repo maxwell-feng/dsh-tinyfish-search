@@ -4,6 +4,30 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.20.0] - 2026-11-12
+
+### DeepSeek Harness 0.2.2-rc.2 Alignment — provider picker metadata
+
+**Changed**
+
+- **Harness alignment.** Every `@deepseek-ai/dsh-*` devDependency moves from `0.2.2-rc.1` to `0.2.2-rc.2`, and the lockfile is regenerated against 0.2.2-rc.2. `@deepseek-ai/cordis` stays `~4.1.0` and `@deepseek-ai/schemastery` stays `~3.19.0`.
+- **Double-line verification.** The build baseline is `0.2.2-rc.2` (released 2026-11-11 on the npm `next` tag) and the plugin is also verified on `0.2.2-rc.1` (npm `latest`). Both lines report typecheck clean, build clean and all **24** unit tests passing.
+- **Provider picker metadata.** `TinyFishSearchProvider` now declares the optional `title` (`TinyFish Search`) and `description` members that `dsh-web` added in 0.2.2-rc.2, so the Web search provider menu shows a friendly name and a short note instead of only the raw `tinyfish` id.
+- **Peer ranges unchanged.** The `@deepseek-ai/cordis` peer stays `^4.0.4 || ^4.0.6-alpha.1`; `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**.
+- **Supply-chain gate.** The workspace file exempts the 0.2.2-rc.2 package set from pnpm's minimum-release-age gate; the list stays a single, lockfile-derived block.
+- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.20.0`.
+
+**Documentation**
+
+- The bilingual docs' verification baseline is now `0.2.2-rc.2` / plugin `0.20.0`, with `0.2.2-rc.1` recorded as the second line.
+- The takeover note and the fallback note now name the base search default correctly: `deepseek-search-api` since 0.2.2-rc.2 (it was `deepseek-official` before), so `web_search` falls back to the DeepSeek Search API when the bundle layer is removed.
+
+**Verification**
+
+- `npx tsc -p tsconfig.json --noEmit` clean, `npm run build` clean, and all **24** unit tests pass against DeepSeek Harness 0.2.2-rc.2 and again against 0.2.2-rc.1.
+- `node scripts/check-docs-language.ts` passing clean with zero findings across all document pairs.
+- Not verified: a live boot into a real 0.2.2-rc.2 profile with the readiness gate exercised end to end, and a live TinyFish API request (the suite stubs `fetch`).
+
 ## [0.19.0] - 2026-11-05
 
 ### DeepSeek Harness 0.2.2-rc.1 Alignment — stale cosmokit override removed
@@ -493,6 +517,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0
 [0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
 [0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0
