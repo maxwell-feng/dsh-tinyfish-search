@@ -119,6 +119,10 @@ export type TinyFishProviderInput = (() => TinyFishOptions) | TinyFishOptions | 
 
 export class TinyFishSearchProvider implements WebSearchProvider {
   readonly id = TINYFISH_PROVIDER_ID;
+  /** Display name the provider picker shows (dsh 0.2.2-rc.2 and later). */
+  readonly title = "TinyFish Search";
+  /** Picker description shown under this provider when it is selected (dsh 0.2.2-rc.2 and later). */
+  readonly description = "Web search backed by the TinyFish Search API.";
   private readonly resolve: TinyFishProviderInput;
 
   constructor(resolve: TinyFishProviderInput) {

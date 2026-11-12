@@ -6,6 +6,30 @@
 
 ---
 
+## [0.20.0] - 2026-11-12
+
+### 对齐 DeepSeek Harness 0.2.2-rc.2 —— 提供方选择器元数据
+
+**变更**
+
+- **harness 对齐。** 全部 `@deepseek-ai/dsh-*` 开发依赖由 `0.2.2-rc.1` 移至 `0.2.2-rc.2`，锁文件按 0.2.2-rc.2 重新生成。`@deepseek-ai/cordis` 保持 `~4.1.0`，`@deepseek-ai/schemastery` 保持 `~3.19.0`。
+- **双线验证。** 构建基线为 `0.2.2-rc.2`（2026-11-11 发布于 npm 的 `next` 标签），并另在 `0.2.2-rc.1`（npm `latest` 标签）上验证通过。两条线均报告类型检查干净、构建干净、全部 **24** 个单元测试通过。
+- **提供方选择器元数据。** `TinyFishSearchProvider` 现声明 `dsh-web` 在 0.2.2-rc.2 新增的可选 `title`（`TinyFish Search`）与 `description` 成员，Web 搜索提供方菜单因此可显示友好名称与简短说明，而不再只是裸的 `tinyfish` id。
+- **peer 区间不变。** `@deepseek-ai/cordis` peer 保持 `^4.0.4 || ^4.0.6-alpha.1`；`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是强制升级**。
+- **供应链闸门。** 工作区文件将 0.2.2-rc.2 包集合排除在 pnpm 的最低发布年龄闸门之外；清单仍是单一、由锁文件派生的块。
+- **User-Agent 标识。** `USER_AGENT` 更新为 `dsh-tinyfish-search/0.20.0`。
+
+**文档**
+
+- 中英双语文档的验证基线现为 `0.2.2-rc.2` / 插件 `0.20.0`，并记录 `0.2.2-rc.1` 为第二验证线。
+- 接管说明与回退说明均正确写出基础搜索默认值：`deepseek-search-api`（0.2.2-rc.2 起；更早为 `deepseek-official`），因此移除 bundle 层后 `web_search` 会回退到 DeepSeek Search API。
+
+**验证**
+
+- `npx tsc -p tsconfig.json --noEmit` 干净，`npm run build` 干净，全部 **24** 个单元测试在 DeepSeek Harness 0.2.2-rc.2 上通过，并在 0.2.2-rc.1 上再次通过。
+- `node scripts/check-docs-language.ts` 在全部文档对上零发现通过。
+- 未验证：真实 0.2.2-rc.2 profile 的启动并端到端触发就绪闸门，以及真实的 TinyFish API 请求（测试套件对 `fetch` 打了桩）。
+
 ## [0.19.0] - 2026-11-05
 
 ### 适配 DeepSeek Harness 0.2.2-rc.1：删除陈旧的 cosmokit override
@@ -548,6 +572,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0
 [0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
 [0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
 [0.18.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.0

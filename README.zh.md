@@ -15,17 +15,17 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 - 把 `results[]`（标题 / 摘要 / 链接 / 日期）归一化为缝接口的可移植来源结构
 - 通过 `WebSearchProvider.ready()` 上报提供方就绪状态（DeepSeek Harness 0.2.2 起）：宿主在声明 `web_search` 之前会先询问它，因此没有可用 TinyFish 凭据的 profile 干脆不显示 `web_search` 工具，而不是显示一个每次调用都失败的工具
 - **每次搜索都不会消耗模型轮次**——与 Anthropic 服务器工具方案不同
-- 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.2-rc.1 插件管理器展示规范
+- 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.2-rc.2 插件管理器展示规范
 - 源码、脚本与构建配置均为纯 TypeScript 架构
 
-安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为 `deepseek-official`，否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。同时补丁还会**重新启用宿主层 `tool-web` 行**（`disabled: false`，并重述 `search: true`、`fetch: true` 及基础超时值）：`dsh-web-app` bundle 自带该行的禁用（Web 应用本应按 agent 预设逐会话组合 web 工具），缺了这一行，干净安装到 web profile 后模型根本看不到 `web_search` 工具。**作用范围说明**：重启用宿主行会让工具对本 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）；自带 `tool-web` 行的预设仍会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖这两行。
+安装本插件后，内置 `web_search` 会被**自动接管**：bundle patch 会覆盖 `web` 能力缝行（`searchProvider: tinyfish`，并重述 `fetchProvider: http`）——因为 `dsh-base` 把该行钉死为某个 DeepSeek 搜索默认值（0.2.2-rc.2 起为 `deepseek-search-api`，更早为 `deepseek-official`），否则插件即使注册了 provider，工具仍会走 DeepSeek 后端。同时补丁还会**重新启用宿主层 `tool-web` 行**（`disabled: false`，并重述 `search: true`、`fetch: true` 及基础超时值）：`dsh-web-app` bundle 自带该行的禁用（Web 应用本应按 agent 预设逐会话组合 web 工具），缺了这一行，干净安装到 web profile 后模型根本看不到 `web_search` 工具。**作用范围说明**：重启用宿主行会让工具对本 profile 上的**每一个** agent 预设可见——包括原本不带 web 工具的预设（如 `minimal`）；自带 `tool-web` 行的预设仍会以自己的注册遮蔽这个全局注册。若希望把工具限定在单个预设内，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的 agent 组合。更后层（profile / home `cordis.patch.yml` / `--patch`）仍可按 id 覆盖这两行。
 
 配置以**易变（volatile）schema** 声明（DeepSeek Harness 0.1.7 起）：Host 读取本插件导出的 `Config` schema，并为 Plugins 页上的 `dsh-tinyfish-search` 行渲染配置表单。插件侧不再有设置注册，也不再需要自带浏览器半端。保存的修改无需重启即对下一次搜索生效。
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——构建基线为 `0.2.2-rc.1`（2026-11-04 发布于 npm 的 `next` 标签），并另在 `0.2.1-rc.5`（npm `latest` 标签、桌面版运行时）上验证通过；`0.2.2` 携带 `WebSearchProvider.ready()`，而 `0.2.1-rc.*` 维护线早于该契约，因此停留在该线上的 profile 运行本插件时不启用就绪闸门；插件声明 `engines.dsh` 为 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入
-- Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）——在 `0.2.2-rc.1` 宿主上实际门槛为 Node 24.9：该宿主把自己的最低要求提高到 24.9，低于此版本拒绝运行；本插件的 `engines.node` 未改动
+- DeepSeek Harness `dsh` CLI（任意带 web 缝的 profile，如 `web`）——构建基线为 `0.2.2-rc.2`（2026-11-11 发布于 npm 的 `next` 标签），并另在 `0.2.2-rc.1`（npm `latest` 标签）上验证通过；`0.2.2` 携带 `WebSearchProvider.ready()`，而 `0.2.1-rc.*` 维护线早于该契约，因此停留在该线上的 profile 运行本插件时不启用就绪闸门；插件声明 `engines.dsh` 为 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线均可通过准入
+- Node.js `^22.19.0 || >=24.0.0`（与 harness 的引擎区间一致）——在 `0.2.2-rc.2` 宿主上实际门槛为 Node 24.9：该宿主把自己的最低要求提高到 24.9，低于此版本拒绝运行；本插件的 `engines.node` 未改动
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)（免费创建；Search 免费）
 - 宿主的凭据缝与启动环境（`@deepseek-ai/dsh-credentials`、`@deepseek-ai/dsh-launch-environment`）是必需的 peer 依赖——每个 `dsh` profile 都已自带
 
@@ -33,10 +33,10 @@ DeepSeek Harness 内置的 `web_search` 工具默认走 DeepSeek 的 Anthropic �
 
 DeepSeek Harness 会在准入插件行**之前**，用宿主声明的运行时要求校验正在运行的运行时版本，不兼容的插件会被直接拒绝，而不是照常加载。**从 `0.2.1-alpha.4` 起，判定规则有所变化：** 包自身声明了 `engines.dsh` 区间时，就只按该区间判定，兼容性判断完全忽略 `@deepseek-ai/dsh*` 的 `peerDependencies`；只有在缺少 `engines.dsh` 时才回退到逐条检查这些 peer。两者都按预发行规则匹配（`semver.satisfies(runtime, range, { includePrerelease: true })`），因此预发行版运行时也参与区间比较，拒绝记录中报告的字段是 `requirements` 而非 `peers`。
 
-本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，该区间在 `0.2.2-rc.1`、`0.2.1-rc.5`、`0.2.0-rc.2`、`0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均成立，因此无需任何豁免。`0.14.0` 与 `0.13.0` 的 `engines.dsh` 也已声明同一放宽区间，所以它们在 `0.2.2-rc.1` 上同样被准入。但窄区间的 `0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 在 `0.2.x` 上仍会拒绝 `0.12.0`——此时应升级到 `0.19.0`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的要求对；要显式接受该风险，请按提示对确切要求对授予豁免：
+本插件声明 `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`，该区间在 `0.2.2-rc.2`、`0.2.2-rc.1`、`0.2.1-rc.5`、`0.2.0-rc.2`、`0.2.0-rc.1` 与整条 `0.1.7` 预发行线上均成立，因此无需任何豁免。`0.14.0` 与 `0.13.0` 的 `engines.dsh` 也已声明同一放宽区间，所以它们在 `0.2.2-rc.2` 上同样被准入。但窄区间的 `0.12.0` 声明的是 `^0.1.7-alpha.2`，不含 `0.2.x`，所以 harness 在 `0.2.x` 上仍会拒绝 `0.12.0`——此时应升级到 `0.20.0`，而不是授予豁免。若你在声明区间之外的 `dsh` 上运行，DSH 会拒绝该行并打印确切的要求对；要显式接受该风险，请按提示对确切要求对授予豁免：
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.19.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.20.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## 文档导航
@@ -58,7 +58,7 @@ dsh plugin --profile web add dsh-tinyfish-search
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
-dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.20.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -143,7 +143,7 @@ TinyFish 不返回长摘要，也不返回生成式答案，因此插件既不�
 dsh plugin --profile web remove dsh-tinyfish-search
 ```
 
-移除 bundle 层与 `tinyfish` 提供方注册，`web` / `tool-web` 行会恢复为底层 bundle 原本的组合值（移除插入层后，被插入行的覆盖即回到其自身默认）。重启 `dsh --profile web` 确认 `web_search` 回退到基础 `deepseek-official` 提供方（若未安装其他提供方则为空）。
+移除 bundle 层与 `tinyfish` 提供方注册，`web` / `tool-web` 行会恢复为底层 bundle 原本的组合值（移除插入层后，被插入行的覆盖即回到其自身默认）。重启 `dsh --profile web` 确认 `web_search` 回退到基础 `deepseek-search-api` 提供方（0.2.2-rc.2 默认值；更早宿主为 `deepseek-official`；若未安装其他提供方则为空）。
 
 ## 升级
 
@@ -152,6 +152,8 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # 或走 git，在改动进入 npm 前先行取用：
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+从 ≤ 0.19.0 升级到 0.20.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.2.2-rc.2` 的对齐，并新增了 0.2.2-rc.2 提供方选择器读取的 `title`/`description` 元数据。锁定的 `@deepseek-ai/dsh-*` 开发依赖与锁文件均移至 `0.2.2-rc.2`，工作区供应链豁免清单刷新为该包集合；`@deepseek-ai/cordis` 保持 `~4.1.0`、`@deepseek-ai/schemastery` 保持 `~3.19.0`，`@deepseek-ai/cordis` peer 保持 `^4.0.4 || ^4.0.6-alpha.1`，`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版不是强制升级。`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.20.0`。除该字符串外唯一的源码改动，是 `TinyFishSearchProvider` 上新增的 `title`/`description` 对；`WebSearchProvider.search()`、`ready()` 与全部配置字段均未改动。另请注意宿主门槛：`0.2.2-rc.2` 维持 harness 的最低 Node.js 为 **24.9**，因此在该宿主上实际要求 Node 24.9+，尽管本插件的 `engines.node` 仍写着 `^22.19.0 || >=24.0.0`。
 
 从 ≤ 0.18.1 升级到 0.19.0 无需任何手工步骤：本版完成与 DeepSeek Harness `0.2.2-rc.1` 的对齐，并删除了一条陈旧的依赖 override。锁定的 `@deepseek-ai/dsh-*` 开发依赖与锁文件均移至 `0.2.2-rc.1`，`@deepseek-ai/cordis` 升至 `~4.1.0`，`@deepseek-ai/schemastery` 依赖移至 `~3.19.0`，工作区供应链豁免清单刷新为该包集合，`USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.19.0`。`@deepseek-ai/cordis` peer 保持 `^4.0.4 || ^4.0.6-alpha.1` 不变——`^4.0.4` 本就覆盖 4.1.0，无需改动区间——`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`。本版修掉的一个真实缺陷：`pnpm-workspace.yaml` 自 2026-08-30 首版起就带着一条陈旧的 `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1`。cordis 4.1.0 声明要求 `@deepseek-ai/cosmokit: ~1.9.0`，而这条 override 把依赖树强行钉在声明所排除的 1.8.7-alpha.1 上；0.19.0 删除了它，锁文件现按 cordis 的声明解析 cosmokit 1.9.0。cosmokit 1.8.7-alpha.1 与 1.9.0 除 `package.json` 外字节完全相同，所以历史上从未引发运行时故障，但依赖声明与实际解析确实不一致——这正是本版要修正的地方。另请注意宿主门槛：`0.2.2-rc.1` 把自身的最低 Node.js 提升到 **24.9**，因此在该宿主上实际要求 Node 24.9+，尽管本插件的 `engines.node` 仍写着 `^22.19.0 || >=24.0.0`。搜索、映射与配置逻辑均未改动。
 

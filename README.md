@@ -15,13 +15,14 @@ DeepSeek Harness's built-in `web_search` tool normally runs through the DeepSeek
 - `results[]` (title / snippet / url / date) are normalized into the seam's portable source shape
 - Reports provider readiness through `WebSearchProvider.ready()` (DeepSeek Harness 0.2.2+): the harness asks it before it declares `web_search`, so a profile with no usable TinyFish credential simply shows no `web_search` tool instead of a tool whose every call fails
 - No LLM turn consumed per search — unlike the Anthropic server-tool approach
-- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.2-rc.1 display conventions for Plugin Manager
+- Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.2-rc.2 display conventions for Plugin Manager
 - Pure TypeScript architecture across sources, scripts, and build configurations
 
 Installing the bundle **takes over the built-in `web_search` automatically**: the
 bundle patch overrides the `web` seam row (`searchProvider: tinyfish`,
-`fetchProvider: http` restated), because `dsh-base` pins the seam to
-`deepseek-official` and would otherwise keep the tool on the DeepSeek backend.
+`fetchProvider: http` restated), because `dsh-base` pins the seam to a DeepSeek search default
+(`deepseek-search-api` since 0.2.2-rc.2; `deepseek-official` before it) and would
+otherwise keep the tool on the DeepSeek backend.
 It also **re-enables the host-level `tool-web` row** (`disabled: false` plus
 `search: true`, `fetch: true` and the base timeouts restated): the
 `dsh-web-app` bundle ships that row disabled (the Web app normally composes
@@ -43,8 +44,8 @@ the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — the build baseline is `0.2.2-rc.1` (released 2026-11-04 on the npm `next` tag) and the plugin is also verified on `0.2.1-rc.5` (npm `latest`, the desktop runtime); `0.2.2` carries `WebSearchProvider.ready()` while the `0.2.1-rc.*` maintenance line predates it, so a profile on that line runs the plugin without the readiness gate; the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
-- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range) — on a `0.2.2-rc.1` host the effective floor is Node 24.9, because that host raises its own minimum to 24.9 and refuses to run below it; this plugin's `engines.node` is unchanged
+- DeepSeek Harness `dsh` CLI (any profile with the web seam, e.g. `web`) — the build baseline is `0.2.2-rc.2` (released 2026-11-11 on the npm `next` tag) and the plugin is also verified on `0.2.2-rc.1` (npm `latest`); `0.2.2` carries `WebSearchProvider.ready()` while the `0.2.1-rc.*` maintenance line predates it, so a profile on that line runs the plugin without the readiness gate; the plugin declares `engines.dsh` `>=0.1.7-alpha.2 <0.3.0`, so the whole `0.1.7` prerelease line and the `0.2.x` line are admitted
+- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range) — on a `0.2.2-rc.2` host the effective floor is Node 24.9, because that host raises its own minimum to 24.9 and refuses to run below it; this plugin's `engines.node` is unchanged
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free)
 - The harness credential seam and launch environment (`@deepseek-ai/dsh-credentials`, `@deepseek-ai/dsh-launch-environment`) are required peers — every `dsh` profile carries them already
 
@@ -62,18 +63,18 @@ runtimes participate in the comparison, and a refusal record reports
 `requirements` rather than `peers`.
 
 This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, and that range
-holds on `0.2.2-rc.1`, on `0.2.1-rc.5`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and
+holds on `0.2.2-rc.2`, on `0.2.2-rc.1`, on `0.2.1-rc.5`, on `0.2.0-rc.2`, on `0.2.0-rc.1`, and
 on the whole `0.1.7` prerelease line — so no exemption is needed. Because
 `0.14.0` and `0.13.0` already declared that widened range in `engines.dsh` as
-well, they remain admitted on `0.2.2-rc.1` too. The narrow-range `0.12.0`,
+well, they remain admitted on `0.2.2-rc.2` too. The narrow-range `0.12.0`,
 however, declared `^0.1.7-alpha.2`, which excludes `0.2.x`, so the harness still
-refuses `0.12.0` on `0.2.x`: upgrade to `0.19.0` instead of granting an
+refuses `0.12.0` on `0.2.x`: upgrade to `0.20.0` instead of granting an
 exemption. If you run a `dsh` outside the declared range, DSH refuses the row
 with a diagnostic naming the exact requirement pair; to accept that risk
 explicitly, grant the exempted exact pair it prints:
 
 ```sh
-dsh plugin allow-version dsh-tinyfish-search@0.19.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin allow-version dsh-tinyfish-search@0.20.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 ## Documentation
@@ -95,7 +96,7 @@ or from the repository / a tarball:
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
-dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.20.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
@@ -184,8 +185,9 @@ Removes the bundle layer and the `tinyfish` provider registration, and restores
 the composed `web` / `tool-web` rows to exactly what the underlying bundles
 ship (an inserted row's override returns to the row's own defaults when the
 inserting layer is removed). Restart `dsh --profile web` to confirm
-`web_search` falls back to the base `deepseek-official` provider (or none if
-no other provider is installed).
+`web_search` falls back to the base `deepseek-search-api` provider (the
+0.2.2-rc.2 default; `deepseek-official` on earlier hosts), or to none if no
+other provider is installed).
 
 ## Updating
 
@@ -194,6 +196,22 @@ dsh plugin --profile web add dsh-tinyfish-search@latest
 # or from git, to pick up changes before they reach npm:
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
+
+Upgrading to 0.20.0 from ≤ 0.19.0 needs no manual steps: it aligns the plugin
+with DeepSeek Harness `0.2.2-rc.2` and adds the provider `title`/`description`
+metadata the 0.2.2-rc.2 provider picker reads. It moves the pinned
+`@deepseek-ai/dsh-*` devDependencies and the lockfile to `0.2.2-rc.2` and
+refreshes the workspace supply-chain exemption to that package set;
+`@deepseek-ai/cordis` stays `~4.1.0`, `@deepseek-ai/schemastery` stays
+`~3.19.0`, the `@deepseek-ai/cordis` peer stays `^4.0.4 || ^4.0.6-alpha.1`, and
+`engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this release is not a mandatory
+upgrade. `USER_AGENT` is bumped to `dsh-tinyfish-search/0.20.0`. The only source
+change beyond that string is the additive `title`/`description` pair on
+`TinyFishSearchProvider`; `WebSearchProvider.search()`, `ready()` and every
+configuration field are unchanged. Note the host floor: `0.2.2-rc.2` keeps the
+harness minimum Node.js at **24.9**, so on that host the effective Node
+requirement is 24.9+ even though this plugin's `engines.node` still reads
+`^22.19.0 || >=24.0.0`.
 
 Upgrading to 0.19.0 from ≤ 0.18.1 needs no manual steps: it aligns the plugin
 with DeepSeek Harness `0.2.2-rc.1` and removes a stale dependency override. It
