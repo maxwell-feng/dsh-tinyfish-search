@@ -2,65 +2,42 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/INSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0** — typecheck clean, build clean and all **24** unit tests pass on both `0.2.2-rc.1` and `0.2.1-rc.5`.
+## Requirements
 
-This document covers the requirements, every install method, and how to verify the installation.
+- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.2-rc.3` (released 2026-11-13). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
+- Node.js `^22.19.0 || >=24.0.0`. On DSH 0.2.2 hosts the effective floor is Node 24.9.
+- A [TinyFish API key](https://agent.tinyfish.ai/api-keys). Search is free at any wallet balance.
+- pnpm `>=10` for git and source-checkout installs, which build `lib/` through the `prepare` script.
 
----
+DSH checks `engines.dsh` before it loads the row. A host outside the range is refused with the exact requirement named. `dsh plugin allow-version` can grant an exemption for that exact pair; see the [compatibility section](README.md#requirements).
 
-## 1. Requirements
-
-- DeepSeek Harness `dsh` CLI at `>=0.1.7-alpha.2 <0.3.0` (any profile with the web seam, e.g. `web`) — build baseline `0.2.2-rc.1` (released 2026-11-04 on the npm `next` tag), also verified on `0.2.1-rc.5` (npm `latest`, the desktop runtime)
-- The harness verifies the plugin's declared runtime requirement against the running runtime before it admits the row. Since DSH `0.2.1-alpha.4`, an own `engines.dsh` range decides alone and the `@deepseek-ai/dsh*` peers are ignored for that judgement; the peers are only a fallback when `engines.dsh` is absent. Both are matched with `includePrerelease`, so prerelease runtimes participate. This plugin declares `engines.dsh: ">=0.1.7-alpha.2 <0.3.0"`, so `0.2.2-rc.1` (and the `0.2.x` line) and the whole `0.1.7` prerelease line are admitted. A runtime outside that range is refused at load with the exact requirement named, and only `dsh plugin allow-version` overrides that refusal — see the [Harness compatibility gate](README.md#harness-compatibility-gate).
-- Node.js `^22.19.0 || >=24.0.0` (matches the harness engine range). On a `0.2.2-rc.1` host the effective floor is **Node 24.9**: that release raises the host's own minimum to 24.9, so the stricter host rule decides while this plugin's `engines.node` stays as declared.
-- A [TinyFish API key](https://agent.tinyfish.ai/api-keys) (free to create; Search is free at any wallet balance)
-- pnpm `>=10` for source-checkout and git installs (it builds `lib/` from source via the `prepare` script)
-
----
-
-## 2. Install from the npm registry
+## Install from npm
 
 ```sh
 dsh plugin --profile web add dsh-tinyfish-search
+dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # pin an exact version
 ```
 
-or pin an exact version:
+`--profile <name>` goes before `add`, `remove` and `update`.
 
-```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.19.0
-```
-
-> **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `add`.
-
----
-
-## 3. Install from git
+## Install from git
 
 ```sh
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-> Git installs fetch sources, not built artifacts: pnpm runs the package's `prepare` script, which compiles `lib/` from source via `tsc -p tsconfig.build.json`.
+Git installs fetch sources. pnpm runs `prepare`, which compiles `lib/` with `tsc -p tsconfig.build.json`. The command tracks the default branch, so it also picks up unreleased changes.
 
-Pick up unreleased changes the same way before they reach npm — the command above always tracks the default branch.
-
----
-
-## 4. Install from a tarball or source checkout
+## Install from a tarball or checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.19.0.tgz
-```
-
-```sh
+dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
 ```
 
----
+## Set the API key
 
-## 5. Set the API key
-
-Set the key before the first search (recommended — no secret in config files):
+Set the key before the first search. The environment variable keeps the secret out of config files.
 
 ```sh
 export TINYFISH_API_KEY="your_api_key_here"                      # current shell
@@ -70,22 +47,20 @@ source ~/.bashrc                                                 # or reopen the
 ```
 
 ```powershell
-setx TINYFISH_API_KEY "your_api_key_here"    # permanent — takes effect in new terminals
-$env:TINYFISH_API_KEY = "your_api_key_here"  # current session only
+setx TINYFISH_API_KEY "your_api_key_here"    # permanent — new terminals
+$env:TINYFISH_API_KEY = "your_api_key_here"  # current session
 ```
 
-All credential options (literal `apiKey`, custom `apiKeyEnv`, the credentials service) are documented in the [Configuration Guide](CONFIG.md).
+For a literal `apiKey`, a custom `apiKeyEnv` or the credentials service, see the [Configuration Guide](CONFIG.md).
 
----
+## Verify
 
-## 6. Verify
-
-Check the bundle layer is composed:
+Check that the bundle layer is composed:
 
 ```sh
 dsh --profile web --dump-config | grep tinyfish   # layer present
 ```
 
-Then start a session and ask something requiring live information (e.g. "What is today's weather in Tokyo?"). Confirm the model calls `web_search` and the results carry TinyFish URLs/snippets. The web search settings card in the GUI shows provider `tinyfish` with `available: true` once the key is configured.
+Start a session and ask a question that needs live information, for example "What is today's weather in Tokyo?". The model should call `web_search`, and the results should carry TinyFish URLs and snippets. The web search settings card shows provider `tinyfish` with `available: true` once the key is configured.
 
-If the key is missing, the model is not offered `web_search` at all: since DeepSeek Harness 0.2.2 the plugin reports readiness through `WebSearchProvider.ready()`, and the tool layer withholds the tool instead of dispatching a call that cannot authenticate. A search that still runs without a key — a programmatic caller that bypasses that gate — fails with `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) error table.
+If the key is missing, the model is not offered `web_search`: `WebSearchProvider.ready()` reports no usable credential, so the tool layer withholds the tool. A dispatched search that bypasses that gate fails with `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) error table.

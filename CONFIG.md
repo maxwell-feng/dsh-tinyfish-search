@@ -2,47 +2,35 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0**.
+## Fields
 
-This document describes all configuration options, schema validation rules, how a value reaches a search, SSRF security defenses, environment variable overrides, and bundle layer settings for `dsh-tinyfish-search`.
+The plugin exports a `Config` schema built with `@deepseek-ai/schemastery`. The Host reads it and renders the form for the `dsh-tinyfish-search` row on the Plugins page. All fields are optional and `.volatile()`.
 
----
-
-## 1. Configuration Fields
-
-The plugin exports a `Config` schema built with `@deepseek-ai/schemastery`; the Host reads that schema from the plugin entry module and serves it as this entry's configuration form. Every field is marked `.volatile()`, so a validated config carries one live reference per field instead of a frozen value. All fields are optional.
-
-| Field | Type | Default | Sensitivity | Description |
+| Field | Type | Default | Role | Meaning |
 | :--- | :--- | :--- | :--- | :--- |
-| `apiKey` | `string` | `undefined` | `secret` | Literal TinyFish API Key. **Leave empty** and prefer `apiKeyEnv` to prevent committing secrets to disk. |
-| `apiKeyEnv` | `string` | `"TINYFISH_API_KEY"` | `credential-ref` | Environment variable name carrying the TinyFish API Key. |
-| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | Normal | TinyFish Search API root endpoint. Must use `http:` or `https:`. Requests to `localhost` or private IP ranges are blocked by SSRF defense. |
-| `location` | `string` | `undefined` | Normal | Optional geo location targeting (e.g. `"US"`, `"CN"`) forwarded to TinyFish. |
-| `language` | `string` | `undefined` | Normal | Optional search language (e.g. `"en"`, `"zh"`) forwarded to TinyFish. |
+| `apiKey` | `string` | `undefined` | `secret` | Literal API key. Leave empty and prefer `apiKeyEnv` to keep secrets out of config files. |
+| `apiKeyEnv` | `string` | `TINYFISH_API_KEY` | `credential-ref` | Environment variable name carrying the API key. |
+| `baseURL` | `string` | `https://api.search.tinyfish.ai` | Normal | API endpoint base. Must use `http:` or `https:`. Localhost and private IP ranges are blocked. |
+| `location` | `string` | `undefined` | Normal | Optional geo targeting (e.g. `US`, `CN`) forwarded to TinyFish. |
+| `language` | `string` | `undefined` | Normal | Optional search language (e.g. `en`, `zh`) forwarded to TinyFish. |
 
-Defaults live on the schema, not only at the use site: the rendered form shows what the schema carries, so every default this plugin relies on is declared here.
+Defaults are declared on the schema, so the rendered form shows the same values the plugin uses.
 
----
+## How a value reaches a search
 
-## 2. How a Value Reaches a Search (DSH 0.1.7 Config Model)
+DeepSeek Harness 0.1.7 replaced the old settings seam with schema-driven configuration.
 
-DeepSeek Harness 0.1.7 replaced both halves of the old settings seam — the host-side `ctx.settings.installSection` registration and the client-side `SettingsScope` — with schema-driven configuration. For this plugin that means:
+- Declaration: `src/config.ts` exports `Config`; `src/index.ts` re-exports it. The Host finds it as `entry.fiber.runtime.Config`. The namespace comes from the profile row id `dsh-tinyfish-search`, not from the plugin.
+- One live reference per field: `apply(ctx, config)` receives a `Volatile<T>` for each field. There is no `ctx.inject(['settings'])` and no registration call.
+- One snapshot per search: the provider reads `.get()` for all five fields at the start of each search. A single search cannot mix values from before and after a save.
+- Writes: the Plugins page form writes through `ctx.configForms.get(entryId)` to a `ConfigForm` (`getSnapshot`, `subscribe`, `set`, `unset`, `mutate`, `dispose`). Writes are revision-fenced; a refusal resolves `false` and reloads Host state.
+- Effect: a committed edit reaches the next search without a restart or re-registration.
 
-- **Declaration**: `src/config.ts` exports `Config` and `src/index.ts` re-exports it. The Host discovers it as `entry.fiber.runtime.Config`. The namespace is derived from the profile row id — `dsh-tinyfish-search` in `cordis.patch.yml` — never chosen by the plugin.
-- **One live reference per field**: because each field is `.volatile()`, `apply(ctx, config)` receives a `Volatile<T>` per field. The plugin has no `ctx.inject(['settings'])` and makes no registration call.
-- **One snapshot per operation**: the provider is registered with a thunk that reads `.get()` for all five fields at the start of each search. A single search therefore cannot mix a `baseURL` read before a save with an `apiKeyEnv` read after it, and the provider registration itself never has to be replaced.
-- **Writes**: the Plugins page config form writes through `ctx.configForms.get(entryId)` → `ConfigForm` (`getSnapshot` / `subscribe` / `set` / `unset` / `mutate` / `dispose`). Writes are revision-fenced; a Host refusal resolves `false` and reloads Host state rather than guessing.
-- **Effect**: a committed edit reaches the next search with no restart and no re-registration.
+Programmatic construction accepts a finished `TinyFishOptions`, a snapshot object, or a thunk returning `TinyFishOptions` (`TinyFishProviderInput`). Only the plugin path passes a thunk.
 
-Programmatic construction accepts three input shapes (`TinyFishProviderInput`): a finished `TinyFishOptions`, a snapshot object that still needs its defaults applied, or a thunk returning `TinyFishOptions`. Only the plugin's own path passes a thunk, which is what makes the per-search snapshot work.
+## Recommended setup: environment variable
 
----
-
-## 3. Recommended Setup (Environment Variable)
-
-Set the API key in your operating system environment:
-
-```bash
+```sh
 # Linux / macOS / Android Termux
 export TINYFISH_API_KEY="sk-tinyfish-your-api-key"
 
@@ -50,13 +38,11 @@ export TINYFISH_API_KEY="sk-tinyfish-your-api-key"
 $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 ```
 
-No YAML modification is needed; the plugin resolves credentials on each search.
+No YAML change is needed. The plugin resolves the credential on each search.
 
----
+## Static profile configuration
 
-## 4. Static Profile Configuration (`cordis.patch.yml`)
-
-To customize endpoint or targeting options, add an override in `$DSH_HOME/profiles/<profile>/cordis.patch.yml`:
+Add an override in `$DSH_HOME/profiles/<profile>/cordis.patch.yml`:
 
 ```yaml
 - id: dsh-tinyfish-search
@@ -67,42 +53,35 @@ To customize endpoint or targeting options, add an override in `$DSH_HOME/profil
     language: en
 ```
 
-The row `id` is the same key the configuration form is addressed by, so a profile that renames the row renames the form with it.
+The row `id` is also the key used to address the configuration form. Renaming the row renames the form namespace.
 
----
+## Web UI
 
-## 5. Runtime Web UI Configuration
-
-In the DeepSeek Harness Web UI:
 1. Open **Settings** from the sidebar.
-2. Navigate to the **Plugins** page.
-3. Open the **`dsh-tinyfish-search`** row's configuration form to edit values live, without restarting the host.
+2. Go to the **Plugins** page.
+3. Open the **`dsh-tinyfish-search`** row to edit values live. A save takes effect without restarting the host.
 
-The form is the Host-rendered schema form for that entry; there is no plugin-supplied browser half.
+The form is rendered by the Host from the schema. The plugin supplies no browser code.
 
----
+## Credential resolution order
 
-## 6. Credential Resolution Order
-
-Each search resolves the API key from the first non-empty source (verified against `src/options.ts`):
+Each search resolves the API key from the first non-empty source:
 
 1. Literal `apiKey` in the plugin config.
 2. The credentials service: `ctx.credentials.resolve(apiKeyEnv)`.
 3. The launch environment: `launchEnvironmentOf(ctx).get(apiKeyEnv)`.
-4. `process.env[apiKeyEnv]` (covers standalone use outside the host).
+4. `process.env[apiKeyEnv]`, for standalone use outside the host.
 
-The provider counts as `available` while a resolver exists, even before the key is stored — a missing key then surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) for examples and the full error table.
+A provider with a resolver counts as `available` even before a key is stored. A missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, naming the configured variable. See the [Usage Guide](USAGE.md) for the error table.
 
----
+## Readiness (`ready()`)
 
-## 7. Readiness (`ready()`)
+DeepSeek Harness 0.2.2 added the optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`. `dsh-tool-web` uses it as the activation condition of `web_search`: a model step whose route answers `false` does not get the tool. The `tinyfish` provider resolves the same chain as the credential order above and reports whether it found a key:
 
-DeepSeek Harness 0.2.2 added an optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`, and `dsh-tool-web` makes it the activation condition of `web_search`: a model step whose route answers `false` neither declares nor dispatches the tool. The contract is unchanged in `0.2.2-rc.1`, so the readiness gate this plugin implements still applies on that baseline. The `tinyfish` provider resolves the same chain listed in section 6 and reports whether it found a key:
+- A literal `apiKey` is ready immediately. Otherwise the resolver runs once.
+- A non-empty resolved value means ready. Nothing else does, including an empty string.
+- A credential store that throws while being read answers `false`, because the search would fail on the same read.
+- The check is configuration only. It never contacts TinyFish and never validates the key, so a wrong-but-present key still counts as ready.
+- TinyFish uses the same key on every model route, so `llmProvider` never changes the answer.
 
-- A literal `apiKey` is ready immediately; otherwise the resolver from section 6 runs once.
-- A non-empty resolved value means ready; nothing else does, including an empty string.
-- A credential store that throws while being read answers `false`, because the search would fail on that same read instead of finding a key.
-- The check is configuration only — it never contacts TinyFish and never validates the key against the service, so a wrong-but-present key still counts as ready.
-- TinyFish authenticates every model route with the same key, so the `llmProvider` argument never changes the answer; it is accepted for contract conformance only.
-
-The observable difference from `available()`: `available()` decides whether the seam can select this provider during an operation, while `ready()` decides whether the model is offered the tool at all. With no usable credential, `available()` still returns `true` (a resolver exists) but `ready()` returns `false`, so the tool is withheld instead of appearing and failing on every call.
+`available()` decides whether the seam can select this provider during an operation. `ready()` decides whether the model is offered the tool at all. With no usable credential, `available()` still returns `true` because a resolver exists, while `ready()` returns `false`, so the tool is withheld instead of failing on every call.

@@ -8,10 +8,9 @@
 #     optional and commented out, so the shipped defaults apply until a later
 #     layer (profile / home cordis.patch.yml / --patch) overrides this row by id.
 #  2. `web` — points ctx.web at this provider. The dsh-base bundle pins a
-#     DeepSeek search default on the `web` row (`deepseek-search-api` since
-#     0.2.2-rc.2; `deepseek-official` before it), so merely registering a
-#     provider would leave web_search on the DeepSeek backend even with this
-#     bundle installed. Per the layer rules a bundle patch may
+#     DeepSeek search default on the `web` row (`deepseek-search-api`), so
+#     merely registering a provider would leave web_search on the DeepSeek
+#     backend even with this bundle installed. Per the layer rules a bundle patch may
 #     override an earlier row by id, restating every key the row needs (config
 #     is replaced wholesale, never deep-merged). Later layers (profile / home
 #     cordis.patch.yml / --patch overlays) can still override this row by id.
