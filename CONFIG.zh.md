@@ -2,47 +2,35 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.md) | 中文
 
-> 已在 DeepSeek Harness **0.2.2-rc.1** 上随 `dsh-tinyfish-search` **0.19.0** 完成全面验证。
+## 配置字段
 
-本文档详细说明 `dsh-tinyfish-search` 插件在 DeepSeek Harness 中的所有配置项、校验规则、配置值生效路径、SSRF 安全防御、环境变量覆盖及加载层配置方法。
+插件导出用 `@deepseek-ai/schemastery` 构建的 `Config` schema。Host 读取它，为 Plugins 页上的 `dsh-tinyfish-search` 行渲染表单。所有字段均为可选，且都标记了 `.volatile()`。
 
----
-
-## 1. 配置字段说明
-
-插件导出的 `Config` 是一个用 `@deepseek-ai/schemastery` 构建的 schema；Host 从插件入口模块读取它，并据此渲染该条目的配置表单。每个字段都标记了 `.volatile()`，因此校验后的配置携带的是每字段一个实时引用，而不是冻结的值。所有字段均为可选项。
-
-| 配置字段 | 类型 | 默认值 | 敏感级别 | 说明 |
+| 字段 | 类型 | 默认值 | 角色 | 含义 |
 | :--- | :--- | :--- | :--- | :--- |
-| `apiKey` | `string` | `undefined` | `secret` | 明文 TinyFish API Key。**推荐留空**，优先使用 `apiKeyEnv`，避免密钥写入明文配置文件。 |
-| `apiKeyEnv` | `string` | `"TINYFISH_API_KEY"` | `credential-ref` | 存放 TinyFish API Key 的环境变量名称。 |
-| `baseURL` | `string` | `"https://api.search.tinyfish.ai"` | 普通 | TinyFish Search API 的根请求地址。必须使用 `http:` 或 `https:`，直连 `localhost` 或私网 IP 会被 SSRF 安全策略拒绝。 |
-| `location` | `string` | `undefined` | 普通 | 可选的地理定位参数（例如 `"US"`, `"CN"`），将透传给 TinyFish 搜索接口进行定向检索。 |
-| `language` | `string` | `undefined` | 普通 | 可选的搜索语言参数（例如 `"en"`, `"zh"`），将透传给 TinyFish 搜索接口。 |
+| `apiKey` | `string` | `undefined` | `secret` | 字面量 API key。建议留空并优先用 `apiKeyEnv`，避免密钥写进配置文件。 |
+| `apiKeyEnv` | `string` | `TINYFISH_API_KEY` | `credential-ref` | 承载 API key 的环境变量名。 |
+| `baseURL` | `string` | `https://api.search.tinyfish.ai` | 普通 | API 端点基地址。必须使用 `http:` 或 `https:`。本机与私网 IP 会被拒绝。 |
+| `location` | `string` | `undefined` | 普通 | 可选地区定位（如 `US`、`CN`），转发给 TinyFish。 |
+| `language` | `string` | `undefined` | 普通 | 可选搜索语言（如 `en`、`zh`），转发给 TinyFish。 |
 
-默认值声明在 schema 上，而不只写在取值处：渲染出的表单展示的就是 schema 携带的内容，因此本插件依赖的每个默认值都在这里声明。
+默认值声明在 schema 上，因此渲染出的表单与插件实际使用的值一致。
 
----
+## 配置值的生效路径
 
-## 2. 配置值的生效路径（DSH 0.1.7 配置模型）
+DeepSeek Harness 0.1.7 用 schema 驱动的配置取代了旧的设置缝。
 
-DeepSeek Harness 0.1.7 用 schema 驱动的配置取代了旧设置缝的两半——宿主侧的 `ctx.settings.installSection` 注册与客户端侧的 `SettingsScope`。对本插件而言，这意味着：
+- 声明：`src/config.ts` 导出 `Config`，`src/index.ts` 再导出。Host 以 `entry.fiber.runtime.Config` 发现它。命名空间来自 profile 行 id `dsh-tinyfish-search`，插件不自行选择。
+- 每字段一个实时引用：`apply(ctx, config)` 收到每字段一个 `Volatile<T>`。没有 `ctx.inject(['settings'])`，也没有注册调用。
+- 每次搜索一个快照：提供方在每次搜索开始时读取全部五个字段的 `.get()`。单次搜索不会把保存前后的值混在一起。
+- 写入：Plugins 页表单经 `ctx.configForms.get(entryId)` 写入 `ConfigForm`（`getSnapshot`、`subscribe`、`set`、`unset`、`mutate`、`dispose`）。写入带 revision 保护；被拒绝时返回 `false` 并重新加载宿主状态。
+- 生效：已提交的修改对下一次搜索生效，无需重启或重新注册。
 
-- **声明**：`src/config.ts` 导出 `Config`，`src/index.ts` 再将其导出。Host 以 `entry.fiber.runtime.Config` 发现它；命名空间由 profile 行的 id 推导（`cordis.patch.yml` 中的 `dsh-tinyfish-search`），不由插件自行选择。
-- **每字段一个实时引用**：由于每个字段都标记了 `.volatile()`，`apply(ctx, config)` 收到的是每字段一个 `Volatile<T>`。插件既没有 `ctx.inject(['settings'])`，也不做任何注册调用。
-- **每次操作一个快照**：提供方注册时传入的是一个 thunk，它在每次搜索开始时读取全部五个字段的 `.get()`。因此单次搜索不会把保存前读到的 `baseURL` 与保存后读到的 `apiKeyEnv` 混在一起，提供方注册本身也永远不需要被替换。
-- **写入**：Plugins 页面的配置表单经 `ctx.configForms.get(entryId)` 拿到 `ConfigForm`（`getSnapshot` / `subscribe` / `set` / `unset` / `mutate` / `dispose`）后写入。写入是 revision-fenced 的；被 Host 拒绝时解析为 `false` 并重新加载宿主状态，而不是猜测。
-- **生效**：已提交的修改对下一次搜索立即生效，既不需要重启，也不需要重新注册。
+程序化构造接受已完成的 `TinyFishOptions`、快照对象，或返回 `TinyFishOptions` 的 thunk（`TinyFishProviderInput`）。只有插件自身路径传入 thunk。
 
-程序化构造接受三种入参形态（`TinyFishProviderInput`）：已完成的 `TinyFishOptions`、仍需套用默认值的快照对象、或返回 `TinyFishOptions` 的 thunk。只有插件自身的路径传入 thunk，这正是每次搜索都能取到新快照的原因。
+## 推荐配置：环境变量
 
----
-
-## 3. 推荐配置方式（环境变量）
-
-在运行 `dsh` 的系统环境中设置环境变量：
-
-```bash
+```sh
 # Linux / macOS / Android Termux
 export TINYFISH_API_KEY="sk-tinyfish-your-api-key"
 
@@ -50,59 +38,50 @@ export TINYFISH_API_KEY="sk-tinyfish-your-api-key"
 $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 ```
 
-只要配置了该环境变量，就无需修改任何 YAML 文件；插件在每次搜索时解析凭据。
+无需修改 YAML。插件在每次搜索时解析凭据。
 
----
+## Profile 静态配置
 
-## 4. 在 Profile 中进行静态配置 (`cordis.patch.yml`)
-
-如果你需要自定义 API 基础路径或指定搜索区域，可以在你的 Profile 配置文件（`$DSH_HOME/profiles/<profile>/cordis.patch.yml`）中添加覆盖项：
+在 `$DSH_HOME/profiles/<profile>/cordis.patch.yml` 中添加覆盖项：
 
 ```yaml
 - id: dsh-tinyfish-search
   config:
-    apiKeyEnv: TINYFISH_API_KEY               # 环境变量名称
-    baseURL: https://api.search.tinyfish.ai   # 默认 API 端点
-    location: US                              # 定向为美国地区结果
-    language: en                              # 优先返回英文结果
+    apiKeyEnv: TINYFISH_API_KEY
+    baseURL: https://api.search.tinyfish.ai
+    location: US
+    language: en
 ```
 
-该行的 id 同时就是配置表单的寻址键，因此重命名该行的 profile 也会同时改变表单的命名空间。
+行的 `id` 同时是配置表单的寻址键。重命名该行会同时改变表单命名空间。
 
----
+## 网页界面配置
 
-## 5. 运行时 Web 界面配置
+1. 从侧边栏打开 **Settings**。
+2. 进入 **Plugins** 页面。
+3. 打开 **`dsh-tinyfish-search`** 行即可在线修改。保存后无需重启宿主。
 
-在 DeepSeek Harness Web 界面中：
-1. 打开左侧菜单中的 **Settings（设置）**。
-2. 进入 **Plugins（插件设置）** 页面。
-3. 打开 **`dsh-tinyfish-search`** 行对应的配置表单，即可直接修改 API Key、Base URL 与地区语言参数，修改立即生效，无需重启进程。
+表单由 Host 依据 schema 渲染，插件不提供浏览器侧代码。
 
-该表单是 Host 依据 schema 为该条目渲染的表单；本插件不提供浏览器半侧。
+## 凭据解析顺序
 
----
-
-## 6. 凭据解析顺序
-
-每次搜索按以下顺序取第一个非空值作为 API key（已对照 `src/options.ts` 实测验证）：
+每次搜索按以下顺序取第一个非空值：
 
 1. 插件配置中的字面量 `apiKey`。
 2. 凭据服务：`ctx.credentials.resolve(apiKeyEnv)`。
 3. 启动环境：`launchEnvironmentOf(ctx).get(apiKeyEnv)`。
-4. `process.env[apiKeyEnv]`（覆盖宿主之外的独立使用场景）。
+4. `process.env[apiKeyEnv]`，用于宿主之外的独立使用。
 
-只要存在解析器，提供方即视为 `available`，即使密钥尚未存储——缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确报错并点名所配置的变量。示例与完整错误表见[使用说明](USAGE.zh.md)。
+带解析器的提供方即使尚未存储密钥也视为 `available`。缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 报错，并点名所配置的变量。错误表见[使用说明](USAGE.zh.md)。
 
----
+## 就绪判定（`ready()`）
 
-## 7. 就绪判定（`ready()`）
+DeepSeek Harness 0.2.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员。`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由回答 `false` 的模型步不会拿到该工具。`tinyfish` 提供方按上面的凭据顺序解析，并报告是否找到密钥：
 
-DeepSeek Harness 0.2.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员，`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由返回 `false` 的模型步既不声明也不派发该工具。该契约在 `0.2.2-rc.1` 中保持不变，因此本插件实现的就绪闸门在该基线上仍然有效。`tinyfish` 提供方按第 6 节所述的同一套链路解析，并报告是否解到了密钥：
+- 存在字面量 `apiKey` 时立即就绪。否则运行一次解析器。
+- 解析出非空值即就绪，其余情况（包括空字符串）均不就绪。
+- 凭据存储读取时抛错则回答 `false`，因为同一次读取也会让搜索失败。
+- 该检查只涉及配置。它不访问 TinyFish，也不校验密钥，因此有值但错误的密钥同样算就绪。
+- TinyFish 在所有模型路由上使用同一把密钥，因此 `llmProvider` 从不改变答案。
 
-- 存在字面量 `apiKey` 时立即就绪；否则运行一次第 6 节的解析器。
-- 解析出非空值即就绪，其余情况——包括空字符串——均不就绪。
-- 凭据存储读取时抛错则回答 `false`，因为同一次读取也会让搜索失败，而不是让搜索找到密钥。
-- 该检查只涉及配置：它从不访问 TinyFish，也从不向服务校验密钥，因此「有值但错误」的密钥同样算作就绪。
-- TinyFish 对所有模型路由使用同一把密钥，因此 `llmProvider` 参数从不会改变答案；它仅为符合契约而接收。
-
-它与 `available()` 的可观察差别在于：`available()` 决定缝在操作执行时能否选中本提供方，而 `ready()` 决定模型是否被提供该工具。没有可用凭据时，`available()` 仍返回 `true`（解析器存在），而 `ready()` 返回 `false`，于是工具被收起，而不是先出现再让每次调用失败。
+`available()` 决定缝在操作执行时能否选中本提供方。`ready()` 决定模型是否被提供该工具。没有可用凭据时，`available()` 因解析器存在仍返回 `true`，而 `ready()` 返回 `false`，于是工具被收起，而不是每次调用都失败。

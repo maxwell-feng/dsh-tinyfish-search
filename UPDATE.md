@@ -2,360 +2,51 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-rc.2** with `dsh-tinyfish-search` **0.20.0**.
+Current release: 0.21.0. Build baseline: DeepSeek Harness `0.2.2-rc.3`.
 
-This document outlines how to upgrade `dsh-tinyfish-search` to the latest release and handle rollbacks.
+## Before you upgrade
 
----
+- Check the host version and Node version. DSH 0.2.2 hosts require Node 24.9 or newer.
+- Keep a copy of your profile `cordis.patch.yml` if you have custom row overrides.
+- 0.21.0 is a dependency-only release. The API, configuration fields and search behavior are unchanged. It runs on `0.2.2-rc.2` and earlier `0.2.x` hosts as well, so this upgrade is optional.
 
-## 1. Upgrade Instructions
+## Upgrade commands
 
-### Upgrading via npm
+From npm:
 
-```bash
-dsh plugin --profile web update dsh-tinyfish-search@latest
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@latest
+dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # exact version
 ```
 
-or pin to a specific version:
+From git:
 
-```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.20.0
-```
-
-> **CLI syntax note**: Per DeepSeek Harness 0.2.1-alpha.1 specifications, `--profile <name>` must always precede forwarded subcommands such as `update` and `add`.
-
-### Upgrading via Git Checkout
-
-```bash
-cd /path/to/dsh-tinyfish-search
-git pull origin master
-pnpm install
-pnpm run build
-```
-
-Or refresh the profile link:
-
-```bash
+```sh
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-### Upgrading via Tarball
+From a tarball:
 
-```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.20.0.tgz
+```sh
+dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
 ```
 
----
+`--profile <name>` goes before `add`, `remove` and `update`.
 
-## 2. Upgrading to 0.20.0 from ≤ 0.19.0
+## After you upgrade
 
-0.20.0 aligns the plugin with DeepSeek Harness `0.2.2-rc.2` and adds the
-provider `title`/`description` metadata the 0.2.2-rc.2 provider picker reads.
-The `USER_AGENT` string and its assertion move to `0.20.0`; the only other
-source edit is the additive `title`/`description` pair on
-`TinyFishSearchProvider`.
+Restart the profile and run one search to confirm `web_search` still returns TinyFish results. No configuration changes are needed. For details about this release, see [CHANGELOG.md](CHANGELOG.md).
 
-- **Dependency pin.** Every `@deepseek-ai/dsh-*` devDependency moves to
-  `0.2.2-rc.2`, and the lockfile is regenerated against it. `@deepseek-ai/cordis`
-  stays `~4.1.0` and the `@deepseek-ai/schemastery` dependency stays `~3.19.0`.
-- **Peer ranges unchanged.** The cordis peer stays
-  `^4.0.4 || ^4.0.6-alpha.1`, and `engines.dsh` stays
-  `>=0.1.7-alpha.2 <0.3.0`, so this release is **not a mandatory upgrade**.
-- **Supply-chain exemption refreshed.** The workspace file exempts the
-  `0.2.2-rc.2` package set from pnpm's minimum-release-age gate; the list stays a
-  single lockfile-derived block.
-- **Provider picker metadata.** `TinyFishSearchProvider` now declares `title`
-  and `description`, the optional members `dsh-web` added in `0.2.2-rc.2`, so the
-  Web search provider menu shows a friendly name and a cost/behaviour note.
-- **Node floor on the new host.** `0.2.2-rc.2` keeps the harness's own minimum
-  Node.js at **24.9**, so on that host the effective requirement is Node 24.9+
-  even though this plugin's `engines.node` still reads
-  `^22.19.0 || >=24.0.0`.
-- **Behavior.** No change. `WebSearchProvider.search()`, `ready()`, response
-  mapping, error mapping and every configuration field are untouched.
+## Rollback
 
-Nothing beyond updating the package is needed, and this is not a mandatory
-upgrade: `0.19.0` already loads on `0.2.2-rc.2`.
+Install the previous version again:
 
----
-
-## 3. Upgrading to 0.19.0 from ≤ 0.18.1
-
-0.19.0 aligns the plugin with DeepSeek Harness `0.2.2-rc.1` and deletes a stale
-dependency override. No plugin logic changed: the only source edit is the
-`USER_AGENT` version string, plus its assertion in `test/apply.test.ts`. `src/`,
-`scripts/`, `locale/`, `.github/`, `cordis.patch.yml` and `tsconfig*.json` are
-otherwise identical to 0.18.1.
-
-- **Dependency pin.** `devDependencies` move to `0.2.2-rc.1`, and the lockfile is
-  regenerated against it. `@deepseek-ai/cordis` moves to `~4.1.0` and the
-  `@deepseek-ai/schemastery` dependency to `~3.19.0`.
-- **Peer ranges unchanged.** The cordis peer stays
-  `^4.0.4 || ^4.0.6-alpha.1`: `^4.0.4` already covers `4.1.0`, so the declaration
-  needs no widening. `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so this
-  release is **not a mandatory upgrade**.
-- **Stale cosmokit override removed.** `pnpm-workspace.yaml` had carried
-  `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1` since the first release on
-  2026-08-30. Cordis `4.1.0` declares `@deepseek-ai/cosmokit: ~1.9.0`, so that
-  override pinned the tree to a revision the declaration excludes. 0.19.0
-  deletes the override and the lockfile resolves cosmokit `1.9.0` as cordis
-  declares. cosmokit `1.8.7-alpha.1` and `1.9.0` are byte-identical apart from
-  their `package.json`, so no runtime failure ever surfaced — but the
-  declaration and the resolved tree disagreed, and that is what this upgrade
-  corrects.
-- **Supply-chain exemption rebuilt.** The workspace file exempts the
-  `0.2.2-rc.1` package set from pnpm's minimum-release-age gate. The list stays a
-  single lockfile-derived block.
-- **User-Agent attribution.** `USER_AGENT` is bumped to
-  `dsh-tinyfish-search/0.19.0`.
-- **Node floor on the new host.** `0.2.2-rc.1` raises the harness's own minimum
-  Node.js to **24.9**, so on that host the effective requirement is Node 24.9+
-  even though this plugin's `engines.node` still reads
-  `^22.19.0 || >=24.0.0`. Nothing in the plugin changes; the stricter host rule
-  simply applies.
-- **Behavior.** No change. `WebSearchProvider.ready()` and its activation
-  contract are unchanged in `0.2.2-rc.1`, so the readiness gate keeps working
-  exactly as in 0.18.1. `available()`, `search()`, response mapping, error
-  mapping and every configuration field are untouched.
-
-Nothing beyond updating the package is needed, and this is not a mandatory
-upgrade: `0.18.1` already loads on `0.2.2-rc.1`.
-
----
-
-## 4. Upgrading to 0.18.1 from ≤ 0.18.0
-
-0.18.1 corrects a documentation statement and changes nothing else. `package.json`
-dependencies, `src/`, `test/` and every behavioural contract are identical to
-0.18.0.
-
-- **What was wrong.** The Requirements entry called DeepSeek Harness
-  `0.2.2-alpha.2` the "latest release". When `0.2.1-rc.5` shipped on 2026-10-30
-  that sentence became false. The two are not successive releases on one line:
-  `0.2.2-alpha.2` belongs to the `alpha` line, while `0.2.1-rc.5` is a
-  maintenance release cut from the older `0.2.1` line.
-- **Why it matters to you.** Only the `0.2.2-alpha.2` line carries
-  `WebSearchProvider.ready()`. On a `0.2.1-rc.*` profile the plugin still loads
-  and searches normally, but the readiness gate is unavailable, so the harness
-  cannot withhold `web_search` when the TinyFish credential is missing.
-- **Steps.** Update the package; there is nothing else to do. Configuration
-  fields, values and defaults are untouched, and 0.18.0 loads correctly on every
-  admitted harness version already.
-
----
-
-## 5. Upgrading to 0.18.0 from ≤ 0.17.1
-
-0.18.0 aligns the plugin with DeepSeek Harness `0.2.2-alpha.2` and adds the
-`ready()` member the new `ctx.web` provider contract introduced.
-
-- **Dependency pin.** `devDependencies` move to `0.2.2-alpha.2`, and the lockfile is regenerated against it. `@deepseek-ai/cordis` moves to `~4.0.6-alpha.1`, the cordis peer widens to `^4.0.4 || ^4.0.6-alpha.1` so hosts still on 4.0.4 or 4.0.5 stay admitted, and the `@deepseek-ai/schemastery` dependency moves to `~3.18.6-alpha.1`. `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.2-alpha.2`.
-- **Supply-chain exemption rebuilt.** The workspace file exempts the `0.2.2-alpha.2` package set from pnpm's minimum-release-age gate. The list stays a single lockfile-derived block.
-- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.18.0`.
-- **Behavior.** One addition: the provider now reports readiness, so a profile without a usable TinyFish credential no longer shows `web_search` — the model step simply has no such tool, instead of the tool appearing and every call failing with `WEB_PROVIDER_CREDENTIAL_MISSING`. `available()`, `search()`, response mapping, error mapping and every configuration field are unchanged. This is not a mandatory upgrade: `0.17.1` already loads on 0.2.2-alpha.2.
-- **Not carried.** TinyFish returns no long-form summary and no generated answer, so the plugin still fills neither `WebSearchSource.summary` nor `WebSearchResult.content`.
-
-Nothing beyond updating the package is needed: the plugin keeps working in an existing profile with no manual step.
-
----
-
-## 6. Upgrading to 0.17.0 from ≤ 0.16.0
-
-0.17.0 aligns the plugin with DeepSeek Harness `0.2.1-rc.2`, the latest release of the
-plugin-development documentation this plugin follows.
-
-- **Dependency pin.** `devDependencies` move to `0.2.1-rc.2`, and the lockfile is regenerated against it. `@deepseek-ai/cordis` moves to `^4.0.5` and `@deepseek-ai/schemastery` to `^3.18.5`. The `engines.dsh` and `@deepseek-ai/dsh-*` peer ranges stay `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.1-rc.2`.
-- **Supply-chain exemption rebuilt.** The workspace file exempts the `0.2.1-rc.2` package set from pnpm's minimum-release-age gate. The list stays a single lockfile-derived block.
-- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.17.0`.
-- **Behavior.** No change. The `ctx.web` search-provider contract is source-identical between `0.2.1-alpha.4` and `0.2.1-rc.2`, so no configuration field, value or default moved. This is not a mandatory upgrade: `0.16.0` already loads on 0.2.1-rc.2.
-
-Nothing beyond updating the package is needed: the plugin keeps working in an existing profile with no manual step.
-
----
-
-## 7. Upgrading to 0.16.0 from ≤ 0.15.0
-
-0.16.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.4`, the latest release of the
-plugin-development documentation this plugin follows.
-
-- **Dependency pin.** `devDependencies` move to `0.2.1-alpha.4`, and the lockfile is regenerated against it. The `@deepseek-ai/dsh-*` peer ranges stay `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.1-alpha.4`.
-- **Supply-chain exemption rebuilt.** The workspace file exempts the `0.2.1-alpha.4` package set from pnpm's minimum-release-age gate. The previous list also carried a second `minimumReleaseAgeExclude` key whose stale `0.2.0-rc.2` entries made pnpm reject the regenerated lockfile; the list is now a single lockfile-derived block.
-- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.16.0`.
-- **Behavior.** No change. The `ctx.web` search-provider contract is source-identical between `0.2.1-alpha.2` and `0.2.1-alpha.4`, so no configuration field, value or default moved. This is not a mandatory upgrade: `0.15.0` already loads on 0.2.1-alpha.4.
-
-Nothing beyond updating the package is needed: the plugin keeps working in an existing profile with no manual step.
-
----
-
-## 8. Upgrading to 0.15.0 from ≤ 0.14.0
-
-0.15.0 aligns the plugin with DeepSeek Harness `0.2.1-alpha.2`, the latest release of the
-plugin-development documentation this plugin follows.
-
-- **Display metadata and icon.** Bundled native `icon.svg` vector artwork and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) conforming to DSH 0.2.1-alpha.2 display conventions for Plugin Manager. `package.json` exports `./locale/*.json`, `./icon` and declares top-level `"icon": "./icon.svg"`.
-- **Self-contained prepare script.** Changed `"prepare"` in `package.json` to `"tsc -p tsconfig.build.json"` so git installs compile `lib/` cleanly without requiring a global `pnpm` binary on the host.
-- **Dependency pin.** `devDependencies` move to `0.2.1-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges stay `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.1-alpha.2`.
-- **User-Agent attribution.** `USER_AGENT` is bumped to `dsh-tinyfish-search/0.15.0`.
-- **CLI syntax normalization.** Documented commands now place `--profile <name>` before forwarded subcommands.
-
-No action is required beyond updating the package: the configuration fields, their values and
-their defaults are unchanged, so an existing profile keeps working as it is.
-
----
-
-## 9. Upgrading to 0.14.0 from ≤ 0.13.0
-
-0.14.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.2`, the current release of the
-plugin-development documentation this plugin follows. No plugin source changed except the
-`USER_AGENT` version constant.
-
-- **Dependency pin.** `devDependencies` move to `0.2.0-rc.2`. The `@deepseek-ai/dsh-*` peer
-  ranges stay `>=0.1.7-alpha.2 <0.3.0` — the widened range 0.13.0 introduced — so the plugin is
-  admitted on the whole `0.1.7` prerelease line and on the `0.2.x` line, including `0.2.0-rc.2`.
-  `engines.dsh` carries the same range and `engines.node` stays `^22.19.0 || >=24.0.0`.
-- **No forced upgrade.** Because `0.13.0` already declared that widened range, it is admitted on
-  `0.2.0-rc.2` as well: 0.14.0 re-verifies the plugin against the new runtime rather than
-  rescuing an incompatible one. The release still refused on `0.2.0-rc.2` is the narrow-range
-  `0.12.0` (`^0.1.7-alpha.2`, which excludes `0.2.x`); upgrading to `0.14.0` removes that refusal.
-- **Seam audit.** The `ctx.web` search-provider seam, `ctx.credentials.resolve`, the exported
-  volatile `Config` schema the Host reads as `entry.fiber.runtime.Config`, and
-  `launchEnvironmentOf` are source-identical between `0.2.0-rc.1` and `0.2.0-rc.2`. The
-  `0.2.0-rc.2` delta is additive — Cordis Inspect diagnostics, `TypertGateway.hasLiveClient()`,
-  and timed user questions — and touches no interface this plugin uses.
-- **Supply-chain gate.** `pnpm-workspace.yaml` now exempts the exact `0.2.0-rc.2` package set
-  from pnpm's minimum-release-age gate.
-
-No action is required beyond updating the package: the configuration fields, their values and
-their defaults are unchanged, so an existing profile keeps working as it is.
-
----
-
-## 10. Upgrading to 0.13.0 from ≤ 0.12.0
-
-0.13.0 aligns the plugin with DeepSeek Harness `0.2.0-rc.1`, the current release of the
-plugin-development documentation this plugin follows. No plugin source changed except the
-`USER_AGENT` version constant.
-
-- **Dependency pin.** `devDependencies` move to `0.2.0-rc.1`. The `@deepseek-ai/dsh-*` peer
-  ranges widen to `>=0.1.7-alpha.2 <0.3.0`, so the plugin is admitted on the whole `0.1.7`
-  prerelease line and on the `0.2.x` line, including `0.2.0-rc.1`. `engines.dsh` carries the
-  same range and `engines.node` stays `^22.19.0 || >=24.0.0`.
-- **Why the range had to widen.** DeepSeek Harness `0.2.0-rc.1` turned the compatibility gate
-  into a hard refusal: every `@deepseek-ai/dsh*` peer range must match the running runtime, and
-  prereleases participate in range matching. The previous `^0.1.7-alpha.2` range excludes
-  `0.2.x`, so **0.12.0 is refused on `0.2.0-rc.1`** — upgrading to 0.13.0 is what removes that
-  refusal. On a host older than `0.1.7-alpha.2` the row is still refused.
-- **Seam audit.** The `ctx.web` search-provider seam, `ctx.credentials.resolve`, the exported
-  volatile `Config` schema the Host reads as `entry.fiber.runtime.Config`, and
-  `launchEnvironmentOf` are source-identical between `0.1.7-rc.2` and `0.2.0-rc.1`, so nothing
-  in `src/` changed beyond the `USER_AGENT` version constant, and no configuration field moved.
-- **Supply-chain gate.** `pnpm-workspace.yaml` now exempts the exact `0.2.0-rc.1` package set
-  from pnpm's minimum-release-age gate.
-
-No action is required beyond updating the package: the configuration fields, their values and
-their defaults are unchanged, so an existing profile keeps working as it is.
-
----
-
-## 11. Upgrading to 0.12.0 from ≤ 0.11.1
-
-0.12.0 aligns the plugin with DeepSeek Harness `0.1.7-rc.2`, the current release of the
-plugin-development documentation this plugin follows. No plugin source changed except the
-`USER_AGENT` version constant.
-
-- **Dependency pin.** `devDependencies` move to `0.1.7-rc.2`. The `@deepseek-ai/dsh-*` peer
-  ranges stay `^0.1.7-alpha.2` — the release line that introduced volatile config — so the
-  plugin stays installable on every `0.1.7` prerelease from `0.1.7-alpha.2` through
-  `0.1.7-rc.2`. `engines.dsh` stays `^0.1.7-alpha.2` and `engines.node` stays
-  `^22.19.0 || >=24.0.0`.
-- **Seam audit.** The `ctx.web` search-provider seam, `ctx.credentials.resolve`, the exported
-  volatile `Config` schema the Host reads as `entry.fiber.runtime.Config`, and
-  `launchEnvironmentOf` are source-identical between `0.1.7-rc.1` and `0.1.7-rc.2`, so nothing
-  in `src/` changed beyond the `USER_AGENT` version constant, and no configuration field moved.
-- **Supply-chain gate.** `pnpm-workspace.yaml` now exempts the exact `0.1.7-rc.2` package set
-  from pnpm's minimum-release-age gate.
-
-No action is required beyond updating the package.
-
----
-
-## 12. Upgrading to 0.11.1 from 0.11.0
-
-0.11.1 changes no runtime code, no configuration and no tool surface: the plugin
-behaves exactly as 0.11.0. It is a documentation and tooling release.
-
-- **The repository holds TypeScript sources only.** The bilingual-documents gate moved from
-  `scripts/check-docs-language.mjs` to `scripts/check-docs-language.ts`. Node ≥22.19 strips the types,
-  so the gate still runs with no dependencies installed and still gates CI before the install step.
-  `tsconfig.json` now includes `scripts/**/*.ts`, so `pnpm run typecheck` covers the gate as well.
-- **Documentation corrections.** The upgrade section of the README ran out of order and carried one
-  note twice, both changelogs had missing or un-ordered link references, and the Chinese changelog had
-  duplicated rules — all corrected.
-
-No action is required beyond updating the package.
-
----
-
-## 13. Upgrading to 0.11.0 from 0.10.0 / 0.9.x
-
-0.11.0 raises the harness floor to DeepSeek Harness `0.1.7-alpha.2` and is verified on `0.1.7-rc.1`.
-The `@deepseek-ai/dsh-*` peer ranges accept `^0.1.7-alpha.2` — the release line that introduced
-volatile config — `devDependencies` are bumped to `0.1.7-rc.1`, and `engines.dsh` is `^0.1.7-alpha.2`.
-
-DeepSeek Harness 0.1.7 replaced the old settings seam with schema-driven volatile configuration, so
-`apply` no longer calls `ctx.settings.installSection`: the Host discovers the exported `Config` schema
-and renders the form for this entry, keyed by the profile row id. `TINYFISH_SETTINGS_NAMESPACE` is gone
-with it, and the `@deepseek-ai/dsh-settings` peer is no longer consumed.
-
-**On a `0.1.6` host the plugin is then refused at load.** DeepSeek Harness 0.1.7-rc.1 verifies a plugin's
-declared `@deepseek-ai/dsh*` peers against the running runtime before admitting the row. Upgrade the
-harness first, or grant the exact-version exemption DSH prints
-(`dsh plugin allow-version dsh-tinyfish-search@0.11.0 <your-dsh-version>`).
-
-Configuration fields remain 100% backward-compatible: the same keys, the same values, the same
-defaults. SSRF defenses continue to protect requests.
-
----
-
-## 14. Upgrading to 0.10.0 from 0.9.0 / 0.8.x
-
-0.10.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.2`. The `@deepseek-ai/dsh-*` peer ranges now
-accept `^0.1.6-alpha.2`, `devDependencies` are bumped to `0.1.6-alpha.2`, and `engines.dsh` is `^0.1.6-alpha.2`.
-Every seam this plugin consumed at the time (`ctx.web`, `ctx.settings.installSection`, `ctx.credentials`,
-`launchEnvironmentOf`) remains fully source-compatible. SSRF defenses continue to protect requests.
-Configuration fields remain 100% backward-compatible.
-
----
-
-## 15. Upgrading to 0.9.0 from 0.8.3 / 0.8.x
-
-0.9.0 aligns the plugin with DeepSeek Harness `0.1.6-alpha.1`. The `@deepseek-ai/dsh-*` peer ranges now
-accept `^0.1.6-alpha.1` — the previous `^0.1.5-rc.2` range does not satisfy a `0.1.6` prerelease under
-SemVer prerelease rules — and `engines.dsh` / `engines.node` follow the host (`^22.19.0 || >=24.0.0`).
-Every seam this plugin consumed (`ctx.web`, `ctx.settings.installSection`, `ctx.credentials`,
-`launchEnvironmentOf`) is source-identical between the two harness versions, so no source change was
-needed. The published package now ships only `lib/`, `cordis.patch.yml`, and `LICENSE`: the guides stay
-in the repository and are no longer installed into your profile. No configuration changes — pnpm
-refreshes the package in place.
-
----
-
-## 16. Verification
-
-Start the profile:
-
-```bash
-dsh web
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@0.20.0
 ```
 
-Ask a query requiring live information (e.g. "What is today's weather in Tokyo?"). Confirm the model calls `web_search` and obtains real-time results from TinyFish.
+Rollback does not change your configuration. Restart the profile after the command.
 
----
+## If the plugin does not load
 
-## 17. Rollback
-
-To roll back to a previous version:
-
-```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.19.0
-```
+Check `dsh --profile web --dump-config | grep tinyfish` first. A row outside the declared `engines.dsh` range is refused at load with the exact requirement named. `dsh plugin allow-version` can grant an exemption for that pair; see the [compatibility section](README.md#requirements).

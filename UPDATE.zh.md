@@ -2,238 +2,51 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.md) | 中文
 
-> 本版本已在 DeepSeek Harness **0.2.2-rc.2** 上随 `dsh-tinyfish-search` **0.20.0** 完成全面验证。
+当前版本：0.21.0。构建基线：DeepSeek Harness `0.2.2-rc.3`。
 
-本文档介绍如何将 **dsh-tinyfish-search** 插件安全升级至最新版本，以及配置兼容与回滚操作。
+## 升级前
 
----
+- 检查宿主版本与 Node 版本。DSH 0.2.2 宿主要求 Node 24.9 或更高。
+- 如果你自定义过行覆盖，请备份 profile 的 `cordis.patch.yml`。
+- 0.21.0 只更新依赖。API、配置字段与搜索行为均未改变。它在 `0.2.2-rc.2` 及更早的 `0.2.x` 宿主上也能运行，因此本次升级是可选的。
 
-## 1. 快速升级步骤
+## 升级命令
 
-### 从 npm 升级
-如果你最初是通过 npm 安装的该插件，可以直接执行：
+从 npm：
 
-```bash
-dsh plugin --profile web update dsh-tinyfish-search@latest
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@latest
+dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # 确切版本
 ```
 
-或指定确切目标版本：
+从 git：
 
-```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.20.0
-```
-
-> **命令行语法提示**：根据 DeepSeek Harness 0.2.1-alpha.1 规范，`--profile <name>` 必须置于 `update`、`add` 等子命令之前。
-
-### 从 Git 仓库升级
-如果你是通过 GitHub 仓库直接安装的，可拉取最新提交并重新构建：
-
-```bash
-cd /path/to/dsh-tinyfish-search
-git pull origin master
-pnpm install
-pnpm run build
-```
-
-或在指定 profile 中重新添加最新提交：
-
-```bash
+```sh
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-### 从 Tarball 离线包升级
+从 tarball：
 
-```bash
-dsh plugin --profile web add ./dsh-tinyfish-search-0.20.0.tgz
+```sh
+dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
 ```
 
----
+`--profile <name>` 必须放在 `add`、`remove`、`update` 之前。
 
-## 2. 从 ≤ 0.19.0 升级至 0.20.0 注意事项
+## 升级后
 
-0.20.0 完成与 DeepSeek Harness `0.2.2-rc.2` 的对齐，并新增了 0.2.2-rc.2 提供方选择器读取的 `title`/`description` 元数据。`USER_AGENT` 字符串及其断言移至 `0.20.0`；除此之外唯一的源码改动是 `TinyFishSearchProvider` 上新增的 `title`/`description` 对。
+重启 profile，运行一次搜索，确认 `web_search` 仍返回 TinyFish 结果。无需修改配置。本次发布的详情见 [CHANGELOG.zh.md](CHANGELOG.zh.md)。
 
-- **依赖钉版。** 所有 `@deepseek-ai/dsh-*` 开发依赖移至 `0.2.2-rc.2`，并按此重新生成锁文件。`@deepseek-ai/cordis` 保持 `~4.1.0`，`@deepseek-ai/schemastery` 依赖保持 `~3.19.0`。
-- **peer 区间不变。** cordis peer 保持 `^4.0.4 || ^4.0.6-alpha.1`，`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是强制升级**。
-- **供应链豁免刷新。** 工作区文件将 `0.2.2-rc.2` 包集合排除在 pnpm 的最低发布年龄闸门之外；清单仍是单一、由锁文件派生的块。
-- **提供方选择器元数据。** `TinyFishSearchProvider` 现声明 `title` 与 `description`，即 `dsh-web` 在 `0.2.2-rc.2` 新增的可选成员，使 Web 搜索提供方菜单显示友好名称与成本/行为说明。
-- **新宿主上的 Node 门槛。** `0.2.2-rc.2` 维持 harness 自身最低 Node.js 为 **24.9**，因此在该宿主上实际要求 Node 24.9+，尽管本插件的 `engines.node` 仍写着 `^22.19.0 || >=24.0.0`。
-- **行为。** 无变更。`WebSearchProvider.search()`、`ready()`、响应映射、错误映射与全部配置字段均未改动。
+## 回滚
 
-除更新包外无需任何操作，且本版不是强制升级：`0.19.0` 在 `0.2.2-rc.2` 上已可正常加载。
+重新安装上一版本：
 
----
-
-## 3. 从 ≤ 0.18.1 升级至 0.19.0 注意事项
-
-0.19.0 完成与 DeepSeek Harness `0.2.2-rc.1` 的对齐，并删除了一条陈旧的依赖 override。插件逻辑未变：唯一的源码改动是 `USER_AGENT` 版本字符串，以及 `test/apply.test.ts` 中对应的断言；`src/`、`scripts/`、`locale/`、`.github/`、`cordis.patch.yml` 与 `tsconfig*.json` 其余部分与 0.18.1 完全一致。
-
-- **依赖锁定。** 开发依赖升至 `0.2.2-rc.1`，锁文件亦按该版本重新生成；`@deepseek-ai/cordis` 升至 `~4.1.0`，`@deepseek-ai/schemastery` 依赖移至 `~3.19.0`。
-- **peer 区间不变。** cordis peer 保持 `^4.0.4 || ^4.0.6-alpha.1`：`^4.0.4` 本就覆盖 `4.1.0`，声明无需放宽。`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此本版**不是**强制升级。
-- **删除陈旧的 cosmokit override。** `pnpm-workspace.yaml` 自 2026-08-30 首版起就带着 `overrides: '@deepseek-ai/cosmokit': 1.8.7-alpha.1`。cordis `4.1.0` 声明要求 `@deepseek-ai/cosmokit: ~1.9.0`，这条 override 因此把依赖树钉在了声明所排除的版本上。0.19.0 删除了该 override，锁文件现按 cordis 的声明解析 cosmokit `1.9.0`。cosmokit `1.8.7-alpha.1` 与 `1.9.0` 除各自的 `package.json` 外字节完全相同，所以历史上从未引发运行时故障——但依赖声明与实际解析确实不一致，这正是本次升级要修正的地方。
-- **供应链豁免清单重建。** 工作区文件现对 `0.2.2-rc.1` 的各包豁免 pnpm 的最小发布年龄闸门。该名单保持单一且由锁文件推导的区块。
-- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.19.0`。
-- **新宿主上的 Node 门槛。** `0.2.2-rc.1` 把 harness 自身的最低 Node.js 提升到 **24.9**，因此在该宿主上实际要求 Node 24.9+，尽管本插件的 `engines.node` 仍写着 `^22.19.0 || >=24.0.0`。插件本身没有任何改动，只是更严格的宿主规则开始生效。
-- **行为。** 无变化。`WebSearchProvider.ready()` 及其激活契约在 `0.2.2-rc.1` 中未变，就绪闸门与 0.18.1 表现完全一致。`available()`、`search()`、响应映射、错误映射与全部配置字段均未改动。
-
-除更新包之外无需任何操作，且本版并非强制升级：`0.18.1` 在 `0.2.2-rc.1` 上本就可加载。
-
----
-
-## 4. 从 ≤ 0.18.0 升级至 0.18.1 注意事项
-
-0.18.1 只更正一处文档表述，其余一概未动。`package.json` 依赖、`src/`、`test/`
-与全部行为契约与 0.18.0 完全一致。
-
-- **原文错在何处。** Requirements 一栏把 DeepSeek Harness `0.2.2-alpha.2` 称为「最新发行版」。`0.2.1-rc.5` 于 2026-10-30 发布后，这句话即告失效。二者并非同一条线上的相邻版本：`0.2.2-alpha.2` 属于 `alpha` 线，而 `0.2.1-rc.5` 是从更早的 `0.2.1` 线切出的维护版。
-- **对你意味着什么。** 只有 `0.2.2-alpha.2` 线携带 `WebSearchProvider.ready()`。在 `0.2.1-rc.*` 的 profile 上，插件照常加载与检索，但没有就绪闸门可用，因此 TinyFish 凭据缺失时 harness 无法把 `web_search` 收起。
-- **操作步骤。** 更新包即可，别无他事。配置字段、取值与默认值均未改动，且 0.18.0 在所有准入的 harness 版本上本就加载正常。
-
----
-
-## 5. 从 ≤ 0.17.1 升级至 0.18.0 注意事项
-
-0.18.0 完成与 DeepSeek Harness `0.2.2-alpha.2` 的对齐，并新增了新 `ctx.web` 提供方契约引入的 `ready()` 成员。
-
-- **依赖版本对齐。** 开发依赖升至 `0.2.2-alpha.2`，锁文件亦按该版本重新生成；`@deepseek-ai/cordis` 升至 `~4.0.6-alpha.1`，cordis peer 放宽为 `^4.0.4 || ^4.0.6-alpha.1`（仍停留在 4.0.4 或 4.0.5 的宿主同样被准入），`@deepseek-ai/schemastery` 依赖移至 `~3.18.6-alpha.1`。`engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.2-alpha.2`）均可通过准入。
-- **供应链豁免清单重建。** 工作区文件现对 `0.2.2-alpha.2` 的各包豁免 pnpm 的最小发布年龄闸门。该名单保持单一且由锁文件推导的区块。
-- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.18.0`。
-- **行为。** 新增一点：提供方现在会上报就绪状态，因此没有可用 TinyFish 凭据的 profile 不再显示 `web_search`——模型步干脆没有这个工具，而不是先出现工具、再让每次调用都以 `WEB_PROVIDER_CREDENTIAL_MISSING` 失败。`available()`、`search()`、响应映射、错误映射与全部配置字段均未改动。本版并非强制升级：`0.17.1` 在 `0.2.2-alpha.2` 上本就可加载。
-- **未携带的内容。** TinyFish 不返回长摘要，也不返回生成式答案，因此插件仍既不为 `WebSearchSource.summary` 也不为 `WebSearchResult.content` 填值。
-
-除更新包之外无需任何操作：本版并非强制升级。
-
----
-
-## 6. 从 ≤ 0.16.0 升级至 0.17.0 注意事项
-
-0.17.0 完成与 DeepSeek Harness `0.2.1-rc.2` 的对齐——即本插件所遵循的插件开发文档的最新发行版。
-
-- **依赖版本对齐。** 开发依赖升至 `0.2.1-rc.2`，锁文件亦按该版本重新生成；`@deepseek-ai/cordis` 升至 `^4.0.5`、`@deepseek-ai/schemastery` 升至 `^3.18.5`。`engines.dsh` 与 `@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.1-rc.2`）均可通过准入。
-- **供应链豁免清单重建。** 工作区文件现对 `0.2.1-rc.2` 的各包豁免 pnpm 的最小发布年龄闸门。该名单保持单一且由锁文件推导的区块。
-- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.17.0`。
-- **行为。** 无变化。`ctx.web` 搜索提供方契约在 `0.2.1-alpha.4` 与 `0.2.1-rc.2` 之间源码完全一致，因此配置字段、取值与默认值均未改动。
-
-除更新包之外无需任何操作：本版并非强制升级，`0.16.0` 在 `0.2.1-rc.2` 上本就可加载。
-
----
-
-## 7. 从 ≤ 0.15.0 升级至 0.16.0 注意事项
-
-0.16.0 完成与 DeepSeek Harness `0.2.1-alpha.4` 的对齐——即本插件所遵循的插件开发文档的最新发行版。
-
-- **依赖版本对齐。** 开发依赖升至 `0.2.1-alpha.4`，锁文件亦按该版本重新生成。`@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.1-alpha.4`）均可通过准入。
-- **供应链豁免清单重建。** 工作区文件现对 `0.2.1-alpha.4` 的各包豁免 pnpm 的最小发布年龄闸门。此前的名单还带有第二个 `minimumReleaseAgeExclude` 键，其过期的 `0.2.0-rc.2` 条目会让 pnpm 拒绝重新生成的锁文件；该名单现为单一且由锁文件推导的区块。
-- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.16.0`。
-- **行为。** 无变化。`ctx.web` 搜索提供方契约在 `0.2.1-alpha.2` 与 `0.2.1-alpha.4` 之间源码完全一致，因此配置字段、取值与默认值均未改动。
-
-除更新包之外无需任何操作：本版并非强制升级，`0.15.0` 在 `0.2.1-alpha.4` 上本就可加载。
-
----
-
-## 8. 从 ≤ 0.14.0 升级至 0.15.0 注意事项
-
-0.15.0 完成与 DeepSeek Harness `0.2.1-alpha.2` 的对齐——即本插件所遵循的插件开发文档的最新发行版。
-
-- **展示元数据与专属图标。** 内置原生 `icon.svg` 矢量图标与中英双语清单资源（`locale/en.json`、`locale/zh.json`），完全符合 DSH 0.2.1-alpha.2 插件管理器展示规范。`package.json` 导出 `./locale/*.json` 与 `./icon`，并在顶层声明 `icon` 字段（指向 `./icon.svg`）。
-- **自包含构建脚本。** 将 `package.json` 的 `prepare` 脚本优化为 `tsc -p tsconfig.build.json`，确保从 Git 仓库安装时无需宿主预装全局 `pnpm` 即可自包含编译 `lib/` 产物。
-- **依赖版本对齐。** 开发依赖升至 `0.2.1-alpha.2`。`@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.1-alpha.2`）均可通过准入。
-- **请求头标识更新。** `USER_AGENT` 标识头更新为 `dsh-tinyfish-search/0.15.0`。
-- **命令行选项规范化。** 规范化文档中的 CLI 命令，将 `--profile <name>` 参数前置于被转发的子命令之前。
-
-除更新包之外无需任何操作：配置字段、取值与默认值均未改动，现有 profile 原样继续可用。
-
----
-
-## 9. 从 ≤ 0.13.0 升级至 0.14.0 注意事项
-
-0.14.0 完成与 DeepSeek Harness `0.2.0-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
-
-- **依赖锁定。** 开发依赖升至 `0.2.0-rc.2`。`@deepseek-ai/dsh-*` peer 区间保持 `>=0.1.7-alpha.2 <0.3.0`（即 0.13.0 引入的放宽区间），因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.0-rc.2`）均可通过准入。`engines.dsh` 使用同一区间，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
-- **并非强制升级。** 由于 `0.13.0` 已声明该放宽区间，它在 `0.2.0-rc.2` 上同样被准入：0.14.0 是针对新运行时**重新验证**的版本，而非为解救不兼容版本而发。在 `0.2.0-rc.2` 上仍被拒绝的是窄区间的 `0.12.0`（`^0.1.7-alpha.2`，不含 `0.2.x`）；升级到 `0.14.0` 正是解除该拒绝的方式。
-- **逐缝核对。** `ctx.web` 搜索提供方接缝、`ctx.credentials.resolve`、由 Host 以 `entry.fiber.runtime.Config` 读取的导出易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.2.0-rc.1` 与 `0.2.0-rc.2` 之间源码完全一致。`0.2.0-rc.2` 的增量均为新增——Cordis Inspect 诊断、`TypertGateway.hasLiveClient()`，以及定时提问——未触及本插件使用的任何接口。
-- **供应链闸门。** `pnpm-workspace.yaml` 改为对 `0.2.0-rc.2` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门。
-
-除更新包之外无需任何操作：配置字段、取值与默认值均未改动，现有 profile 原样继续可用。
-
----
-
-## 10. 从 ≤ 0.12.0 升级至 0.13.0 注意事项
-
-0.13.0 完成与 DeepSeek Harness `0.2.0-rc.1` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
-
-- **依赖锁定。** 开发依赖升至 `0.2.0-rc.1`。`@deepseek-ai/dsh-*` peer 区间放宽为 `>=0.1.7-alpha.2 <0.3.0`，因此整条 `0.1.7` 预发行线与 `0.2.x` 线（含 `0.2.0-rc.1`）均可通过准入。`engines.dsh` 使用同一区间，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
-- **为什么必须放宽区间。** DeepSeek Harness `0.2.0-rc.1` 把兼容性闸门变成了硬性拒绝：每一条 `@deepseek-ai/dsh*` peer 区间都必须满足正在运行的运行时版本，且预发行版参与区间匹配。原先的 `^0.1.7-alpha.2` 区间不含 `0.2.x`，因此 **0.12.0 在 `0.2.0-rc.1` 上会被拒绝**——升级到 0.13.0 正是解除该拒绝的方式。若宿主低于 `0.1.7-alpha.2`，插件行仍会被拒绝。
-- **逐缝核对。** `ctx.web` 搜索提供方接缝、`ctx.credentials.resolve`、由 Host 以 `entry.fiber.runtime.Config` 读取的导出易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.1.7-rc.2` 与 `0.2.0-rc.1` 之间源码完全一致，因此除 `USER_AGENT` 版本常量外 `src/` 未作改动，配置字段也没有任何迁移。
-- **供应链闸门。** `pnpm-workspace.yaml` 改为对 `0.2.0-rc.1` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门。
-
-除更新包之外无需任何操作：配置字段、取值与默认值均未改动，现有 profile 原样继续可用。
-
----
-
-## 11. 从 ≤ 0.11.1 升级至 0.12.0 注意事项
-
-0.12.0 完成与 DeepSeek Harness `0.1.7-rc.2` 的对齐——即本插件所遵循的插件开发文档的当前发行版。本版除 `USER_AGENT` 版本常量外不改动插件源码。
-
-- **依赖锁定。** 开发依赖升至 `0.1.7-rc.2`。`@deepseek-ai/dsh-*` peer 区间保持 `^0.1.7-alpha.2`——即引入易变配置的那条发布线——因此插件在 `0.1.7-alpha.2` 至 `0.1.7-rc.2` 的每一个 `0.1.7` 预发行版上均可安装。`engines.dsh` 保持 `^0.1.7-alpha.2`，`engines.node` 保持 `^22.19.0 || >=24.0.0`。
-- **逐缝核对。** `ctx.web` 搜索提供方接缝、`ctx.credentials.resolve`、由 Host 以 `entry.fiber.runtime.Config` 读取的导出易变 `Config` schema，以及 `launchEnvironmentOf`，在 `0.1.7-rc.1` 与 `0.1.7-rc.2` 之间源码完全一致，因此除 `USER_AGENT` 版本常量外 `src/` 未作改动，配置字段也没有任何迁移。
-- **供应链闸门。** `pnpm-workspace.yaml` 改为对 `0.1.7-rc.2` 的确切包集合显式豁免 pnpm 的最小发布年龄闸门。
-
-除更新包之外无需任何操作。
-
----
-
-## 12. 从 0.11.0 升级至 0.11.1 注意事项
-
-0.11.1 不改动运行时逻辑、不改配置、不改工具接口：行为与 0.11.0 完全一致，属于文档与工程化修补版本。
-
-- **仓库只保留 TypeScript 源码。** 双语文档闸门由 `scripts/check-docs-language.mjs` 迁至 `scripts/check-docs-language.ts`。Node ≥22.19 会剥离类型，因此该闸门依旧无需安装任何依赖即可运行，CI 中也仍在安装依赖之前执行。`tsconfig.json` 现把 `scripts/**/*.ts` 纳入 include，`pnpm run typecheck` 会一并检查该闸门。
-- **文档修正。** README 的升级章节顺序错乱且有一条重复；两份更新日志的链接定义缺失或顺序不对；中文更新日志存在重复分隔线 —— 均已修正。
-
-除更新包之外无需任何操作。
-
----
-
-## 13. 从 0.10.0 / 0.9.x 升级至 0.11.0 注意事项
-
-0.11.0 把宿主基线抬升到 DeepSeek Harness `0.1.7-alpha.2`，并已在 `0.1.7-rc.1` 上完成验证。`@deepseek-ai/dsh-*` peer 区间更新为 `^0.1.7-alpha.2`（即引入易变配置的那条发布线），开发依赖锁定至 `0.1.7-rc.1`，`engines.dsh` 更新为 `^0.1.7-alpha.2`。
-
-DeepSeek Harness 0.1.7 以 schema 驱动的易变配置取代了旧的设置缝，因此 `apply` 不再调用 `ctx.settings.installSection`：Host 直接读取本插件导出的 `Config` schema，并以 profile 行 id 为键为该条目渲染配置表单。`TINYFISH_SETTINGS_NAMESPACE` 随之移除，`@deepseek-ai/dsh-settings` 也不再是消费的 peer 依赖。
-
-**在 `0.1.6` 宿主上，插件会在加载阶段被拒绝。** DeepSeek Harness 0.1.7-rc.1 会在加载插件行之前，用运行时版本校验插件声明的 `@deepseek-ai/dsh*` peer 依赖。请先升级宿主，或按 DSH 打印的提示授予确切版本豁免（`dsh plugin allow-version dsh-tinyfish-search@0.11.0 <你的 dsh 版本>`）。
-
-配置项保持 100% 向后兼容：字段名、取值与默认值完全一致。SSRF 纵深防御机制持续生效。
-
----
-
-## 14. 从 0.9.0 升级至 0.10.0 注意事项
-
-0.10.0 完成与 DeepSeek Harness `0.1.6-alpha.2` 的对齐：`@deepseek-ai/dsh-*` peer 区间更新为 `^0.1.6-alpha.2`，开发依赖锁定至 `0.1.6-alpha.2`，`engines.dsh` 更新为 `^0.1.6-alpha.2`。本插件当时消费的全部扩展缝（`ctx.web`、`ctx.settings.installSection`、`ctx.credentials.resolve` 与 `launchEnvironmentOf`）在 `0.1.6-alpha.2` 下源码级兼容，SSRF 纵深防御机制完备运作。配置完全平滑兼容，原地升级无需任何手动修改。
-
----
-
-## 15. 从 0.8.3 / 0.8.x 升级至 0.9.0 注意事项
-
-0.9.0 完成与 DeepSeek Harness `0.1.6-alpha.1` 的对齐：`@deepseek-ai/dsh-*` peer 区间改为 `^0.1.6-alpha.1`——旧的 `^0.1.5-rc.2` 按 SemVer 预发布规则并不满足 `0.1.6` 的预发布版本；`engines.dsh` 与 `engines.node` 跟随宿主（`^22.19.0 || >=24.0.0`）。本插件消费的全部缝（`ctx.web`、`ctx.settings.installSection`、`ctx.credentials`、`launchEnvironmentOf`）在两个 harness 版本之间源码完全一致，因此无需改动源码。发布包现仅包含 `lib/`、`cordis.patch.yml` 与 `LICENSE`：各文档保留在仓库中，不再随包安装进你的 profile。配置项完全兼容，pnpm 会原地刷新，无需任何手工调整。
-
----
-
-## 16. 升级后验证
-
-完成安装后，重启或直接启动该 profile：
-
-```bash
-dsh web
+```sh
+dsh plugin --profile web add dsh-tinyfish-search@0.20.0
 ```
 
-在会话中发起包含实时检索的提问（例如：“今天北京天气如何？”），检查工具结果是否由 TinyFish 返回且模型能给出最新数据。
+回滚不会改动配置。命令执行后重启 profile。
 
----
+## 插件无法加载时
 
-## 17. 版本回滚方案
-
-若新版本与你的本地环境存在偶发冲突，可随时回退到上一稳定版本：
-
-```bash
-dsh plugin --profile web add dsh-tinyfish-search@0.18.1
-```
+先检查 `dsh --profile web --dump-config | grep tinyfish`。声明区间之外的插件行会在加载时被拒绝，并打印确切的要求。`dsh plugin allow-version` 可为该版本对授予豁免；见 [兼容性说明](README.zh.md#环境要求)。

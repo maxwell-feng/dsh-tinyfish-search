@@ -2,64 +2,44 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UNINSTALL.zh.md)
 
-> Verified against DeepSeek Harness **0.2.2-rc.1** with `dsh-tinyfish-search` **0.19.0** (also verified on `0.2.1-rc.5`).
+## Remove the plugin bundle
 
-This document explains how to completely uninstall `dsh-tinyfish-search` from a DeepSeek Harness profile and remove lingering configurations.
-
----
-
-## 1. Remove the Plugin Bundle
-
-Run the following command to remove the package and its active patch layer from your target profile (e.g. `web`):
-
-```bash
+```sh
 dsh plugin --profile web remove dsh-tinyfish-search
 ```
 
-This removes the dependency from the profile's `package.json` and purges the bundle layer from `dsh.profile.bundles`. Note that `--profile <name>` must precede the `remove` subcommand.
+This removes the package from the profile and drops its bundle layer from `dsh.profile.bundles`. `--profile <name>` goes before `remove`.
 
----
+## Clean up custom configuration (optional)
 
-## 2. Clean Up Custom Configurations (Optional)
-
-If you customized settings in `$DSH_HOME/profiles/<profile>/cordis.patch.yml` or the global `$DSH_HOME/cordis.patch.yml`, remove the corresponding row:
+If you added a `dsh-tinyfish-search` row in `$DSH_HOME/profiles/<profile>/cordis.patch.yml` or `$DSH_HOME/cordis.patch.yml`, delete it:
 
 ```yaml
-# Remove this block
 - id: dsh-tinyfish-search
   config:
     ...
 ```
 
----
+## Clean up the environment variable (optional)
 
-## 3. Clean Up Environment Variables (Optional)
+If you no longer use TinyFish, remove the API key from your environment:
 
-If you no longer use TinyFish, remove the API key variable:
-
-```bash
-# Linux / macOS / Android Termux
+```sh
 unset TINYFISH_API_KEY
+```
 
-# Windows PowerShell
+```powershell
 Remove-Item Env:\TINYFISH_API_KEY
 ```
 
----
-
-## 4. Verification
+## Verify
 
 Restart the profile:
 
-```bash
+```sh
 dsh web
 ```
 
-- Confirm `dsh-tinyfish-search` no longer appears in Settings -> Plugins.
-- Confirm the bundle layer is gone:
-
-```sh
-dsh --profile web --dump-config | grep tinyfish   # no output expected
-```
-
-- `web_search` automatically falls back to default providers (e.g. `deepseek-official`).
+- `dsh-tinyfish-search` is gone from Settings → Plugins.
+- `dsh --profile web --dump-config | grep tinyfish` prints nothing.
+- `web_search` falls back to `deepseek-search-api` (the 0.2.2 default), to `deepseek-official` on earlier hosts, or to no provider if none is installed.

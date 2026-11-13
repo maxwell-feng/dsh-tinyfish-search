@@ -6,6 +6,25 @@
 
 ---
 
+## [0.21.0] - 2026-11-13
+
+**对齐 DeepSeek Harness 0.2.2-rc.3** —— 仅更新依赖，不改 API、配置或行为。DSH 0.2.2-rc.3 没有影响插件的破坏性变更。
+
+### 变更
+
+- 全部 `@deepseek-ai/dsh-*` 开发依赖由 `0.2.2-rc.2` 移至 `0.2.2-rc.3`；重新生成锁文件并刷新工作区供应链豁免。
+- `USER_AGENT` 更新为 `dsh-tinyfish-search/0.21.0`，同步更新测试断言。
+- `engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，0.20.0 在 `0.2.x` 上仍被准入，本次升级可选。
+
+### 文档
+
+- 全部指南改为简洁、平实的写法，DSH 版本引用统一更新为 `0.2.2-rc.3`，并修复中英文档中的文字和排序缺陷。
+
+### 验证
+
+- 在 DeepSeek Harness 0.2.2-rc.3 上，`pnpm typecheck`、`pnpm build` 与 `pnpm test`（24 项测试）全部通过。
+- 未做真实 profile 启动，也未发起真实 TinyFish 请求。
+
 ## [0.20.0] - 2026-11-12
 
 ### 对齐 DeepSeek Harness 0.2.2-rc.2 —— 提供方选择器元数据
@@ -572,6 +591,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.21.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.21.0
 [0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0
 [0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
 [0.18.1]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.18.1
