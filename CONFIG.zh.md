@@ -21,9 +21,9 @@
 DeepSeek Harness 0.1.7 用 schema 驱动的配置取代了旧的设置缝。
 
 - 声明：`src/config.ts` 导出 `Config`，`src/index.ts` 再导出。Host 以 `entry.fiber.runtime.Config` 发现它。命名空间来自 profile 行 id `dsh-tinyfish-search`，插件不自行选择。
-- 每字段一个实时引用：`apply(ctx, config)` 收到每字段一个 `Volatile<T>`。没有 `ctx.inject(['settings'])`，也没有注册调用。
+- 每字段一个实时引用：`apply(ctx, config)` 为每个字段收到一个 `Volatile<T>`。没有 `ctx.inject(['settings'])`，也没有注册调用。
 - 每次搜索一个快照：提供方在每次搜索开始时读取全部五个字段的 `.get()`。单次搜索不会把保存前后的值混在一起。
-- 写入：Plugins 页表单经 `ctx.configForms.get(entryId)` 写入 `ConfigForm`（`getSnapshot`、`subscribe`、`set`、`unset`、`mutate`、`dispose`）。写入带 revision 保护；被拒绝时返回 `false` 并重新加载宿主状态。
+- 写入：Plugins 页表单经 `ctx.configForms.get(entryId)` 写入 `ConfigForm`（`getSnapshot`、`subscribe`、`set`、`unset`、`mutate`、`dispose`）。写入按修订号保护；被拒绝时返回 `false` 并重新加载宿主状态。
 - 生效：已提交的修改对下一次搜索生效，无需重启或重新注册。
 
 程序化构造接受已完成的 `TinyFishOptions`、快照对象，或返回 `TinyFishOptions` 的 thunk（`TinyFishProviderInput`）。只有插件自身路径传入 thunk。
@@ -76,7 +76,7 @@ $env:TINYFISH_API_KEY = "sk-tinyfish-your-api-key"
 
 ## 就绪判定（`ready()`）
 
-DeepSeek Harness 0.2.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员。`dsh-tool-web` 把它当作 `web_search` 的激活条件：路由回答 `false` 的模型步不会拿到该工具。`tinyfish` 提供方按上面的凭据顺序解析，并报告是否找到密钥：
+DeepSeek Harness 0.2.2 为 `WebSearchProvider` 新增了可选的 `ready(llmProvider): Promise<boolean>` 成员。`dsh-tool-web` 把它当作 `web_search` 的激活条件：`ready()` 返回 `false` 的模型步不会拿到该工具。`tinyfish` 提供方按上面的凭据顺序解析，并报告是否找到密钥：
 
 - 存在字面量 `apiKey` 时立即就绪。否则运行一次解析器。
 - 解析出非空值即就绪，其余情况（包括空字符串）均不就绪。

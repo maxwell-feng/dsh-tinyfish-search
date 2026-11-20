@@ -4,21 +4,21 @@
 
 ## 环境要求
 
-- DeepSeek Harness `dsh` 与 web 缝，例如 `web` profile。构建基线：`0.2.2-rc.3`（2026-11-13 发布）。`engines.dsh`：`>=0.1.7-alpha.2 <0.3.0`。
+- 带 web 缝的 DeepSeek Harness `dsh`，例如 `web` profile。构建基线：`0.2.2-rc.5`（2026-11-18 发布）。`engines.dsh`：`>=0.1.7-alpha.2 <0.3.0`。
 - Node.js `^22.19.0 || >=24.0.0`。在 DSH 0.2.2 宿主上，实际门槛为 Node 24.9。
 - 一个 [TinyFish API key](https://agent.tinyfish.ai/api-keys)。Search 在任意钱包余额下免费。
 - 从 git 或源码目录安装需要 pnpm `>=10`，它们会通过 `prepare` 脚本构建 `lib/`。
 
-DSH 在加载插件行之前校验 `engines.dsh`。区间之外的宿主会被拒绝，并打印确切的要求。`dsh plugin allow-version` 可为该确切版本对授予豁免；见 [兼容性说明](README.zh.md#环境要求)。
+DSH 在加载插件行之前校验 `engines.dsh`。区间之外的宿主会被拒绝，并打印确切的要求。`dsh plugin --profile <name> allow-version` 可为该确切的插件与 DSH 版本组合授予豁免；见 [兼容性说明](README.zh.md#环境要求)。
 
 ## 从 npm 安装
 
 ```sh
 dsh plugin --profile web add dsh-tinyfish-search
-dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # 锁定确切版本
+dsh plugin --profile web add dsh-tinyfish-search@0.22.0   # 锁定确切版本
 ```
 
-`--profile <name>` 必须放在 `add`、`remove`、`update` 之前。
+`--profile <name>` 必须放在 `add`、`remove`、`update`、`allow-version` 之前。
 
 ## 从 git 安装
 
@@ -31,7 +31,7 @@ Git 安装拿到源码。pnpm 会运行 `prepare`，用 `tsc -p tsconfig.build.j
 ## 从 tarball 或源码目录安装
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.22.0.tgz
 dsh plugin --profile web add ./dsh-tinyfish-search        # 源码目录
 ```
 

@@ -6,6 +6,28 @@
 
 ---
 
+## [0.22.0] - 2026-11-20
+
+**对齐 DeepSeek Harness 0.2.2-rc.5** —— 依赖与文档更新，不改 API、配置或行为。
+
+### 变更
+
+- 全部 `@deepseek-ai/dsh-*` 开发依赖由 `0.2.2-rc.3` 移至 `0.2.2-rc.5`；重新生成锁文件并刷新工作区供应链豁免。
+- `USER_AGENT` 更新为 `dsh-tinyfish-search/0.22.0`，同步更新测试断言。
+- `engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`，0.21.0 在 `0.2.x` 上仍被准入，本次升级可选。
+
+### 文档
+
+- 全部 DSH 基线引用更新为 `0.2.2-rc.5`（2026-11-18 发布），并补上缺失的 `[0.22.0]` 更新日志链接。
+- 修正未带必需 `--profile` 的 `allow-version` 示例，并校正多处中文表述。
+- 补充说明 `0.2.2-rc.5` 的搜索提供方变更：基础组合不再固定 `searchProvider`，改由 `dsh-web` 按模型路由选择。bundle 补丁仍固定 `searchProvider: tinyfish`，因此搜索行为不变。
+- 更正卸载后的回退说明（区分 `0.2.2-rc.5` 前后），并说明依赖宿主级 `tool-web` 行的预设会失去 `web_search`；同时修正补丁说明与两篇发布说明。
+
+### 验证
+
+- 在 DeepSeek Harness 0.2.2-rc.5 上，`pnpm typecheck`、`pnpm build` 与 `pnpm test`（24 项测试）全部通过。
+- 未做真实 profile 启动，也未发起真实 TinyFish 请求。
+
 ## [0.21.0] - 2026-11-13
 
 **对齐 DeepSeek Harness 0.2.2-rc.3** —— 仅更新依赖，不改 API、配置或行为。DSH 0.2.2-rc.3 没有影响插件的破坏性变更。
@@ -591,6 +613,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.22.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.22.0
 [0.21.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.21.0
 [0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0
 [0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0

@@ -42,4 +42,5 @@ dsh web
 
 - `dsh-tinyfish-search` is gone from Settings → Plugins.
 - `dsh --profile web --dump-config | grep tinyfish` prints nothing.
-- `web_search` falls back to `deepseek-search-api` (the 0.2.2 default), to `deepseek-official` on earlier hosts, or to no provider if none is installed.
+- A preset that mounts its own `tool-web` row keeps `web_search`, which falls back to the harness's own selection: on DSH 0.2.2-rc.5 and later, `deepseek-official` (legacy Messages search) on DeepSeek model routes and `deepseek-search-api` elsewhere; on 0.2.2-rc.2 through rc.4, `deepseek-search-api`; on earlier hosts, `deepseek-official`; or no provider if none is installed.
+- A preset that relied on this bundle's host-level `tool-web` row (for example `minimal`) no longer sees `web_search` until `tool-web` is restored for that preset.

@@ -4,7 +4,7 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 ## Fields
 
-The plugin exports a `Config` schema built with `@deepseek-ai/schemastery`. The Host reads it and renders the form for the `dsh-tinyfish-search` row on the Plugins page. All fields are optional and `.volatile()`.
+The plugin exports a `Config` schema built with `@deepseek-ai/schemastery`. The Host reads it and renders the form for the `dsh-tinyfish-search` row on the Plugins page. All fields are optional and marked `.volatile()`.
 
 | Field | Type | Default | Role | Meaning |
 | :--- | :--- | :--- | :--- | :--- |
@@ -76,7 +76,7 @@ A provider with a resolver counts as `available` even before a key is stored. A 
 
 ## Readiness (`ready()`)
 
-DeepSeek Harness 0.2.2 added the optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`. `dsh-tool-web` uses it as the activation condition of `web_search`: a model step whose route answers `false` does not get the tool. The `tinyfish` provider resolves the same chain as the credential order above and reports whether it found a key:
+DeepSeek Harness 0.2.2 added the optional `ready(llmProvider): Promise<boolean>` member to `WebSearchProvider`. `dsh-tool-web` uses it as the activation condition of `web_search`: a model step for which `ready()` returns `false` does not get the tool. The `tinyfish` provider resolves the same chain as the credential order above and reports whether it found a key:
 
 - A literal `apiKey` is ready immediately. Otherwise the resolver runs once.
 - A non-empty resolved value means ready. Nothing else does, including an empty string.

@@ -4,21 +4,21 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 ## Requirements
 
-- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.2-rc.3` (released 2026-11-13). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
+- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.2-rc.5` (released 2026-11-18). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
 - Node.js `^22.19.0 || >=24.0.0`. On DSH 0.2.2 hosts the effective floor is Node 24.9.
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys). Search is free at any wallet balance.
 - pnpm `>=10` for git and source-checkout installs, which build `lib/` through the `prepare` script.
 
-DSH checks `engines.dsh` before it loads the row. A host outside the range is refused with the exact requirement named. `dsh plugin allow-version` can grant an exemption for that exact pair; see the [compatibility section](README.md#requirements).
+DSH checks `engines.dsh` before it loads the row. A host outside the range is refused with the exact requirement named. `dsh plugin --profile <name> allow-version` can grant an exemption for that exact pair; see the [compatibility section](README.md#requirements).
 
 ## Install from npm
 
 ```sh
 dsh plugin --profile web add dsh-tinyfish-search
-dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # pin an exact version
+dsh plugin --profile web add dsh-tinyfish-search@0.22.0   # pin an exact version
 ```
 
-`--profile <name>` goes before `add`, `remove` and `update`.
+`--profile <name>` goes before `add`, `remove`, `update` and `allow-version`.
 
 ## Install from git
 
@@ -31,7 +31,7 @@ Git installs fetch sources. pnpm runs `prepare`, which compiles `lib/` with `tsc
 ## Install from a tarball or checkout
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.22.0.tgz
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
 ```
 

@@ -2,13 +2,13 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UPDATE.md) | 中文
 
-当前版本：0.21.0。构建基线：DeepSeek Harness `0.2.2-rc.3`。
+当前版本：0.22.0。构建基线：DeepSeek Harness `0.2.2-rc.5`。
 
 ## 升级前
 
 - 检查宿主版本与 Node 版本。DSH 0.2.2 宿主要求 Node 24.9 或更高。
 - 如果你自定义过行覆盖，请备份 profile 的 `cordis.patch.yml`。
-- 0.21.0 只更新依赖。API、配置字段与搜索行为均未改变。它在 `0.2.2-rc.2` 及更早的 `0.2.x` 宿主上也能运行，因此本次升级是可选的。
+- 0.22.0 把依赖更新到 `0.2.2-rc.5`，并刷新文档。API、配置字段与搜索行为均未改变。bundle 补丁仍显式固定 `searchProvider: tinyfish`，因此 DSH 0.2.2-rc.5 引入的按路由选择搜索提供方不会改变本插件的搜索结果。它在 `0.2.2-rc.4` 及更早的 `0.2.x` 宿主上也能运行，因此本次升级是可选的。
 
 ## 升级命令
 
@@ -16,7 +16,7 @@
 
 ```sh
 dsh plugin --profile web add dsh-tinyfish-search@latest
-dsh plugin --profile web add dsh-tinyfish-search@0.21.0   # 确切版本
+dsh plugin --profile web add dsh-tinyfish-search@0.22.0   # 确切版本
 ```
 
 从 git：
@@ -28,10 +28,10 @@ dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 从 tarball：
 
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.22.0.tgz
 ```
 
-`--profile <name>` 必须放在 `add`、`remove`、`update` 之前。
+`--profile <name>` 必须放在 `add`、`remove`、`update`、`allow-version` 之前。
 
 ## 升级后
 
@@ -42,11 +42,11 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.21.0.tgz
 重新安装上一版本：
 
 ```sh
-dsh plugin --profile web add dsh-tinyfish-search@0.20.0
+dsh plugin --profile web add dsh-tinyfish-search@0.21.0
 ```
 
 回滚不会改动配置。命令执行后重启 profile。
 
 ## 插件无法加载时
 
-先检查 `dsh --profile web --dump-config | grep tinyfish`。声明区间之外的插件行会在加载时被拒绝，并打印确切的要求。`dsh plugin allow-version` 可为该版本对授予豁免；见 [兼容性说明](README.zh.md#环境要求)。
+先检查 `dsh --profile web --dump-config | grep tinyfish`。声明区间之外的插件行会在加载时被拒绝，并打印确切的要求。`dsh plugin --profile <name> allow-version` 可为该确切的插件与 DSH 版本组合授予豁免；见 [兼容性说明](README.zh.md#环境要求)。

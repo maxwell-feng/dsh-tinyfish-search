@@ -15,7 +15,7 @@ model → web_search → ctx.web → tinyfish → GET https://api.search.tinyfis
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.21.0
+user-agent: dsh-tinyfish-search/0.22.0
 accept: application/json
 ```
 
@@ -23,7 +23,7 @@ accept: application/json
 
 ## 提供方
 
-bundle 补丁组合两个行：
+bundle 补丁组合两个条目：
 
 | 行 | 作用 |
 |---|---|
@@ -32,9 +32,9 @@ bundle 补丁组合两个行：
 
 提供方以稳定 ID `tinyfish`（`TINYFISH_PROVIDER_ID`）注册。配置表单以 profile 行 id `dsh-tinyfish-search` 为键；DSH 从行 id 推导命名空间。
 
-`available()` 是本地检查：存在密钥或可解析密钥，且 `baseURL` 可解析。它不产生网络请求。带凭据解析器的提供方即使密钥尚未创建也视为可用，因此缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 报错，而不会表现为“不可用”。
+`available()` 是本地检查：存在密钥或可解析密钥，且 `baseURL` 可解析。它不产生网络请求。带凭据解析器的提供方即使密钥尚未配置也视为可用，因此缺密钥时在搜索阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 报错，而不会表现为“不可用”。
 
-从 DeepSeek Harness 0.2.2 起，提供方还实现了 `ready(llmProvider)`，用于回答「针对该聊天路由的模型请求而发起的搜索有没有凭据可发」。`dsh-tool-web` 把它当作 `web_search` 的激活条件，因此没有可用凭据时，模型步不会被提供该工具，缺密钥也不会变成一次失败的调用。与 `available()` 一样，它只涉及配置、不访问任何服务；不同之处在于它会解析密钥，解不到就回答 `false`。TinyFish 在所有模型路由上使用同一把密钥，因此 `llmProvider` 从不改变答案。
+从 DeepSeek Harness 0.2.2 起，提供方还实现了 `ready(llmProvider)`，用于回答：为该聊天路由上的模型请求发起搜索时，有没有可用的凭据。`dsh-tool-web` 把它当作 `web_search` 的激活条件，因此没有可用凭据时，模型步不会被提供该工具，缺密钥也不会变成一次失败的调用。与 `available()` 一样，它只涉及配置、不访问任何服务；不同之处在于它会解析密钥，解不到就回答 `false`。TinyFish 在所有模型路由上使用同一个密钥，因此 `llmProvider` 从不改变答案。
 
 按预设限定范围：宿主 `tool-web` 行让工具对本 profile 上的每个 agent 预设可见。自带 `tool-web` 行的预设会用自身注册遮蔽这个全局注册。若只想限定到单个预设，请在 profile 的 `cordis.patch.yml` 中覆盖或移除 `tool-web` 行，并把 `tool-web` 加入该预设的组合。
 
@@ -72,7 +72,7 @@ What is today's weather in Tokyo?
 
 ### 归一化结果结构
 
-`results[]` 条目映射为缝的 `WebSearchSource` 结构，按 URL 去重，并提前按 `maxResults` 截断。`truncated` 为 `false`，最终截断标记归 web 服务所有。`date` 与 `publishedAt` 都汇入 `publishedAt`，空字段省略。
+`results[]` 条目映射为缝的 `WebSearchSource` 结构，按 URL 去重，并提前按 `maxResults` 截断。`truncated` 为 `false`，最终截断标记由 web 缝设定。`date` 与 `publishedAt` 都汇入 `publishedAt`，空字段省略。
 
 ```js
 import { mapTinyFishResponse } from 'dsh-tinyfish-search'
@@ -109,7 +109,7 @@ console.log(JSON.stringify(out, null, 2))
 | 错误码 | 触发时机 | 处理方法 |
 |---|---|---|
 | `WEB_PROVIDER_CREDENTIAL_MISSING` | 所有来源都无密钥 | 设置 `TINYFISH_API_KEY`、经凭据服务存储密钥，或设置字面量 `apiKey` |
-| `WEB_PROVIDER_ERROR` | HTTP 错误或无法处理的响应体；保留 TinyFish 返回的信息 | 检查密钥、端点与网络 |
+| `WEB_PROVIDER_ERROR` | HTTP 错误，或无法解析的成功响应体；HTTP 错误时保留上游返回的信息（若有） | 检查密钥、端点与网络 |
 | `WEB_ABORTED` | 调用方取消了搜索 | 如仍需要可重试 |
 
 缺密钥的报错会点名所配置的变量：`dsh-tinyfish-search has no API key for "TINYFISH_API_KEY"; set the environment variable, store it through the credentials service, or set a literal "apiKey" in the dsh-tinyfish-search config`。

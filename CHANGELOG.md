@@ -4,6 +4,28 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.22.0] - 2026-11-20
+
+**DeepSeek Harness 0.2.2-rc.5 alignment** — dependency and documentation release, with no API, configuration or behavior change.
+
+### Changed
+
+- Moved every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.3` to `0.2.2-rc.5`; regenerated the lockfile and refreshed the workspace supply-chain exemption.
+- Bumped `USER_AGENT` to `dsh-tinyfish-search/0.22.0` and updated its test assertion.
+- `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so 0.21.0 remains admitted on the `0.2.x` line; this upgrade is optional.
+
+### Documentation
+
+- Updated every DSH baseline reference to `0.2.2-rc.5` (released 2026-11-18) and added the missing `[0.22.0]` changelog link.
+- Fixed `allow-version` examples that omitted the required `--profile`, and corrected several Chinese wordings.
+- Documented the `0.2.2-rc.5` search-provider change: the base composition no longer fixes `searchProvider`, and `dsh-web` selects per model route. The bundle patch still pins `searchProvider: tinyfish`, so search behavior is unchanged.
+- Corrected the uninstall fallback description for hosts before and after `0.2.2-rc.5`, including presets that lose `web_search` with the host-level `tool-web` row; fixed the patch rationale and both release guides.
+
+### Verification
+
+- `pnpm typecheck`, `pnpm build` and `pnpm test` (24 tests) pass against DeepSeek Harness 0.2.2-rc.5.
+- No live profile boot or live TinyFish request was performed.
+
 ## [0.21.0] - 2026-11-13
 
 **DeepSeek Harness 0.2.2-rc.3 alignment** — dependency-only release, with no API, configuration or behavior change. DSH 0.2.2-rc.3 has no plugin-facing breaking changes.
@@ -536,6 +558,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.22.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.22.0
 [0.21.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.21.0
 [0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0
 [0.19.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.19.0
