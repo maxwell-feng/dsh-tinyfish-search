@@ -7,13 +7,16 @@
 #     Its `config` mapping is the documented scaffolding: every field is
 #     optional and commented out, so the shipped defaults apply until a later
 #     layer (profile / home cordis.patch.yml / --patch) overrides this row by id.
-#  2. `web` — points ctx.web at this provider. The dsh-base bundle pins a
-#     DeepSeek search default on the `web` row (`deepseek-search-api`), so
-#     merely registering a provider would leave web_search on the DeepSeek
-#     backend even with this bundle installed. Per the layer rules a bundle patch may
-#     override an earlier row by id, restating every key the row needs (config
-#     is replaced wholesale, never deep-merged). Later layers (profile / home
-#     cordis.patch.yml / --patch overlays) can still override this row by id.
+#  2. `web` — points ctx.web at this provider. Since DSH 0.2.2-rc.5 the
+#     dsh-base bundle sets no search provider on the `web` row; dsh-web then
+#     selects one from the model route (legacy Messages search on DeepSeek
+#     routes, the DeepSeek Search API elsewhere), so merely registering a
+#     provider would not send web_search to TinyFish. Setting
+#     `searchProvider: tinyfish` pins this provider for every route. A bundle
+#     patch may override an earlier row by id, and it restates every key the
+#     row needs (config is replaced wholesale, never deep-merged). Later
+#     layers (profile / home cordis.patch.yml / --patch overlays) can still
+#     override this row by id.
 #  3. `tool-web` — re-enables the HOST-level model-facing web tools. The
 #     dsh-web-app bundle ships `tool-web` disabled because the Web app composes
 #     the tools per agent preset; dsh-base keeps it enabled. Restating the row

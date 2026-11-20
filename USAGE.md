@@ -15,7 +15,7 @@ One search is one HTTP request:
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.21.0
+user-agent: dsh-tinyfish-search/0.22.0
 accept: application/json
 ```
 
@@ -72,7 +72,7 @@ The model calls `web_search`, the harness routes it to TinyFish, and the tool re
 
 ### Normalized result shape
 
-`results[]` items map to the seam's `WebSearchSource` shape, deduplicated by URL and capped early to `maxResults`. `truncated` is `false` because the web service owns the final flag. `date` and `publishedAt` both feed `publishedAt`; empty fields are omitted.
+`results[]` items map to the seam's `WebSearchSource` shape, deduplicated by URL and capped early to `maxResults`. `truncated` is `false` because the web seam sets the final flag. `date` and `publishedAt` both feed `publishedAt`; empty fields are omitted.
 
 ```js
 import { mapTinyFishResponse } from 'dsh-tinyfish-search'
@@ -109,7 +109,7 @@ This sends `?query=...&location=US&language=en`. Blank or unset values send noth
 | Code | When | What to do |
 |---|---|---|
 | `WEB_PROVIDER_CREDENTIAL_MISSING` | No key from any source | Set `TINYFISH_API_KEY`, store the key through the credentials service, or set a literal `apiKey` |
-| `WEB_PROVIDER_ERROR` | HTTP error or unprocessable body; the TinyFish message is preserved | Check the key, endpoint and network |
+| `WEB_PROVIDER_ERROR` | HTTP error, or a success body that cannot be parsed; the upstream message is preserved for HTTP errors | Check the key, endpoint and network |
 | `WEB_ABORTED` | The caller cancelled the search | Retry if still needed |
 
 The missing-key message names the configured variable: `dsh-tinyfish-search has no API key for "TINYFISH_API_KEY"; set the environment variable, store it through the credentials service, or set a literal "apiKey" in the dsh-tinyfish-search config`.

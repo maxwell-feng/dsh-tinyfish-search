@@ -42,4 +42,5 @@ dsh web
 
 - Settings → Plugins 中不再出现 `dsh-tinyfish-search`。
 - `dsh --profile web --dump-config | grep tinyfish` 无输出。
-- `web_search` 回退到 `deepseek-search-api`（0.2.2 默认值），更早宿主回退到 `deepseek-official`，若未安装其他提供方则为空。
+- 自带 `tool-web` 行的预设仍会保留 `web_search`，并回退到宿主自身的选择：DSH 0.2.2-rc.5 及以后，DeepSeek 模型路由使用 `deepseek-official`（旧版 Messages 搜索），其他路由使用 `deepseek-search-api`；0.2.2-rc.2 至 rc.4 为 `deepseek-search-api`；更早宿主为 `deepseek-official`；若未安装其他提供方则为空。
+- 依赖本 bundle 宿主级 `tool-web` 行的预设（如 `minimal`）将不再提供 `web_search`，直到为该预设恢复 `tool-web`。

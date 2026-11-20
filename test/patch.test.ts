@@ -31,11 +31,12 @@ test('bundle patch inserts the plugin row and routes the web seam to tinyfish', 
   assert.equal(webOverride.config.searchProvider, 'tinyfish', 'search provider must be routed to tinyfish')
   assert.equal(webOverride.config.fetchProvider, 'http', 'fetchProvider must be restated (wholesale replace)')
 
-  const baseWebRow = { id: 'web', name: '@deepseek-ai/dsh-web', config: { searchProvider: 'deepseek-official', fetchProvider: 'http' } }
+  // DSH 0.2.2-rc.5 composes no searchProvider on the base `web` row; dsh-web
+  // selects per model route unless an id is set. The patch must add one.
+  const baseWebRow = { id: 'web', name: '@deepseek-ai/dsh-web', config: { fetchProvider: 'http' } }
   const composedWeb = composeOverBase(baseWebRow, webOverride)
   assert.equal(composedWeb.config.searchProvider, 'tinyfish')
   assert.equal(composedWeb.config.fetchProvider, 'http')
-  assert.ok(!JSON.stringify(composedWeb.config).includes('deepseek-official'), 'the pinned DeepSeek provider must be overridden')
 
   assert.equal(row('dsh-tinyfish-search').name, 'dsh-tinyfish-search')
 })
