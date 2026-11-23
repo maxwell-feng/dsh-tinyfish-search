@@ -2,7 +2,37 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CHANGELOG.zh.md)
 
-All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/).
+All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
+
+## [0.23.0] - 2026-11-24
+
+**DeepSeek Harness 0.2.3-alpha.2 alignment** — dependency, Node.js requirement and documentation release. The API and configuration are unchanged; malformed-response handling is hardened.
+
+### Changed
+
+- Updated every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.5` to `0.2.3-alpha.2`.
+- Moved `@deepseek-ai/cordis` to `4.2.0-alpha.1` and `@deepseek-ai/schemastery` to `3.20.0-alpha.1`; the peer and dependency ranges admit the 0.2.3 line while still admitting earlier 0.2.x hosts.
+- Raised `engines.node` to `^24.22.3 || >=26.13.1` to match DSH 0.2.3, and pinned the CI and publish jobs to Node.js 24.22.3.
+- Bumped `USER_AGENT` to `dsh-tinyfish-search/0.23.0` and updated its test assertion.
+- `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`; regenerated the lockfile and refreshed the workspace supply-chain exemption for the `0.2.3-alpha.2` package set.
+
+### Fixed
+
+- `mapTinyFishResponse` now returns zero sources for a null payload or a null entry in `results`, instead of throwing; the malformed-response test covers both cases.
+
+### Documentation
+
+- Updated every current-version and DSH-baseline reference to `0.23.0` / `0.2.3-alpha.2`, including the install, update, usage, uninstall and release guides.
+- Changed the Plugin Manager title to sentence case and added the API-key requirement to both locale descriptions.
+- Corrected Chinese word order in the bundle-patch explanation, the web-seam reference and the Node.js floor sentences; added current-version banners to CONFIG, USAGE and UNINSTALL; aligned `bundle layer`, credential-order and first-non-empty-value wording across both languages.
+- Replaced the stale Settings → Web Search / `available: true` verification with the 0.2.3 UI path and the registered provider title; documented the three patch rows.
+- Removed the Chinese changelog's extra separator style so both sides use the same section structure.
+
+### Verification
+
+- `pnpm typecheck`, `pnpm build` and `pnpm test` (24 tests) pass against DeepSeek Harness 0.2.3-alpha.2.
+- `node scripts/check-docs-language.ts` passes with zero findings.
+- No live profile boot or live TinyFish request was performed.
 
 ## [0.22.0] - 2026-11-20
 
@@ -10,7 +40,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Changed
 
-- Moved every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.3` to `0.2.2-rc.5`; regenerated the lockfile and refreshed the workspace supply-chain exemption.
+- Updated every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.3` to `0.2.2-rc.5`; regenerated the lockfile and refreshed the workspace supply-chain exemption.
 - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.22.0` and updated its test assertion.
 - `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so 0.21.0 remains admitted on the `0.2.x` line; this upgrade is optional.
 
@@ -32,7 +62,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Changed
 
-- Moved every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.2` to `0.2.2-rc.3`; regenerated the lockfile and refreshed the workspace supply-chain exemption.
+- Updated every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.2` to `0.2.2-rc.3`; regenerated the lockfile and refreshed the workspace supply-chain exemption.
 - Bumped `USER_AGENT` to `dsh-tinyfish-search/0.21.0` and updated its test assertion.
 - `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`, so 0.20.0 remains admitted on the `0.2.x` line; this upgrade is optional.
 
@@ -558,6 +588,7 @@ Initial release
 - Only the seam's `query`/`maxResults` surface is exposed; TinyFish extras (`location`, `language`, `domain_type`, `recency_minutes`, etc.) are not forwarded yet.
 - Config is read once at plugin load; live-setting edits hot-reload the plugin (Cordis HMR) rather than being polled.
 
+[0.23.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.23.0
 [0.22.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.22.0
 [0.21.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.21.0
 [0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0

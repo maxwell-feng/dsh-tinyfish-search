@@ -4,8 +4,8 @@ English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/mai
 
 ## Requirements
 
-- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.2-rc.5` (released 2026-11-18). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
-- Node.js `^22.19.0 || >=24.0.0`. On DSH 0.2.2 hosts the effective floor is Node 24.9.
+- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.3-alpha.2` (released 2026-11-22). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
+- Node.js `^24.22.3 || >=26.13.1`. DSH 0.2.3 requires Node.js 24.22.3 or newer in the 24.x line, or Node.js 26.13.1 or newer.
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys). Search is free at any wallet balance.
 - pnpm `>=10` for git and source-checkout installs, which build `lib/` through the `prepare` script.
 
@@ -15,7 +15,7 @@ DSH checks `engines.dsh` before it loads the row. A host outside the range is re
 
 ```sh
 dsh plugin --profile web add dsh-tinyfish-search
-dsh plugin --profile web add dsh-tinyfish-search@0.22.0   # pin an exact version
+dsh plugin --profile web add dsh-tinyfish-search@0.23.0   # pin an exact version
 ```
 
 `--profile <name>` goes before `add`, `remove`, `update` and `allow-version`.
@@ -30,8 +30,10 @@ Git installs fetch sources. pnpm runs `prepare`, which compiles `lib/` with `tsc
 
 ## Install from a tarball or checkout
 
+Run `npm pack` in the checkout first; it builds `lib/` and writes the `.tgz` named below.
+
 ```sh
-dsh plugin --profile web add ./dsh-tinyfish-search-0.22.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.23.0.tgz
 dsh plugin --profile web add ./dsh-tinyfish-search        # source checkout
 ```
 
@@ -61,6 +63,6 @@ Check that the bundle layer is composed:
 dsh --profile web --dump-config | grep tinyfish   # layer present
 ```
 
-Start a session and ask a question that needs live information, for example "What is today's weather in Tokyo?". The model should call `web_search`, and the results should carry TinyFish URLs and snippets. The web search settings card shows provider `tinyfish` with `available: true` once the key is configured.
+Open **Plugins → Built-in plugin settings → Web search and fetch** and confirm that the **Web search provider** menu lists **TinyFish Search** (id `tinyfish`). Then start a session and ask a question that needs live information, for example "What is today's weather in Tokyo?". The model should call `web_search`, and the results should carry TinyFish URLs and snippets.
 
 If the key is missing, the model is not offered `web_search`: `WebSearchProvider.ready()` reports no usable credential, so the tool layer withholds the tool. A dispatched search that bypasses that gate fails with `WEB_PROVIDER_CREDENTIAL_MISSING` naming the configured variable. See the [Usage Guide](USAGE.md) error table.

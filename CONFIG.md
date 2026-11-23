@@ -2,6 +2,8 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/CONFIG.zh.md)
 
+Current plugin version: `0.23.0`. Build baseline: DeepSeek Harness `0.2.3-alpha.2`; Node.js `^24.22.3 || >=26.13.1`.
+
 ## Fields
 
 The plugin exports a `Config` schema built with `@deepseek-ai/schemastery`. The Host reads it and renders the form for the `dsh-tinyfish-search` row on the Plugins page. All fields are optional and marked `.volatile()`.
@@ -57,9 +59,8 @@ The row `id` is also the key used to address the configuration form. Renaming th
 
 ## Web UI
 
-1. Open **Settings** from the sidebar.
-2. Go to the **Plugins** page.
-3. Open the **`dsh-tinyfish-search`** row to edit values live. A save takes effect without restarting the host.
+1. Open **Plugins** from the sidebar.
+2. Open the **TinyFish web search** bundle, then its **`dsh-tinyfish-search`** row, to edit values live. A save takes effect without restarting the host.
 
 The form is rendered by the Host from the schema. The plugin supplies no browser code.
 
@@ -84,4 +85,4 @@ DeepSeek Harness 0.2.2 added the optional `ready(llmProvider): Promise<boolean>`
 - The check is configuration only. It never contacts TinyFish and never validates the key, so a wrong-but-present key still counts as ready.
 - TinyFish uses the same key on every model route, so `llmProvider` never changes the answer.
 
-`available()` decides whether the seam can select this provider during an operation. `ready()` decides whether the model is offered the tool at all. With no usable credential, `available()` still returns `true` because a resolver exists, while `ready()` returns `false`, so the tool is withheld instead of failing on every call.
+`available()` decides whether the web seam can select this provider during an operation. `ready()` decides whether the model is offered the tool at all. With no configured credential, `available()` still returns `true` because a resolver exists, while `ready()` returns `false`, so the tool is withheld instead of failing on every call.

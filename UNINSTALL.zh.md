@@ -2,6 +2,8 @@
 
 [英文](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/UNINSTALL.md) | 中文
 
+当前插件版本：`0.23.0`。构建基线：DeepSeek Harness `0.2.3-alpha.2`；Node.js `^24.22.3 || >=26.13.1`。
+
 ## 移除插件包
 
 ```sh
@@ -40,7 +42,7 @@ Remove-Item Env:\TINYFISH_API_KEY
 dsh web
 ```
 
-- Settings → Plugins 中不再出现 `dsh-tinyfish-search`。
+- **插件**页面中不再出现 `dsh-tinyfish-search`。
 - `dsh --profile web --dump-config | grep tinyfish` 无输出。
 - 自带 `tool-web` 行的预设仍会保留 `web_search`，并回退到宿主自身的选择：DSH 0.2.2-rc.5 及以后，DeepSeek 模型路由使用 `deepseek-official`（旧版 Messages 搜索），其他路由使用 `deepseek-search-api`；0.2.2-rc.2 至 rc.4 为 `deepseek-search-api`；更早宿主为 `deepseek-official`；若未安装其他提供方则为空。
 - 依赖本 bundle 宿主级 `tool-web` 行的预设（如 `minimal`）将不再提供 `web_search`，直到为该预设恢复 `tool-web`。

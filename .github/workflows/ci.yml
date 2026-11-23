@@ -23,20 +23,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # Bilingual docs rule: one language per file, pairs and switchers
-      # complete. Needs no dependencies — Node strips the types — so it gates
-      # before the install step.
-      - name: Docs language
-        run: node scripts/check-docs-language.ts
-
       - uses: pnpm/action-setup@v4
         with:
           version: 11
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: '24.22.3'
           cache: pnpm
+
+      # Bilingual docs rule: one language per file, pairs and switchers
+      # complete. Needs no dependencies — Node strips the types — so it gates
+      # before the install step.
+      - name: Docs language
+        run: node scripts/check-docs-language.ts
 
       # pnpm install runs the package's `prepare` script (tsc build), which the
       # typecheck and test steps then verify. `--frozen-lockfile` proves the

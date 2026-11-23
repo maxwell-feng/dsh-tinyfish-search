@@ -2,6 +2,8 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/USAGE.zh.md)
 
+Current plugin version: `0.23.0`. Build baseline: DeepSeek Harness `0.2.3-alpha.2`; Node.js `^24.22.3 || >=26.13.1`.
+
 ## How a search flows
 
 In a session on a profile that composes this bundle, the model calls `web_search` as usual. The harness routes the call through the web seam to this plugin:
@@ -15,7 +17,7 @@ One search is one HTTP request:
 ```text
 GET https://api.search.tinyfish.ai/?query=hello+world&location=US&language=en
 x-api-key: <your TinyFish key>
-user-agent: dsh-tinyfish-search/0.22.0
+user-agent: dsh-tinyfish-search/0.23.0
 accept: application/json
 ```
 
@@ -23,18 +25,19 @@ accept: application/json
 
 ## Providers
 
-The bundle patch composes two rows:
+The bundle patch composes three rows: its own plugin row plus two host-row overrides.
 
 | Row | Effect |
 |---|---|
+| `dsh-tinyfish-search` | Inserts the plugin row and registers the `tinyfish` provider |
 | `web` | Points the seam at this provider: `searchProvider: tinyfish` (`fetchProvider: http` restated) |
 | `tool-web` | Re-enables the host model-facing tools: `disabled: false`, `search: true`, `fetch: true`, timeouts restated |
 
 The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`). Its configuration form is keyed by the profile row id `dsh-tinyfish-search`; DSH derives the namespace from the row.
 
-`available()` is a local check: a key is present or resolvable, and `baseURL` parses. It makes no network calls. A provider with a credential resolver counts as usable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` rather than as "unavailable".
+`available()` is a local check: a literal key is present or a credential resolver is configured, and `baseURL` parses. It does not call the resolver. It makes no network calls. A provider with a credential resolver counts as selectable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` rather than as "unavailable".
 
-Since DeepSeek Harness 0.2.2 the provider also implements `ready(llmProvider)`. It answers whether a search for a model request on that chat route has a credential to send. `dsh-tool-web` uses it as the activation condition of `web_search`, so with no usable credential the model step is not offered the tool and a missing key never becomes a failed call. Like `available()`, it is configuration only and contacts nothing. Unlike `available()`, it resolves the key and answers `false` when nothing comes back. TinyFish uses one key on every model route, so `llmProvider` never changes the answer.
+Since DeepSeek Harness 0.2.2 the provider also implements `ready(llmProvider)`. It answers whether a search for a model request on that chat route has a credential to send. `dsh-tool-web` uses it as the activation condition of `web_search`, so with no configured credential the model step is not offered the tool and a missing key never becomes a failed call. Like `available()`, it is configuration only and contacts nothing. Unlike `available()`, it resolves the key and answers `false` when nothing comes back. TinyFish uses one key on every model route, so `llmProvider` never changes the answer.
 
 Per-preset scoping: the host `tool-web` row makes the tools visible to every agent preset on the profile. A preset that mounts its own `tool-web` row shadows the global registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in the profile `cordis.patch.yml` and add `tool-web` to that preset's composition.
 
@@ -68,7 +71,7 @@ On Windows PowerShell, use `setx TINYFISH_API_KEY "your_api_key_here"` for new t
 What is today's weather in Tokyo?
 ```
 
-The model calls `web_search`, the harness routes it to TinyFish, and the tool result carries normalized sources. In the GUI, **Settings → Web Search** shows provider `tinyfish` with `available: true` once the key is configured.
+The model calls `web_search`, the harness routes it to TinyFish, and the tool result carries normalized sources. In the GUI, open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu lists **TinyFish Search** (id `tinyfish`).
 
 ### Normalized result shape
 

@@ -4,7 +4,35 @@
 
 本项目的所有重要版本演进记录均归档于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，并严格遵循 [语义化版本规范](https://semver.org/lang/zh-CN/)。
 
----
+## [0.23.0] - 2026-11-24
+
+**对齐 DeepSeek Harness 0.2.3-alpha.2** —— 依赖、Node.js 门槛与文档更新。API 与配置不变，畸形响应处理更稳健。
+
+### 变更
+
+- 全部 `@deepseek-ai/dsh-*` 开发依赖由 `0.2.2-rc.5` 移至 `0.2.3-alpha.2`。
+- `@deepseek-ai/cordis` 升至 `4.2.0-alpha.1`，`@deepseek-ai/schemastery` 升至 `3.20.0-alpha.1`；peer 与依赖区间接纳 0.2.3 线，同时仍接纳更早的 0.2.x 宿主。
+- `engines.node` 提高为 `^24.22.3 || >=26.13.1`，与 DSH 0.2.3 一致；CI 与发布任务固定使用 Node.js 24.22.3。
+- `USER_AGENT` 更新为 `dsh-tinyfish-search/0.23.0`，同步更新测试断言。
+- `engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`；重新生成锁文件，并按 `0.2.3-alpha.2` 包集合刷新工作区供应链豁免。
+
+### 修复
+
+- `mapTinyFishResponse` 对 null 响应或 `results` 中的 null 条目返回零来源，而不是抛出异常；畸形响应测试覆盖这两种情况。
+
+### 文档
+
+- 全部当前版本与 DSH 基线引用更新为 `0.23.0` / `0.2.3-alpha.2`，包括安装、更新、使用、卸载与发行说明。
+- 插件管理器标题改为句首大写，两语言说明均补充 API key 要求。
+- 修正中文补丁说明的“否则”从句、web 缝主语句与 Node.js 门槛句式；为 CONFIG、USAGE、UNINSTALL 增加当前版本横幅；统一“bundle 层”“凭据顺序”和“以第一个非空值为准”的中英表述。
+- 把过时的“设置 → 网页搜索 / `available: true`”验证步骤改为 0.2.3 的实际 UI 路径与提供方显示名；写明补丁的三行结构。
+- 移除中文更新日志中与英文不同的额外分隔线，使两侧章节结构一致。
+
+### 验证
+
+- 在 DeepSeek Harness 0.2.3-alpha.2 上，`pnpm typecheck`、`pnpm build` 与 `pnpm test`（24 项测试）全部通过。
+- `node scripts/check-docs-language.ts` 零发现通过。
+- 未做真实 profile 启动，也未发起真实 TinyFish 请求。
 
 ## [0.22.0] - 2026-11-20
 
@@ -100,8 +128,6 @@
 - `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
 - 未验证项：在真实 `0.2.2-rc.1` profile 中的实际启动并端到端触发就绪闸门；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
 
----
-
 ## [0.18.1] - 2026-10-30
 
 ### 文档更正 —— 「最新发行版」这一表述已不成立
@@ -118,8 +144,6 @@
 
 - `node scripts/check-docs-language.ts` 通过，全部双语对零发现。
 - `npx tsc -p tsconfig.json --noEmit` 零错误；`npm run build` 构建干净；**24** 项单元测试全部通过。
-
----
 
 ## [0.18.0] - 2026-10-28
 
@@ -153,8 +177,6 @@
 - `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
 - 未验证项：在真实 `0.2.2-alpha.2` profile 中的实际启动并端到端触发就绪闸门；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
 
----
-
 ## [0.17.1] - 2026-10-18
 
 ### 文档渲染修复 —— 不改运行时逻辑、不改配置项、不改工具接口
@@ -170,8 +192,6 @@
 - `pnpm run typecheck` 零错误，**22** 项单元测试全部通过。
 - `node scripts/check-docs-language.ts` 在全部文档对上通过，零发现。
 - 仓库内每个相对链接均可解析（检查 106 个，失效 0 个）；每个语言切换链接均实测返回 HTTP 200。
-
----
 
 ## [0.17.0] - 2026-10-18
 
@@ -197,8 +217,6 @@
 - `node scripts/check-docs-language.ts` 检查全部通过，零发现。
 - 未验证项：在真实 `0.2.1-rc.2` profile 中的实际启动；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
 
----
-
 ## [0.16.0] - 2026-10-16
 
 ### 适配 DeepSeek Harness 0.2.1-alpha.4：完成验证，且非强制升级
@@ -216,8 +234,6 @@
 - `pnpm run typecheck` 零错误、`pnpm run build` 构建干净，**22** 项单元测试在 DeepSeek Harness 0.2.1-alpha.4 上全部通过。
 - `node scripts/check-docs-language.ts` 检查全部通过，零发现。
 - 未验证项：在真实 `0.2.1-alpha.4` profile 中的实际启动；以及真实的 TinyFish API 请求（测试套件对 `fetch` 做了桩替换）。
-
----
 
 ## [0.15.0] - 2026-10-11
 
@@ -241,8 +257,6 @@
 - `pnpm run typecheck` 零错误、`pnpm run build` 构建干净，22 项单元测试在 DeepSeek Harness 0.2.1-alpha.2 上全部通过。
 - `node scripts/check-docs-language.ts` 检查全部通过，零语言混淆或链接跳转错误。
 
----
-
 ## [0.14.0] - 2026-09-29
 
 ### 适配 DeepSeek Harness 0.2.0-rc.2：完成验证，且非强制升级
@@ -265,8 +279,6 @@
 - 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.2`）实测：运行时版本为 `0.2.0-rc.2`，`0.14.0` 在 `0.2.0-rc.2`、`0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.2` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
 - `0.13.0` 以其未改动的 peer 区间在 `0.2.0-rc.2` 上被准入，印证本版并非强制升级。
 
----
-
 ## [0.13.0] - 2026-09-28
 
 ### 适配 DeepSeek Harness 0.2.0-rc.1：通过 peer 兼容性闸门
@@ -288,8 +300,6 @@
 - 冻结锁文件安装通过 pnpm 的供应链策略校验。
 - 以宿主自己发布的 `evaluatePluginCompatibility`（`@deepseek-ai/dsh-app-boot@0.2.0-rc.1`）实测：运行时版本为 `0.2.0-rc.1`，`0.13.0` 在 `0.2.0-rc.1`、`0.2.0`、`0.1.7-rc.2`、`0.1.7-alpha.2` 上均准入，而 `0.12.0` 在 `0.2.0-rc.1` 上被拒绝；`0.1.6-alpha.2` 宿主同样被拒绝，与各指南所述一致。
 - 实际打包的 0.13.0 压缩包含构建产物 `lib/`、`cordis.patch.yml` 与 `LICENSE`。
-
----
 
 ## [0.12.0] - 2026-09-24
 
@@ -317,8 +327,6 @@
 - 冻结锁文件安装通过 pnpm 的供应链策略校验。
 - 声明的 peer 依赖经宿主自带的兼容性校验在 rc.2、rc.1、alpha.2 上均准入，无需豁免；0.1.6 宿主会被拒绝，与安装、更新文档一致。
 
----
-
 ## [0.11.1] - 2026-09-23
 
 ### 文档与仓库工程化修补版本
@@ -340,8 +348,6 @@
 
 - `pnpm run typecheck` 零错误（现覆盖 `scripts/`）、`pnpm run build` 干净、**22** 项单元测试在 DeepSeek Harness `0.1.7-rc.1` 上全部通过。
 - `node scripts/check-docs-language.ts` 通过；发现上述缺陷的文档审计已无剩余发现。
-
----
 
 ## [0.11.0] - 2026-09-23
 
@@ -370,8 +376,6 @@
 - `pnpm run typecheck` 零错误，`pnpm run build` 干净通过，**22** 项单元测试在 `@deepseek-ai/dsh-web` / `dsh-credentials` / `dsh-launch-environment` / `dsh-llm` `0.1.7-rc.1` 上全量通过。
 - `node scripts/check-docs-language.mjs` 通过；`pnpm install --frozen-lockfile` 通过供应链策略校验。
 
----
-
 ## [0.10.0] - 2026-09-18
 
 ### 适配 DeepSeek Harness 0.1.6-alpha.2
@@ -381,7 +385,6 @@
 - **标识头更新**：请求头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.10.0`；
 - **严格测试与文档**：21 项单元测试全量通过，TypeScript 类型检查零错误。全面刷新全套双语文档，写明适配 DeepSeek Harness `0.1.6-alpha.2`。
 
----
 ## [0.9.0] - 2026-09-16
 
 ### 适配 DeepSeek Harness 0.1.6-alpha.1 与精简发行包
@@ -391,14 +394,12 @@
 - **精简发行包**：发布 tarball 仅含 `lib/`、`cordis.patch.yml` 与 `LICENSE`（15 个文件 / 14.8 kB，此前 27 个文件 / 35.9 kB），双语文档不再随包安装进 `node_modules`；
 - `USER_AGENT` 升级为 `dsh-tinyfish-search/0.9.0`；21 项测试与类型检查全部通过。
 
----
 ## [0.8.3] - 2026-09-13
 
 ### 发行包资产优化
 
 - 优化 Release 资产附件结构，仅保留生产安装包（`dsh-tinyfish-search-0.8.3.tgz`），不再挂载多余的原始 markdown 文档。
 
----
 ## [0.8.2] - 2026-09-13
 
 ### 安全加固与生态同步
@@ -411,7 +412,6 @@
   - 全面更新双语文档体系（`INSTALL.md`, `INSTALL.zh.md`, `UPDATE.md`, `UPDATE.zh.md`, `USAGE.md`, `USAGE.zh.md`, `CONFIG.md`, `CONFIG.zh.md`, `UNINSTALL.md`, `UNINSTALL.zh.md`, `README.md`, `README.zh.md`），明确标注经 DeepSeek Harness `0.1.5-rc.2` 全面验证；
   - 自动化测试用例扩充至 21 项，全量验证通过。
 
----
 ## [0.8.1] - 2026-09-11
 
 ### 安全修复
@@ -423,7 +423,6 @@
   - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.1`。
   - 重新编译并验证全部 20 项测试通过。
 
----
 ## [0.8.0] - 2026-09-11
 
 **变更**
@@ -436,8 +435,6 @@
   - 职责清晰拆分：`src/types.ts`、`src/config.ts`、`src/options.ts`、`src/provider.ts` 与 `src/index.ts`。
   - 请求标识头 `USER_AGENT` 升级为 `dsh-tinyfish-search/0.8.0`。
   - 验证全部 20 项测试 100% 通过。
-
----
 
 ## [0.7.0] - 2026-09-11
 
@@ -453,8 +450,6 @@
   - 更新请求标识头 `USER_AGENT` 为 `dsh-tinyfish-search/0.7.0`。
   - 重新编译并验证全套 20 项自动化测试全部通过。
 
----
-
 ## [0.6.1] - 2026-09-11
 
 **兼容性**
@@ -466,8 +461,6 @@
   - 更新 `USER_AGENT` 请求头为 `dsh-tinyfish-search/0.6.1`。
   - 针对 DeepSeek Harness `0.1.5-rc.2` 完成全部测试验证。
 
----
-
 ## [0.5.0] - 2026-09-10
 
 **兼容性**
@@ -478,8 +471,6 @@
 - **独立的 `INSTALL.md` / `INSTALL.zh.md` 与 `USAGE.md` / `USAGE.zh.md`**，补齐标准文档体系：安装方式、验证、搜索流转、提供方、凭据解析顺序、完整示例（线路输出取自发布构建实测）与错误表。
 - **独立的 `README.zh.md`**：README 现为与其他指南一致的中英成对文档（`README.md` / `README.zh.md`）。
 
----
-
 ## [0.4.0] - 2026-09-09
 
 **变更**
@@ -487,8 +478,6 @@
 - **适配最新版 DeepSeek Harness 0.1.5-alpha.1**：更新内部客户端标识 `USER_AGENT` 至 `dsh-tinyfish-search/0.4.0`，全面通过最新版 `dsh-web@0.1.5-alpha.1` 契约验证。
 - **补齐标准四文档体系**：新增独立的配置说明（`CONFIG.zh.md` / `CONFIG.md`）、更新升级说明（`UPDATE.zh.md` / `UPDATE.md`）和卸载说明（`UNINSTALL.zh.md` / `UNINSTALL.md`）。
 - **打包清单更新**：在 `package.json` 的 `files` 字段中正式纳入全部新说明文档，支持 npm 及离线 tarball 发布分发。
-
----
 
 ## [0.3.0] - 2026-09-05
 
@@ -505,22 +494,16 @@
 - **`apply()` 集成测试**，运行在真实 `@deepseek-ai/cordis` 运行时上（`test/apply.test.mjs`）：提供方注册、settings 服务可选性、`installSection` 接线及已提交修改对下一次搜索的生效、凭据解析链（credentials → 启动环境 → process env）、稳定的 `WEB_PROVIDER_CREDENTIAL_MISSING` 错误面。补丁测试现用 js-yaml 真实解析 `cordis.patch.yml`，并按 loader 的按键覆盖 / config 整体替换语义对真实 dsh-base 行做组合断言，取代原先对 YAML 原文的正则匹配。
 - **移除死代码**：`declare const process` 垫片（所有环境读取本就经由 `globalThis.process`）。`USER_AGENT` 升至 `dsh-tinyfish-search/0.3.0`。
 
----
-
 ## [0.2.1] - 2026-09-04
 
 **兼容性**
 
 - 已针对 deepseek-harness `0.1.3-alpha.1`（最新发行版）验证：自 `0.1.2-rc.1` 以来缝接口无任何变更 —— web 缝（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebSearchSource` / `WebError`）、凭据缝、启动环境缝以及设置节安装（`ctx.settings.installSection`）在两个 tag 之间源码完全一致，内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。0.1.3 的主要变更（环境代理支持、Session 持久化重构、文件附件）均不涉及本插件消费的任何缝。npm 上已发布的 `@deepseek-ai/dsh-*` 类型包仍为 `0.1.2-rc.1`（npm 上的最新版本）；由于缝源码未变，针对它们做类型检查与针对 `0.1.3-alpha.1` 源码等价。`USER_AGENT` 升至 `dsh-tinyfish-search/0.2.1`。全部测试通过。
 
----
-
 ## [0.2.0] - 2026-09-03
 
 ### 修复
 - **修复：`tool-web` 重启用行现在显式清除 `disabled`（`disabled: false`）。** loader 的按 id 补丁合并是**按键生效**的：仅带 `config` 的行会重述配置但保留 `@deepseek-ai/dsh-web-app` bundle 自带的 `disabled: true`，因此 0.1.9 的重启用行依然让 `web_search` 处于未注册状态。已用 `dsh --profile web --dump-config` 验证：组合后的 `tool-web` 行现为 `disabled: false`，模型可见的 `web_search` / `web_fetch` 工具正常挂载。
-
----
 
 ## [0.1.9] - 2026-09-03
 
@@ -530,15 +513,11 @@
 
 - **按文档接入设置热更新** —— `apply` 现通过 `ctx.settings.installSection` 注册配置（命名空间 `dsh-tinyfish-search`），与 `web-search-deepseek` 完全一致：Plugins 设置卡片可渲染该节，保存的修改（如新的 `apiKeyEnv` 或 `baseURL`）无需重启即对下一次搜索生效。同时删除了无操作死代码及其误导性注释。
 
----
-
 ## [0.1.8] - 2026-09-03
 
 **兼容性**
 
 - 已针对 deepseek-harness `0.1.2-rc.1`（最新 `master`）验证：自 `0.1.2-alpha.5` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；内置 `@deepseek-ai/cordis` `4.0.2` 与 loader / bundle 补丁机制亦未变化。`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-rc.1`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.8`。全部测试在新区间依赖下通过。
-
----
 
 ## [0.1.7] - 2026-09-02
 
@@ -546,14 +525,10 @@
 
 - 已针对 deepseek-harness `0.1.2-alpha.5`（最新 `master`）验证：自 `0.1.2-alpha.4` 以来 web 缝接口（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）、凭据缝与启动环境缝均无变更；`devDependencies` 升级至 `@deepseek-ai/dsh-web` / `@deepseek-ai/dsh-llm` / `@deepseek-ai/dsh-credentials` / `@deepseek-ai/dsh-launch-environment` `0.1.2-alpha.5`，`USER_AGENT` 至 `dsh-tinyfish-search/0.1.7`。全部测试在新区间依赖下通过。
 
----
-
 ## [0.1.6] - 2026-09-02
 
 ### 修复
 - **修复 Harness `0.1.2-alpha.4` 后 `Search service unavailable`（`WEB_PROVIDER_UNAVAILABLE` / `WEB_PROVIDER_CONFIGURED_UNAVAILABLE`）。** 提供方现通过 Harness 凭据缝（`ctx.credentials.resolve` + `launchEnvironmentOf(ctx)`）解析 TinyFish API Key，而非仅 `process.env`，与 `dsh-web-search-deepseek` 保持一致。`available()` 现与该实现一致：只要存在解析器即视为可用，缺失密钥时在 `search()` 阶段以 `WEB_PROVIDER_CREDENTIAL_MISSING` 明确定位（“请设置 `TINYFISH_API_KEY` / `dsh credentials set` / `apiKey`”），而非通用的 `unavailable`。`Config.apiKeyEnv` 现为 `role: 'credential-ref'`。请升级至 `0.1.6` 并通过 `TINYFISH_API_KEY` 环境变量或 `dsh credentials set` 配置密钥。已在 Harness `0.1.2-alpha.4` 上通过真实 TinyFish Search 验证（测试中 mock fetch，手工真实请求验证）。
-
----
 
 ## [0.1.5] - 2026-09-02
 
@@ -563,21 +538,15 @@
 **文档**
 - 新增显式**使用**与**卸载**章节（中英双语），补齐六项覆盖：发行版 / 更新说明 / 安装 / 卸载 / 使用 / 配置；环境要求现标明已验证的 `0.1.2-alpha.4`。
 
----
-
 ## [0.1.4] - 2026-09-01
 
 **变更**
 - 适配 DeepSeek Harness **0.1.2-alpha.3**（master）：`devDependencies` 锁定 `@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-llm` 至 `0.1.2-alpha.3`，`@deepseek-ai/schemastery` 升至 `3.18.2`（alpha.3 检出所依赖的 schemastery 版本）；`@deepseek-ai/cordis` 保持 `4.0.2`。从 `0.1.2-alpha.2` 到 `0.1.2-alpha.3`，`ctx.web` 提供方契约（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）与缝注册表没有变化，因此无需改动提供方代码；全部测试在新区间依赖下通过。请求的 `user-agent` 归属头现在上报 `dsh-tinyfish-search/0.1.4`。
 
----
-
 ## [0.1.3] - 2026-08-31
 
 **变更**
 - 适配 DeepSeek Harness **0.1.2-alpha.2**：`devDependencies` 锁定 `@deepseek-ai/dsh-web`、`@deepseek-ai/dsh-llm` 至 `0.1.2-alpha.2`、`@deepseek-ai/cordis` 至 `4.0.2`；`@deepseek-ai/dsh-web` 的 peer 依赖区间下限升至 `0.1.2-alpha.2`。该版 harness 的 `ctx.web` 提供方契约（`WebSearchProvider` / `WebSearchRequest` / `WebSearchResult` / `WebError`）没有变化，因此无需改动提供方代码；全部测试在新区间依赖下通过。请求的 `user-agent` 归属头现在上报 `dsh-tinyfish-search/0.1.3`。
-
----
 
 ## [0.1.2] - 2026-08-30
 
@@ -587,15 +556,11 @@
 **变更**
 - 请求的 `user-agent` 归属头现在上报包版本（`dsh-tinyfish-search/0.1.2`）。
 
----
-
 ## [0.1.1] - 2026-08-30
 
 **修复**
 - **修复了插件不生效的问题**：`dsh-base` 把 `web` 行的 `searchProvider` 钉死为 `deepseek-official`，因此仅仅注册 `tinyfish` provider 时，内置 `web_search` 仍走 DeepSeek 后端（用非 DeepSeek 密钥调用即报 “DeepSeek API error (HTTP 404)”）。按 harness 的层规则，bundle patch 现在按 id 覆盖 `web` 行（`searchProvider: tinyfish`，并完整重述 `fetchProvider: http`）——安装插件即自动将内置 `web_search` 切换到 TinyFish。更后层（profile / home `cordis.patch.yml` / `--patch`)仍可按 id 覆盖。
 - 新增回归测试，断言 bundle patch 携带了 `web` 行覆盖。
-
----
 
 ## [0.1.0] - 2026-08-27
 
@@ -613,6 +578,7 @@
 - 目前只透出缝接口的 `query` / `maxResults`；TinyFish 的扩展参数（`location`、`language`、`domain_type`、`recency_minutes` 等）暂未透传。
 - 配置在插件加载时读取一次；运行中改动通过 Cordis HMR 热重载插件生效，而非轮询。
 
+[0.23.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.23.0
 [0.22.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.22.0
 [0.21.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.21.0
 [0.20.0]: https://github.com/maxwell-feng/dsh-tinyfish-search/releases/tag/v0.20.0

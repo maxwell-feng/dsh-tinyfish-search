@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "TinyFish Web Search",
-    "description": "TinyFish-backed web search provider for DeepSeek Harness. Routes the built-in web_search tool to the TinyFish Search API."
+    "title": "TinyFish web search",
+    "description": "TinyFish-backed web search provider for DeepSeek Harness. Routes the built-in web_search tool to the TinyFish Search API; requires a TinyFish API key."
   }
 }

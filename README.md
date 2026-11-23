@@ -10,7 +10,7 @@ The plugin registers a web search provider on `ctx.web` under the stable id `tin
 
 - Each `web_search` call becomes `GET https://api.search.tinyfish.ai` with the `x-api-key` header.
 - `results[]` (title, snippet, URL, date) are mapped to `WebSearchSource`.
-- `ready(llmProvider)` reports whether a usable API key exists. Without one, a model step is not offered `web_search`.
+- `ready(llmProvider)` reports whether an API key is configured. Without one, a model step is not offered `web_search`.
 - No LLM turn is consumed per search.
 - Native `icon.svg` and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) are included for Plugin Manager.
 
@@ -27,15 +27,15 @@ Configuration uses a volatile schema. The Host reads the exported `Config` and r
 
 ## Requirements
 
-- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.2-rc.5` (released 2026-11-18). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
-- Node.js `^22.19.0 || >=24.0.0`. DSH 0.2.2 hosts require Node 24.9+, so the effective host floor is 24.9.
+- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.3-alpha.2` (released 2026-11-22). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
+- Node.js `^24.22.3 || >=26.13.1`. DSH 0.2.3 requires Node.js 24.22.3 or newer in the 24.x line, or Node.js 26.13.1 or newer.
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys). Search is free at any wallet balance.
 - `@deepseek-ai/dsh-credentials` and `@deepseek-ai/dsh-launch-environment` as peers. Every `dsh` profile carries them.
 
 DSH checks the declared `engines.dsh` range against the running version before it loads the row. A host outside the range is refused with the exact requirement named. To accept the risk:
 
 ```sh
-dsh plugin --profile web allow-version dsh-tinyfish-search@0.22.0 --dsh-version <your-dsh-version> --accept-risk
+dsh plugin --profile web allow-version dsh-tinyfish-search@0.23.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
 Guides: [Install](INSTALL.md) · [Configuration](CONFIG.md) · [Usage](USAGE.md) · [Update](UPDATE.md) · [Uninstall](UNINSTALL.md) · [Changelog](CHANGELOG.md). Each has a Chinese edition.
@@ -46,17 +46,17 @@ Guides: [Install](INSTALL.md) · [Configuration](CONFIG.md) · [Usage](USAGE.md)
 dsh plugin --profile web add dsh-tinyfish-search
 ```
 
-From a checkout or tarball:
+From a checkout or a locally built tarball (`npm pack` creates the `.tgz`):
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search
-dsh plugin --profile web add ./dsh-tinyfish-search-0.22.0.tgz
+dsh plugin --profile web add ./dsh-tinyfish-search-0.23.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
 `--profile <name>` goes before `add`, `remove`, `update` and `allow-version`. Git installs build `lib/` through the package `prepare` script (`tsc -p tsconfig.build.json`).
 
-Check the layer with `dsh --profile web --dump-config | grep tinyfish`. Then start a session and ask a question that needs live information: the result should carry TinyFish URLs and snippets, and the web search settings card should show provider `tinyfish` with `available: true`.
+Check the layer with `dsh --profile web --dump-config | grep tinyfish`. Then open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu should list **TinyFish Search** (id `tinyfish`). Start a session and ask a question that needs live information: the result should carry TinyFish URLs and snippets.
 
 ## Configure
 
@@ -89,7 +89,7 @@ All fields are optional. See the [Configuration Guide](CONFIG.md) for the schema
 2. The harness routes it through `ctx.web` → `tinyfish` → `https://api.search.tinyfish.ai`.
 3. Results arrive as `WebSearchSource[]` (`url`, `title`, `snippet`, `publishedAt`).
 
-`available()` is a local check the seam uses to pick a provider. `ready()` decides whether the tool is offered on a model step. With no usable key, `web_search` is withheld. A dispatched search that bypasses that gate fails with `WEB_PROVIDER_CREDENTIAL_MISSING`.
+`available()` is a local check the seam uses to pick a provider. `ready()` decides whether the tool is offered on a model step. With no configured key, `web_search` is withheld. A dispatched search that bypasses that gate fails with `WEB_PROVIDER_CREDENTIAL_MISSING`.
 
 Errors follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key is found, `WEB_ABORTED` on cancellation, `WEB_PROVIDER_ERROR` otherwise. See the [Usage Guide](USAGE.md) for examples and the error table.
 
@@ -99,7 +99,7 @@ Errors follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key 
 dsh plugin --profile web add dsh-tinyfish-search@latest
 ```
 
-This release moves the dependencies to DSH 0.2.2-rc.5 and updates the documentation; behavior is unchanged. See the [Update Guide](UPDATE.md) for steps and rollback.
+This release moves the dependencies to DSH 0.2.3-alpha.2, raises the Node.js floor to match DSH, and updates the documentation; normal search behavior is unchanged, while malformed-response handling is hardened. See the [Update Guide](UPDATE.md) for steps and rollback.
 
 ## Uninstall
 
