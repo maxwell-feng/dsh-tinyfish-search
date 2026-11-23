@@ -150,6 +150,8 @@ test('mapTinyFishResponse skips malformed results instead of throwing', async ()
   assert.deepEqual(mapTinyFishResponse({ results: [{ title: 'no url here' } as any, { url: 42 as any }] }, undefined).sources, [])
   assert.deepEqual(mapTinyFishResponse({}, undefined).sources, [])
   assert.deepEqual(mapTinyFishResponse({ results: 'not-an-array' as any }, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse(null as any, undefined).sources, [])
+  assert.deepEqual(mapTinyFishResponse({ results: [null, { url: 'https://a.test' }] } as any, undefined).sources, [{ url: 'https://a.test' }])
   assert.deepEqual(
     mapTinyFishResponse({ results: [{ url: 'https://a.test', title: 7 as any, snippet: {} as any, date: null }] }, undefined).sources,
     [{ url: 'https://a.test' }],

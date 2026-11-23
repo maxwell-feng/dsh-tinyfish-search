@@ -84,8 +84,10 @@ export function mapTinyFishResponse(
   const seen = new Set<string>();
   const sources: WebSearchSource[] = [];
 
+  if (payload === null || typeof payload !== "object") return { sources, truncated: false };
   for (const item of Array.isArray(payload.results) ? payload.results : []) {
     if (maxResults !== undefined && sources.length >= maxResults) break;
+    if (item === null || typeof item !== "object") continue;
     if (typeof item.url !== "string" || item.url.length === 0 || seen.has(item.url)) continue;
     seen.add(item.url);
     const publishedAt = item.publishedAt ?? item.date;
