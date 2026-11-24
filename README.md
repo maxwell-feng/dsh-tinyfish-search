@@ -2,43 +2,43 @@
 
 English | [Chinese](https://github.com/maxwell-feng/dsh-tinyfish-search/blob/main/README.zh.md)
 
-[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin that runs the built-in `web_search` tool on the [TinyFish Search API](https://docs.tinyfish.ai/search-api). One GET per query. No model call.
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin for the [TinyFish Search API](https://docs.tinyfish.ai/search-api): runs the built-in `web_search` tool, one GET per query, no model call.
 
 ## What it does
 
-The plugin registers a web search provider on `ctx.web` under the stable id `tinyfish`:
+The plugin registers a web search provider on `ctx.web` as `tinyfish`:
 
-- Each `web_search` call becomes `GET https://api.search.tinyfish.ai` with the `x-api-key` header.
-- `results[]` (title, snippet, URL, date) are mapped to `WebSearchSource`.
-- `ready(llmProvider)` reports whether an API key is configured. Without one, a model step is not offered `web_search`.
+- Each `web_search` call is a `GET https://api.search.tinyfish.ai` with `x-api-key`.
+- `results[]` (title, snippet, URL, date) map to `WebSearchSource`.
+- `ready(llmProvider)` reports whether an API key is configured; without one, the model step gets no `web_search`.
 - No LLM turn is consumed per search.
-- Native `icon.svg` and bilingual manifest resources (`locale/en.json`, `locale/zh.json`) are included for Plugin Manager.
+- Bundled `icon.svg` and locale files (`locale/en.json`, `locale/zh.json`) serve Plugin Manager.
 
 ## Bundle patch
 
 `cordis.patch.yml` overrides two host rows:
 
-- `web`: sets `searchProvider: tinyfish` and restates `fetchProvider: http`. Since DSH 0.2.2-rc.5, `dsh-base` sets no search provider, and `dsh-web` chooses one per model route: legacy Messages search on DeepSeek routes, DeepSeek Search API elsewhere. The explicit id pins TinyFish for every route.
-- `tool-web`: re-enables the host tool row with `disabled: false` and restates `search: true`, `fetch: true` and the base timeouts. `dsh-web-app` ships this row disabled, so a clean web profile would otherwise have no `web_search` tool.
+- `web`: sets `searchProvider: tinyfish` and restates `fetchProvider: http`. Since DSH 0.2.2-rc.5, `dsh-base` sets no search provider; `dsh-web` picks per route (legacy Messages search on DeepSeek, DeepSeek Search API elsewhere). The id pins TinyFish everywhere.
+- `tool-web`: re-enables the host tool row with `disabled: false`, `search: true`, `fetch: true` and the base timeouts. `dsh-web-app` ships it disabled; a clean web profile otherwise lacks `web_search`.
 
-Re-enabling `tool-web` makes the web tools visible to every agent preset on the profile, including presets that do not otherwise carry them (e.g. `minimal`). A preset that mounts its own `tool-web` row shadows this registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in your profile `cordis.patch.yml` and add `tool-web` to that preset's composition. Later profile, home and `--patch` layers can override both rows.
+Re-enabling `tool-web` exposes the web tools to every agent preset, including ones that otherwise lack them (e.g. `minimal`). A preset's own `tool-web` row shadows this registration for its agents. To scope to one preset, override or remove that row in the profile `cordis.patch.yml` and add `tool-web` to the preset's composition; later profile, home and `--patch` layers can override both.
 
-Configuration uses a volatile schema. The Host reads the exported `Config` and renders the form for the `dsh-tinyfish-search` row on the Plugins page. There is no plugin-side settings code. A saved edit reaches the next search without a restart.
+Configuration uses a volatile schema: the Host reads `Config` and renders the `dsh-tinyfish-search` form on the Plugins page. There is no plugin-side settings code; saved edits reach the next search without a restart.
 
 ## Requirements
 
-- DeepSeek Harness `dsh` with the web seam, such as the `web` profile. Build baseline: `0.2.3-alpha.2` (released 2026-11-22). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
-- Node.js `^24.22.3 || >=26.13.1`. DSH 0.2.3 requires Node.js 24.22.3 or newer in the 24.x line, or Node.js 26.13.1 or newer.
+- DeepSeek Harness `dsh` with the web seam (e.g. the `web` profile). Build baseline: `0.2.3-alpha.2` (2026-11-22). `engines.dsh`: `>=0.1.7-alpha.2 <0.3.0`.
+- Node.js `^24.22.3 || >=26.13.1`; DSH 0.2.3 needs 24.22.3+ on 24.x or 26.13.1+.
 - A [TinyFish API key](https://agent.tinyfish.ai/api-keys). Search is free at any wallet balance.
-- `@deepseek-ai/dsh-credentials` and `@deepseek-ai/dsh-launch-environment` as peers. Every `dsh` profile carries them.
+- `@deepseek-ai/dsh-credentials` and `@deepseek-ai/dsh-launch-environment` as peers; every `dsh` profile carries them.
 
-DSH checks the declared `engines.dsh` range against the running version before it loads the row. A host outside the range is refused with the exact requirement named. To accept the risk:
+DSH checks `engines.dsh` before loading the row; an outside host is refused with the exact requirement. To accept the risk:
 
 ```sh
 dsh plugin --profile web allow-version dsh-tinyfish-search@0.23.0 --dsh-version <your-dsh-version> --accept-risk
 ```
 
-Guides: [Install](INSTALL.md) · [Configuration](CONFIG.md) · [Usage](USAGE.md) · [Update](UPDATE.md) · [Uninstall](UNINSTALL.md) · [Changelog](CHANGELOG.md). Each has a Chinese edition.
+Guides: [Install](INSTALL.md) · [Configuration](CONFIG.md) · [Usage](USAGE.md) · [Update](UPDATE.md) · [Uninstall](UNINSTALL.md) · [Changelog](CHANGELOG.md); each has a Chinese edition.
 
 ## Install
 
@@ -46,7 +46,7 @@ Guides: [Install](INSTALL.md) · [Configuration](CONFIG.md) · [Usage](USAGE.md)
 dsh plugin --profile web add dsh-tinyfish-search
 ```
 
-From a checkout or a locally built tarball (`npm pack` creates the `.tgz`):
+From a checkout or locally built tarball (`npm pack` writes the `.tgz`):
 
 ```sh
 dsh plugin --profile web add ./dsh-tinyfish-search
@@ -54,9 +54,9 @@ dsh plugin --profile web add ./dsh-tinyfish-search-0.23.0.tgz
 dsh plugin --profile web add github:maxwell-feng/dsh-tinyfish-search
 ```
 
-`--profile <name>` goes before `add`, `remove`, `update` and `allow-version`. Git installs build `lib/` through the package `prepare` script (`tsc -p tsconfig.build.json`).
+`--profile <name>` goes before `add`, `remove`, `update` and `allow-version`. Git installs build `lib/` via `prepare` (`tsc -p tsconfig.build.json`).
 
-Check the layer with `dsh --profile web --dump-config | grep tinyfish`. Then open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu should list **TinyFish Search** (id `tinyfish`). Start a session and ask a question that needs live information: the result should carry TinyFish URLs and snippets.
+Check the layer with `dsh --profile web --dump-config | grep tinyfish`. Then open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu should list **TinyFish Search** (id `tinyfish`). A live search should return TinyFish URLs and snippets.
 
 ## Configure
 
@@ -69,7 +69,7 @@ echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.zshrc   # permanent (zs
 source ~/.bashrc                                                 # or reopen the terminal
 ```
 
-On Windows PowerShell, use `setx TINYFISH_API_KEY "your_api_key_here"` for new terminals or `$env:TINYFISH_API_KEY = "your_api_key_here"` for the current session.
+Windows PowerShell: use `setx TINYFISH_API_KEY "your_api_key_here"` for new terminals, or `$env:TINYFISH_API_KEY = "your_api_key_here"` for the current session.
 
 Set these fields in your profile `cordis.yml` or a patch layer:
 
@@ -81,7 +81,7 @@ Set these fields in your profile `cordis.yml` or a patch layer:
 | `location` | — | Optional geo targeting; blank sends nothing |
 | `language` | — | Optional search language; blank sends nothing |
 
-All fields are optional. See the [Configuration Guide](CONFIG.md) for the schema, credential order and readiness rules.
+All fields are optional; see the [Configuration Guide](CONFIG.md) for schema, credential order and readiness rules.
 
 ## Usage
 
@@ -89,7 +89,7 @@ All fields are optional. See the [Configuration Guide](CONFIG.md) for the schema
 2. The harness routes it through `ctx.web` → `tinyfish` → `https://api.search.tinyfish.ai`.
 3. Results arrive as `WebSearchSource[]` (`url`, `title`, `snippet`, `publishedAt`).
 
-`available()` is a local check the seam uses to pick a provider. `ready()` decides whether the tool is offered on a model step. With no configured key, `web_search` is withheld. A dispatched search that bypasses that gate fails with `WEB_PROVIDER_CREDENTIAL_MISSING`.
+`available()` is the seam's local provider check; `ready()` decides whether a model step gets the tool. Without a configured key, `web_search` is withheld; bypassing the gate yields `WEB_PROVIDER_CREDENTIAL_MISSING`.
 
 Errors follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key is found, `WEB_ABORTED` on cancellation, `WEB_PROVIDER_ERROR` otherwise. See the [Usage Guide](USAGE.md) for examples and the error table.
 
@@ -99,7 +99,7 @@ Errors follow the `dsh-web` seam: `WEB_PROVIDER_CREDENTIAL_MISSING` when no key 
 dsh plugin --profile web add dsh-tinyfish-search@latest
 ```
 
-This release moves the dependencies to DSH 0.2.3-alpha.2, raises the Node.js floor to match DSH, and updates the documentation; normal search behavior is unchanged, while malformed-response handling is hardened. See the [Update Guide](UPDATE.md) for steps and rollback.
+This release moves dependencies to DSH 0.2.3-alpha.2, raises the Node.js floor to match DSH, and updates the docs. Normal search behavior is unchanged; malformed responses are handled more robustly. See the [Update Guide](UPDATE.md) for steps and rollback.
 
 ## Uninstall
 
@@ -107,7 +107,7 @@ This release moves the dependencies to DSH 0.2.3-alpha.2, raises the Node.js flo
 dsh plugin --profile web remove dsh-tinyfish-search
 ```
 
-This removes the bundle layer and the `tinyfish` provider. The `web` and `tool-web` rows return to the values shipped by the underlying bundles. A preset that mounts its own `tool-web` row keeps `web_search`, which falls back to the harness's own selection: since 0.2.2-rc.5, `deepseek-official` (legacy Messages search) on DeepSeek model routes and `deepseek-search-api` elsewhere; `deepseek-search-api` on 0.2.2-rc.2 through rc.4; `deepseek-official` on earlier hosts; or no provider if none is installed. A preset that relied on this bundle's host-level `tool-web` row (for example `minimal`) loses `web_search` until `tool-web` is restored for that preset.
+Removing this bundle returns `web` and `tool-web` to the underlying bundles' values and removes the `tinyfish` provider. A preset with its own `tool-web` row keeps `web_search`, falling back to the harness's selection: `deepseek-official` (legacy Messages search) on DeepSeek routes and `deepseek-search-api` elsewhere since 0.2.2-rc.5; `deepseek-search-api` on 0.2.2-rc.2–rc.4; `deepseek-official` earlier; none if no provider is installed. Presets relying on this bundle's host-level `tool-web` row (e.g. `minimal`) lose `web_search` until it is restored.
 
 ## Development
 
@@ -120,7 +120,7 @@ pnpm test      # node --test, mocked fetch
 pnpm typecheck # tsc --noEmit, src + test + scripts
 ```
 
-Run `node scripts/check-docs-language.ts` to check the docs language pairs. Publishing uses npm Trusted Publishing (OIDC) through GitHub Actions; see [`.github/workflows/publish.yml`](./.github/workflows/publish.yml).
+Run `node scripts/check-docs-language.ts` to check the docs pairs. Publishing uses npm Trusted Publishing (OIDC) through GitHub Actions; see [`.github/workflows/publish.yml`](./.github/workflows/publish.yml).
 
 Release notes: [CHANGELOG.md](./CHANGELOG.md) or [CHANGELOG.zh.md](./CHANGELOG.zh.md), plus the [GitHub Releases](https://github.com/maxwell-feng/dsh-tinyfish-search/releases) page.
 

@@ -6,7 +6,7 @@ Current plugin version: `0.23.0`. Build baseline: DeepSeek Harness `0.2.3-alpha.
 
 ## How a search flows
 
-In a session on a profile that composes this bundle, the model calls `web_search` as usual. The harness routes the call through the web seam to this plugin:
+On a profile composing this bundle, the model calls `web_search`; the harness routes it through the web seam to this plugin:
 
 ```text
 model → web_search → ctx.web → tinyfish → GET https://api.search.tinyfish.ai
@@ -21,11 +21,11 @@ user-agent: dsh-tinyfish-search/0.23.0
 accept: application/json
 ```
 
-`location` and `language` are sent only when configured. Otherwise the request carries just `query`. No model call is consumed per search.
+`location` and `language` are sent only when configured; otherwise the request carries only `query`. No model call per search.
 
 ## Providers
 
-The bundle patch composes three rows: its own plugin row plus two host-row overrides.
+The bundle patch composes three rows: the plugin row plus two host-row overrides.
 
 | Row | Effect |
 |---|---|
@@ -33,13 +33,13 @@ The bundle patch composes three rows: its own plugin row plus two host-row overr
 | `web` | Points the seam at this provider: `searchProvider: tinyfish` (`fetchProvider: http` restated) |
 | `tool-web` | Re-enables the host model-facing tools: `disabled: false`, `search: true`, `fetch: true`, timeouts restated |
 
-The provider registers under the stable id `tinyfish` (`TINYFISH_PROVIDER_ID`). Its configuration form is keyed by the profile row id `dsh-tinyfish-search`; DSH derives the namespace from the row.
+The provider registers as `tinyfish` (`TINYFISH_PROVIDER_ID`); its form is keyed by the profile row id `dsh-tinyfish-search`, from which DSH derives the namespace.
 
-`available()` is a local check: a literal key is present or a credential resolver is configured, and `baseURL` parses. It does not call the resolver. It makes no network calls. A provider with a credential resolver counts as selectable even before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING` rather than as "unavailable".
+`available()` is a local check: a literal key is present or a credential resolver is configured, and `baseURL` parses; it makes no network calls. A provider with a resolver counts as selectable before the key exists, so a missing key surfaces at search time as `WEB_PROVIDER_CREDENTIAL_MISSING`, not as "unavailable".
 
-Since DeepSeek Harness 0.2.2 the provider also implements `ready(llmProvider)`. It answers whether a search for a model request on that chat route has a credential to send. `dsh-tool-web` uses it as the activation condition of `web_search`, so with no configured credential the model step is not offered the tool and a missing key never becomes a failed call. Like `available()`, it is configuration only and contacts nothing. Unlike `available()`, it resolves the key and answers `false` when nothing comes back. TinyFish uses one key on every model route, so `llmProvider` never changes the answer.
+Since DSH 0.2.2 the provider implements `ready(llmProvider)`, which reports whether a search for a model request on that chat route has a configured credential. `dsh-tool-web` uses it to activate `web_search`: with no configured credential, the model step gets no tool, so a missing key never becomes a failed call. It checks configuration only and resolves the key; if none comes back it answers `false`. TinyFish uses one key on every route, so `llmProvider` never changes the answer.
 
-Per-preset scoping: the host `tool-web` row makes the tools visible to every agent preset on the profile. A preset that mounts its own `tool-web` row shadows the global registration for its agents. To scope the tools to one preset, override or remove the `tool-web` row in the profile `cordis.patch.yml` and add `tool-web` to that preset's composition.
+The host `tool-web` row exposes the tools to every agent preset; a preset with its own `tool-web` row shadows that registration. To scope to one preset, override or remove the row in the profile `cordis.patch.yml` and add `tool-web` to its composition.
 
 ## Credential configuration
 
@@ -50,9 +50,9 @@ The API key resolves in this order per search; the first non-empty value wins:
 3. The launch environment: `launchEnvironmentOf(ctx).get(apiKeyEnv)`.
 4. `process.env[apiKeyEnv]`, for standalone use outside the host.
 
-`apiKeyEnv` defaults to `TINYFISH_API_KEY` and carries the `credential-ref` role, so the rendered form shows the credential reference. A committed form edit reaches the next search without a restart.
+`apiKeyEnv` defaults to `TINYFISH_API_KEY` with the `credential-ref` role, so the form shows the credential reference. A committed edit reaches the next search without a restart.
 
-Recommended setup with the environment variable only:
+Recommended: environment variable only:
 
 ```sh
 export TINYFISH_API_KEY="your_api_key_here"                      # current shell
@@ -61,7 +61,7 @@ echo 'export TINYFISH_API_KEY="your_api_key_here"' >> ~/.zshrc   # permanent (zs
 source ~/.bashrc                                                 # or reopen the terminal
 ```
 
-On Windows PowerShell, use `setx TINYFISH_API_KEY "your_api_key_here"` for new terminals or `$env:TINYFISH_API_KEY = "your_api_key_here"` for the current session.
+Windows PowerShell: use `setx TINYFISH_API_KEY "your_api_key_here"` for new terminals or `$env:TINYFISH_API_KEY = "your_api_key_here"` for the current session.
 
 ## Examples
 
@@ -71,11 +71,11 @@ On Windows PowerShell, use `setx TINYFISH_API_KEY "your_api_key_here"` for new t
 What is today's weather in Tokyo?
 ```
 
-The model calls `web_search`, the harness routes it to TinyFish, and the tool result carries normalized sources. In the GUI, open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu lists **TinyFish Search** (id `tinyfish`).
+The model calls `web_search`; the harness routes it to TinyFish and returns normalized sources. In the GUI, open **Plugins → Built-in plugin settings → Web search and fetch**; the **Web search provider** menu lists **TinyFish Search** (id `tinyfish`).
 
 ### Normalized result shape
 
-`results[]` items map to the seam's `WebSearchSource` shape, deduplicated by URL and capped early to `maxResults`. `truncated` is `false` because the web seam sets the final flag. `date` and `publishedAt` both feed `publishedAt`; empty fields are omitted.
+`results[]` maps to `WebSearchSource`, deduplicated by URL and capped to `maxResults`. `truncated` is `false` because the web seam sets it. `date` and `publishedAt` both feed `publishedAt`; empty fields are omitted.
 
 ```js
 import { mapTinyFishResponse } from 'dsh-tinyfish-search'
@@ -94,7 +94,7 @@ console.log(JSON.stringify(out, null, 2))
 {"sources": [{"url": "https://docs.tinyfish.ai/search-api", "title": "Search API", "snippet": "One GET per query.", "publishedAt": "2026-09-01"}], "truncated": false}
 ```
 
-The duplicate URL is dropped. TinyFish returns no long-form summary and no generated answer, so the plugin fills neither `WebSearchSource.summary` nor `WebSearchResult.content`. Both are optional on the seam.
+The duplicate URL is dropped. TinyFish returns no long-form summary or generated answer, so the plugin fills neither `WebSearchSource.summary` nor `WebSearchResult.content`; both are optional.
 
 ### Geo and language targeting
 
@@ -105,7 +105,7 @@ The duplicate URL is dropped. TinyFish returns no long-form summary and no gener
     language: en
 ```
 
-This sends `?query=...&location=US&language=en`. Blank or unset values send nothing.
+This sends `?query=...&location=US&language=en`; blank or unset values send nothing.
 
 ## Errors and cancellation
 
@@ -119,4 +119,4 @@ The missing-key message names the configured variable: `dsh-tinyfish-search has 
 
 A malformed TinyFish response (non-array `results`, items without a string `url`) degrades to zero sources instead of throwing.
 
-`WEB_PROVIDER_CREDENTIAL_MISSING` comes from a dispatched search. On the normal model path, `ready()` withholds the tool first, so this error usually appears only for programmatic callers that bypass the gate.
+`WEB_PROVIDER_CREDENTIAL_MISSING` comes from a dispatched search; normally `ready()` withholds the tool first, so it usually appears only for programmatic callers bypassing the gate.
