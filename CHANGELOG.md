@@ -6,27 +6,27 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [0.23.0] - 2026-11-24
 
-**DeepSeek Harness 0.2.3-alpha.2 alignment** — dependency, Node.js requirement and documentation release. The API and configuration are unchanged; malformed-response handling is hardened.
+**DeepSeek Harness 0.2.3-alpha.2 alignment** — dependency, Node.js requirement and documentation release. API and configuration are unchanged; malformed-response handling is hardened.
 
 ### Changed
 
 - Updated every `@deepseek-ai/dsh-*` devDependency from `0.2.2-rc.5` to `0.2.3-alpha.2`.
-- Moved `@deepseek-ai/cordis` to `4.2.0-alpha.1` and `@deepseek-ai/schemastery` to `3.20.0-alpha.1`; the peer and dependency ranges admit the 0.2.3 line while still admitting earlier 0.2.x hosts.
-- Raised `engines.node` to `^24.22.3 || >=26.13.1` to match DSH 0.2.3, and pinned the CI and publish jobs to Node.js 24.22.3.
-- Bumped `USER_AGENT` to `dsh-tinyfish-search/0.23.0` and updated its test assertion.
-- `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`; regenerated the lockfile and refreshed the workspace supply-chain exemption for the `0.2.3-alpha.2` package set.
+- Moved `@deepseek-ai/cordis` to `4.2.0-alpha.1` and `@deepseek-ai/schemastery` to `3.20.0-alpha.1`; peer and dependency ranges admit the 0.2.3 line and earlier 0.2.x hosts.
+- Raised `engines.node` to `^24.22.3 || >=26.13.1` to match DSH 0.2.3; CI and publish jobs pin Node.js 24.22.3.
+- Bumped `USER_AGENT` to `dsh-tinyfish-search/0.23.0`; test assertion updated.
+- `engines.dsh` stays `>=0.1.7-alpha.2 <0.3.0`; regenerated the lockfile and refreshed the workspace supply-chain exemption for `0.2.3-alpha.2`.
 
 ### Fixed
 
-- `mapTinyFishResponse` now returns zero sources for a null payload or a null entry in `results`, instead of throwing; the malformed-response test covers both cases.
+- `mapTinyFishResponse` returns zero sources for a null payload or null `results` entry instead of throwing; the malformed-response test covers both.
 
 ### Documentation
 
-- Updated every current-version and DSH-baseline reference to `0.23.0` / `0.2.3-alpha.2`, including the install, update, usage, uninstall and release guides.
-- Changed the Plugin Manager title to sentence case and added the API-key requirement to both locale descriptions.
-- Corrected Chinese word order in the bundle-patch explanation, the web-seam reference and the Node.js floor sentences; added current-version banners to CONFIG, USAGE and UNINSTALL; aligned `bundle layer`, credential-order and first-non-empty-value wording across both languages.
-- Replaced the stale Settings → Web Search / `available: true` verification with the 0.2.3 UI path and the registered provider title; documented the three patch rows.
-- Removed the Chinese changelog's extra separator style so both sides use the same section structure.
+- Updated every current-version and DSH-baseline reference to `0.23.0` / `0.2.3-alpha.2`.
+- Plugin Manager title in sentence case; both locale descriptions state the API-key requirement.
+- Corrected Chinese word order and aligned `bundle layer`, credential-order and first-non-empty-value wording.
+- Replaced the stale Settings → Web Search / `available: true` check with the 0.2.3 UI path and provider title; documented the three patch rows.
+- Removed the Chinese changelog's extra separators; both sides now share one section structure.
 
 ### Verification
 

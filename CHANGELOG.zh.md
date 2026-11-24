@@ -11,22 +11,22 @@
 ### 变更
 
 - 全部 `@deepseek-ai/dsh-*` 开发依赖由 `0.2.2-rc.5` 移至 `0.2.3-alpha.2`。
-- `@deepseek-ai/cordis` 升至 `4.2.0-alpha.1`，`@deepseek-ai/schemastery` 升至 `3.20.0-alpha.1`；peer 与依赖区间接纳 0.2.3 线，同时仍接纳更早的 0.2.x 宿主。
-- `engines.node` 提高为 `^24.22.3 || >=26.13.1`，与 DSH 0.2.3 一致；CI 与发布任务固定使用 Node.js 24.22.3。
-- `USER_AGENT` 更新为 `dsh-tinyfish-search/0.23.0`，同步更新测试断言。
+- `@deepseek-ai/cordis` 升至 `4.2.0-alpha.1`，`@deepseek-ai/schemastery` 升至 `3.20.0-alpha.1`；peer 与依赖区间覆盖 0.2.3 线及更早 0.2.x 宿主。
+- `engines.node` 提高为 `^24.22.3 || >=26.13.1`，与 DSH 0.2.3 一致；CI 与发布任务将 Node.js 固定为 24.22.3。
+- `USER_AGENT` 更新为 `dsh-tinyfish-search/0.23.0`；测试断言同步更新。
 - `engines.dsh` 保持 `>=0.1.7-alpha.2 <0.3.0`；重新生成锁文件，并按 `0.2.3-alpha.2` 包集合刷新工作区供应链豁免。
 
 ### 修复
 
-- `mapTinyFishResponse` 对 null 响应或 `results` 中的 null 条目返回零来源，而不是抛出异常；畸形响应测试覆盖这两种情况。
+- `mapTinyFishResponse` 对 null 响应或 `results` 中的 null 条目返回零来源，而不是抛出异常；畸形响应测试覆盖两种情形。
 
 ### 文档
 
-- 全部当前版本与 DSH 基线引用更新为 `0.23.0` / `0.2.3-alpha.2`，包括安装、更新、使用、卸载与发行说明。
-- 插件管理器标题改为句首大写，两语言说明均补充 API key 要求。
-- 修正中文补丁说明的“否则”从句、web 缝主语句与 Node.js 门槛句式；为 CONFIG、USAGE、UNINSTALL 增加当前版本横幅；统一“bundle 层”“凭据顺序”和“以第一个非空值为准”的中英表述。
-- 把过时的“设置 → 网页搜索 / `available: true`”验证步骤改为 0.2.3 的实际 UI 路径与提供方显示名；写明补丁的三行结构。
-- 移除中文更新日志中与英文不同的额外分隔线，使两侧章节结构一致。
+- 全部当前版本与 DSH 基线引用更新为 `0.23.0` / `0.2.3-alpha.2`。
+- 插件管理器标题改为句首大写；两语言说明均写明 API key 要求。
+- 修正中文语序，并统一 `bundle layer`、凭据顺序与“以第一个非空值为准”的表述。
+- 将过时的“设置 → 网页搜索 / `available: true`”验证改为 0.2.3 UI 路径与提供方名称；写明补丁三行结构。
+- 移除中文更新日志的额外分隔线，两侧章节结构一致。
 
 ### 验证
 
